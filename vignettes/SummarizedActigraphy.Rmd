@@ -1,0 +1,159 @@
+---
+title: "limmi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{limmi}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(RNifti)
+library(limmi)
+```
+
+# Data
+
+The data is from https://www.fil.ion.ucl.ac.uk/spm/data/face_rfx/.  The data was from
+the study of
+
+> Henson, R. N. A., et al. "Face repetition effects in implicit and explicit memory tests as measured by fMRI." *Cerebral Cortex* 12.2 (2002): 178-186.
+
+We have included a subset of this data in the `inst/extdata/` directory (from the `can` contrast):
+
+```{r}
+tarfile = system.file("extdata", "can.tar.gz", package = "limmi")
+tarfile
+exdir = tempfile()
+dir.create(exdir)
+files = untar(tarfile = tarfile, list = TRUE, exdir = exdir)
+files = files[!grepl("^\\.", basename(files))]
+unz = untar(tarfile = tarfile, files = files, exdir = exdir)
+files = files[ grepl("hdr", basename(files))]
+files
+files = file.path(exdir, files)
+```
+
+# Create a Data Matrix
+
+We will use the `nifti_images_to_matrix` function to read these images into a matrix:
+
+```{r}
+mat = nifti_images_to_matrix(files, verbose = FALSE)
+attr(mat, "image_dim")
+attr(mat, "image_pixdim")
+dim(mat)
+```
+
+Let's read in one of the images and look at the contrast images:
+```{r}
+img = asNifti(files[[1]])
+```
+```{r}
+have_neurobase = requireNamespace("neurobase", quietly = TRUE)
+```
+```{r}
+pdim = c(3, pixdim(img), rep(1, 4))
+if (have_neurobase) {
+  neurobase::ortho2(img, pdim = pdim)
+}
+```
+
+We can also look at the mean image over all voxels:
+```{r}
+mask = array(TRUE, dim = dim(img))
+mean_image = limmi:::remake_nifti_image(rowMeans(mat), img, mask = mask >0)
+if (have_neurobase) {
+  neurobase::ortho2(mean_image, pdim = pdim)
+}
+```
+
+Now, we could run `limma` directly on this matrix.  The `nifti_limma` function does this as a wrapper for the process.  We should likely have a mask file of the voxels we want to perform the operation, but otherwise it will work over all voxels, even those with `NaN` in all the regions. 
+
+Let's make a mask of voxels where there is **any** non-missing in the data:
+
+```{r}
+keep = rowSums(!is.na(mat)) > 0
+mask = array(keep, dim = dim(img))
+mask = asNifti(mask, reference = img)
+if (have_neurobase) {
+  neurobase::ortho2(mask, pdim = pdim)
+}
+```
+
+# Run `limma`
+
+Now that we have the mask we want, let's run `limma` and a linear fit:
+```{r}
+fit = limma::lmFit(mat[keep, ])
+```
+
+## All in one line
+
+We can use the `nifti_lmFit` function to perform this all in one function:
+```{r}
+check_fit = nifti_lmFit(imgs = files, mask = mask, verbose = FALSE)
+all.equal(check_fit$coefficients, fit$coefficients)
+```
+
+# Running `eBayes`
+
+Let's run `eBayes` with the defaults (not likely a good idea with this data), getting the results:
+```{r}
+eb = limma::eBayes(fit = fit)
+coef_vec = eb$coefficients[,1]
+coef_image = limmi:::remake_nifti_image(coef_vec, img, mask = mask > 0)
+if (have_neurobase) {
+  neurobase::double_ortho(mean_image, coef_image, pdim = pdim)
+}
+```
+
+
+## All in one line
+The `nifti_eBayes` function will do the reading, fitting, and `eBayes`:
+
+```{r}
+check_eb = nifti_eBayes(files, mask, verbose = FALSE)
+all.equal(check_eb$empirical_bayes$coefficients, eb$coefficients)
+```
+
+```{r}
+diff_from_mean = mean_image - coef_image
+if (have_neurobase) {
+  neurobase::ortho2(diff_from_mean, pdim = pdim)
+}
+hist(diff_from_mean)
+```
+
+The output of `nifti_eBayes` does the remaking of images, and the `images` element is a list of these output images from `eBayes`:
+
+```{r}
+if (have_neurobase) {
+  neurobase::ortho2(check_eb$images$p.value, pdim = pdim)
+}
+```
+
+By default, `nifti_eBayes` also does a `topTable` from `limma` to adjust the p-values, using a Benjamini-Hochberg adjustment:
+
+```{r}
+if (have_neurobase) {
+  neurobase::ortho2(check_eb$images$adjusted_p_value, pdim = pdim)
+  neurobase::ortho2(check_eb$images$adjusted_p_value <= 0.05, pdim = pdim)
+}
+```
+
+Here we can compare the 2 maps, before and after adjustment:
+
+```{r}
+if (have_neurobase) {
+  neurobase::ortho2(check_eb$images$p.value <= 0.05, pdim = pdim)
+  neurobase::ortho2(check_eb$images$adjusted_p_value <= 0.05, pdim = pdim)
+}
+```

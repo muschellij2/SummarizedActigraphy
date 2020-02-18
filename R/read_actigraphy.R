@@ -1,0 +1,126 @@
+#' Read Actigraphy File
+#'
+#' @param file file to read
+#' @param ... additional arguments to pass to function
+#'
+#' @return An accelerometer object from the function used to
+#' read the file.
+#' @export
+#'
+#' @importFrom tools file_ext
+#' @importFrom R.utils decompressFile
+#'
+#' @examples
+#' url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip"
+#' destfile = tempfile(fileext = ".zip")
+#' dl = utils::download.file(url, destfile = destfile)
+#' gt3x_file = utils::unzip(destfile, exdir = tempdir())
+#' gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
+#' path = gt3x_file
+#' res = read_actigraphy(path)
+#' file = system.file("extdata",
+#' "TAS1H30182785 (2019-09-17).gt3x",
+#' package = "SummarizedActigraphy")
+#' res = read_actigraphy(file)
+#' file = system.file("extdata",
+#' "MECSLEEP17_left wrist_012854_2013-12-09 11-37-24.bin.gz",
+#' package = "SummarizedActigraphy")
+#' res = read_actigraphy(file)
+#'
+#' file = "blah.exe"
+#' testthat::expect_error(read_actigraphy(file))
+read_actigraphy = function(file, ...) {
+  ext = tools::file_ext(file)
+  ext = tolower(ext)
+  if (ext %in% c("gz", "xz", "bz2")) {
+    FUN = switch(ext,
+                 gz = gzfile,
+                 xz = xzfile,
+                 bz2 = bzfile
+    )
+    file = R.utils::decompressFile(
+      file,
+      ext = ext,
+      FUN = FUN,
+      temporary = TRUE,
+      overwrite = TRUE,
+      remove = FALSE)
+    ext = tools::file_ext(file)
+    ext = tolower(ext)
+  }
+  func = switch(
+    ext,
+    GGIR::g.readaccfile,
+    gt3x = read.gt3x::read.gt3x
+  )
+  stopifnot(!is.null(func))
+  if (ext %in% "gt3x") {
+    default_args = list(asDataFrame = TRUE,
+                        imputeZeroes = TRUE,
+                        verbose = TRUE)
+    args = list(file, ...)
+    for (iarg in names(default_args)) {
+      if (!iarg %in% names(args)) {
+        args[[iarg]] = default_args[[iarg]]
+      }
+    }
+    res = do.call(func, args = args)
+    hdr = attributes(res)$header
+    if (!is.null(hdr)) {
+      hdr = lapply(hdr, function(x) {
+        if (length(x) == 0) {
+          x = NA
+        }
+        x
+      })
+      n_values = sapply(res$header$Value, length)
+      if (all(n_values == 1)) {
+        hdr = lapply(hdr, as.character)
+        hdr = tibble::tibble(
+          Field = names(hdr),
+          Value = unlist(hdr))
+        attr(res, "header") = hdr
+      }
+    }
+    res <- list(
+      data.out = res,
+      freq = attr(res, "sample_rate"),
+      filename = basename(file),
+      header = hdr,
+      missingness = attr(res, "missingness"))
+    class(res) = "AccData"
+  } else {
+    hdr = GGIR::g.inspectfile(file)
+    filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
+    default_args = list(inspectfileobject = hdr,
+        blocksize = 2,
+        blocknumber = 1,
+        ws = 3,
+        desiredtz = "UTC",
+        filequality = filequality)
+    args = list(file,
+                ...)
+    for (iarg in names(default_args)) {
+      if (!iarg %in% names(args)) {
+        args[[iarg]] = default_args[[iarg]]
+      }
+    }
+    res = do.call(func, args = args)
+    res = res$P
+    res$data.out = tibble::as_tibble(res$data.out)
+    res$data.out$timestamp =
+      lubridate::as_datetime(res$data.out$timestamp)
+    n_values = sapply(res$header$Value, length)
+    if (all(n_values == 1)) {
+      res$header$Value = unlist(res$header$Value)
+      if (is.character(res$header$Value)) {
+        res$header$Value = trimws(res$header$Value)
+      }
+      res$header = tibble::as_tibble(res$header,
+                                     rownames = NA)
+      res$header = tibble::rownames_to_column(res$header,
+                                              var = "Field")
+    }
+  }
+  return(res)
+}
