@@ -73,7 +73,11 @@ summarize_daily_actigraphy = function(
     message("Calculating Statistics")
   }
   x = x %>%
-    mutate(enmo = sqrt(X^2 + Y^2 + Z^3) - 1) %>%
+    mutate(enmo = sqrt(X^2 + Y^2 + Z^2) - 1)
+  if (any(is.na(x$enmo))) {
+    warning("There were NA values in ENMO")
+  }
+  x = x %>%
     group_by(time) %>%
     summarize(
       mad = (mad(X, na.rm = TRUE) + mad(Y, na.rm = TRUE) + mad(Z, na.rm = TRUE))/3,

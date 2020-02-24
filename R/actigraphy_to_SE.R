@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' file = system.file("extdata",
-#' "TAS1H30182785 (2019-09-17).gt3x",
+#' "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
 #' files = rep(file, 10)
 #' df = data.frame(file = files,
