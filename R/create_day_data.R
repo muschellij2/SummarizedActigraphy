@@ -1,4 +1,3 @@
-#' @rdname summarize_actigraphy
 #' Summarize Actigraphy Data
 #'
 #' @param x an AccData object.  If `x` is a character, then
@@ -10,8 +9,7 @@
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
-#' @export
-#' @importFrom stats mad sd
+#' @importFrom stats mad sd median var
 #' @importFrom dplyr summarize vars
 #' @importFrom dplyr ungroup summarise group_by mutate summarize_at
 #' @importFrom tibble as_tibble
@@ -47,13 +45,15 @@
 #'   geom_line()
 #' }
 #' }
+#' @rdname summarize_actigraphy
+#' @export
 summarize_daily_actigraphy = function(
   x,
   units = "1 seconds",
   verbose = TRUE,
   ...) {
-  enmo = mad = X = Y = Z = NULL
-  rm(list = c("X", "Y", "Z", "enmo", "mad"))
+  time = enmo = mad = X = Y = Z = NULL
+  rm(list = c("X", "Y", "Z", "enmo", "mad", "time"))
 
   if (is.character(x)) {
     x = read_actigraphy(x, ...)

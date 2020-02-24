@@ -22,7 +22,7 @@
 #' df = data.frame(file = files,
 #' age = stats::rpois(length(files), 50),
 #' stringsAsFactors = FALSE)
-#' se = acc_df_to_SummarizedExperiment(df, "file")
+#' se = actigraphy_df_to_SummarizedExperiment(df, "file")
 actigraphy_df_to_SummarizedExperiment = function(
   x,
   path_column = "file",
@@ -39,11 +39,11 @@ actigraphy_df_to_SummarizedExperiment = function(
     files = as.character(files)
   }
   mat = lapply(files, summarize_actigraphy, ..., verbose = verbose)
-  mat = lapply(df, function(x) {
+  mat = lapply(mat, function(x) {
     x[, measure, drop = FALSE]
   })
   mat = lapply(measure, function(x) {
-    mat = sapply(df, function(r) {
+    mat = sapply(mat, function(r) {
       r[[x]]
     })
     mat

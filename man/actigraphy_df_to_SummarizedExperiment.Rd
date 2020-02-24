@@ -7,9 +7,12 @@
 actigraphy_df_to_SummarizedExperiment(
   x,
   path_column = "file",
-  assay_name = path_column,
-  template_images = NULL,
-  ...
+  measure = c("ai_mean", "mad_mean", "enmo_mean", "ai_median", "mad_median",
+    "enmo_median"),
+  assay_name = measure,
+  rowData = NULL,
+  ...,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -19,10 +22,16 @@ actigraphy_df_to_SummarizedExperiment(
 names of the data.  Can also be a list column of `x` where this column
 are the images}
 
+\item{measure}{measure to grab to create an assay}
+
 \item{assay_name}{Name of the `assay` in the
 \code{\link{SummarizedExperiment}}}
 
+\item{rowData}{row data to pass to \code{\link{SummarizedExperiment}}}
+
 \item{...}{additional arguments to pass to \code{\link{SummarizedExperiment}}}
+
+\item{verbose}{print diagnostic messages}
 }
 \value{
 A \code{SummarizedExperiment} output
@@ -38,5 +47,5 @@ files = rep(file, 10)
 df = data.frame(file = files,
 age = stats::rpois(length(files), 50),
 stringsAsFactors = FALSE)
-se = acc_df_to_SummarizedExperiment(df, "file")
+se = actigraphy_df_to_SummarizedExperiment(df, "file")
 }

@@ -27,11 +27,11 @@ gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 res = read_actigraphy(path)
 file = system.file("extdata",
-"TAS1H30182785 (2019-09-17).gt3x",
+"TAS1H30182785_2019-09-17.gt3x",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
 file = system.file("extdata",
-"MECSLEEP17_left wrist_012854_2013-12-09 11-37-24.bin.gz",
+"MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
 
