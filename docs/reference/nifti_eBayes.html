@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run `eBayes` on NIfTI Images — nifti_eBayes • limmi</title>
+<title>Run `eBayes` on NIfTI Images — nifti_eBayes • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -68,7 +68,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">limmi</a>
+        <a class="navbar-link" href="../index.html">SummarizedActigraphy</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
@@ -82,7 +82,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/limmi.html">Get started</a>
+  <a href="../articles/SummarizedActigraphy.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -93,7 +93,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/muschellij2/limmi">
+  <a href="https://github.com/muschellij2/SummarizedActigraphy">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -112,7 +112,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Run `eBayes` on NIfTI Images</h1>
-    <small class="dont-index">Source: <a href='https://github.com/muschellij2/limmi/blob/master/R/nifti_eBayes.R'><code>R/nifti_eBayes.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/nifti_eBayes.R'><code>R/nifti_eBayes.R</code></a></small>
     <div class="hidden name"><code>nifti_eBayes.Rd</code></div>
     </div>
 
@@ -125,6 +125,19 @@
   <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='no'>...</span>,
+  <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+  <span class='kw'>stdev.coef.lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>4</span>),
+  <span class='kw'>trend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>robust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>winsor.tail.p</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.1</span>),
+  <span class='kw'>coef</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>adjust.method</span> <span class='kw'>=</span> <span class='st'>"BH"</span>
+)
+
+<span class='fu'>eBayes_to_images</span>(
+  <span class='no'>fit</span>,
+  <span class='no'>mask</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>proportion</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
   <span class='kw'>stdev.coef.lim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>4</span>),
   <span class='kw'>trend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -194,6 +207,11 @@ passed to <code>topTable</code></p></td>
       <td><p>method to adjust p-value,
 passed to <code>topTable</code></p></td>
     </tr>
+    <tr>
+      <th>fit</th>
+      <td><p>an MArrayLM fitted model object produced by `lmFit` or
+`contrasts.fit`.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -205,7 +223,7 @@ passed to <code>topTable</code></p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>tarfile</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"can.tar.gz"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"limmi"</span>)
-<span class='no'>tarfile</span></div><div class='output co'>#&gt; [1] "/private/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T/Rtmpn6jroe/temp_libpath152214ac260f5/limmi/extdata/can.tar.gz"</div><div class='input'><span class='no'>exdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
+<span class='no'>tarfile</span></div><div class='output co'>#&gt; [1] "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/limmi/extdata/can.tar.gz"</div><div class='input'><span class='no'>exdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>()
 <span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span>(<span class='no'>exdir</span>)
 <span class='no'>files</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/untar.html'>untar</a></span>(<span class='kw'>tarfile</span> <span class='kw'>=</span> <span class='no'>tarfile</span>, <span class='kw'>list</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>exdir</span> <span class='kw'>=</span> <span class='no'>exdir</span>)
 <span class='no'>files</span> <span class='kw'>=</span> <span class='no'>files</span>[!<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span>(<span class='st'>"^[.]"</span>, <span class='fu'><a href='https://rdrr.io/r/base/basename.html'>basename</a></span>(<span class='no'>files</span>))]
@@ -214,7 +232,11 @@ passed to <code>topTable</code></p></td>
 <span class='no'>files</span></div><div class='output co'>#&gt;  [1] "con_0006.hdr" "con_0007.hdr" "con_0008.hdr" "con_0009.hdr" "con_0010.hdr"
 #&gt;  [6] "con_0011.hdr" "con_0012.hdr" "con_0013.hdr" "con_0014.hdr" "con_0015.hdr"
 #&gt; [11] "con_0016.hdr" "con_0017.hdr"</div><div class='input'><span class='no'>files</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='no'>exdir</span>, <span class='no'>files</span>)
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>nifti_eBayes</span>(<span class='no'>files</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div></pre>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>nifti_eBayes</span>(<span class='no'>files</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in remake_nifti_image(r, img = img, mask = mask): could not find function "remake_nifti_image"</span></div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>design_mat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='kw'>x1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>), <span class='kw'>each</span> <span class='kw'>=</span> <span class='fl'>6</span>),
+<span class='kw'>x2</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>), <span class='kw'>each</span> <span class='kw'>=</span> <span class='fl'>3</span>))
+<span class='no'>res2</span> <span class='kw'>=</span> <span class='fu'>nifti_eBayes</span>(<span class='no'>files</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design_mat</span>, <span class='kw'>coef</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

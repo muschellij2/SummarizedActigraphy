@@ -1,6 +1,6 @@
-pandoc: 2.9.1.1
+pandoc: 2.9.2
 pkgdown: 1.4.0
 pkgdown_sha: ~
 articles:
-  limmi: limmi.html
+  SummarizedActigraphy: SummarizedActigraphy.html
 

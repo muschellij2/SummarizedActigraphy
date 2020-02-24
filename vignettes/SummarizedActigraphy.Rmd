@@ -1,8 +1,8 @@
 ---
-title: "limmi"
+title: "Summarizing Actigraphy Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{limmi}
+  %\VignetteIndexEntry{Summarization}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,150 +10,173 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = ""
 )
 ```
 
 ```{r setup}
-library(RNifti)
-library(limmi)
+library(SummarizedActigraphy)
 ```
 
 # Data
 
-The data is from https://www.fil.ion.ucl.ac.uk/spm/data/face_rfx/.  The data was from
-the study of
+The data is from https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip.  It is a daily GT3X file from an ActiGraph. 
 
-> Henson, R. N. A., et al. "Face repetition effects in implicit and explicit memory tests as measured by fMRI." *Cerebral Cortex* 12.2 (2002): 178-186.
-
-We have included a subset of this data in the `inst/extdata/` directory (from the `can` contrast):
+Let's download the data:
 
 ```{r}
-tarfile = system.file("extdata", "can.tar.gz", package = "limmi")
-tarfile
-exdir = tempfile()
-dir.create(exdir)
-files = untar(tarfile = tarfile, list = TRUE, exdir = exdir)
-files = files[!grepl("^\\.", basename(files))]
-unz = untar(tarfile = tarfile, files = files, exdir = exdir)
-files = files[ grepl("hdr", basename(files))]
-files
-files = file.path(exdir, files)
+url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip"
+destfile = tempfile(fileext = ".zip")
+dl = utils::download.file(url, destfile = destfile)
+gt3x_file = utils::unzip(destfile, exdir = tempdir())
+gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
+path = gt3x_file
 ```
+
+This data represents sub-second level accelerations in the X, Y, and Z directions.  Additional information from devices can be measured, such as temperature or light.  We will focus only on the accelerometry data.  The `GGIR::g.calibrate` function is a method to calibrate the ENMO values [@GGIR_calibrate].  Other types of activity data, would be things such as activity counts, step counts, or previously summarized data.  Data such as this is commonly calculated using proprietary methods or algorithms.  
 
 # Create a Data Matrix
 
-We will use the `nifti_images_to_matrix` function to read these images into a matrix:
+We will use the `read_actigraphy` function to read these files into an `AccData` object:
 
 ```{r}
-mat = nifti_images_to_matrix(files, verbose = FALSE)
-attr(mat, "image_dim")
-attr(mat, "image_pixdim")
-dim(mat)
+x = read_actigraphy(path)
+class(x)
+names(x)
 ```
 
-Let's read in one of the images and look at the contrast images:
+The `read_actigraphy` function uses the `read.gt3x::read.gt3x` for gt3x files, and uses functions from the `GGIR` package [@GGIR].  
+
+The output has a data matrix in the `data.out`, which has `X`, `Y`, and `Z` columns, with an additional `time` column, which is a date/time column.  Additionally, the `header` object has additional metadata about the object:
+
+
 ```{r}
-img = asNifti(files[[1]])
+x$header
 ```
+
+The sampling frequency is embedded in the header, but also found in the `freq` element:
 ```{r}
-have_neurobase = requireNamespace("neurobase", quietly = TRUE)
+x$freq
 ```
+
+In this case, there are `r x$freq` samples per second.
+
+# Summarizing the data: Day-Second Level
+
+The `summarize_daily_actigraphy` summarizes an `AccData` into second-level data for each day.   The output is an `tsibble`:
+
 ```{r}
-pdim = c(3, pixdim(img), rep(1, 4))
-if (have_neurobase) {
-  neurobase::ortho2(img, pdim = pdim)
+daily = summarize_daily_actigraphy(x)
+head(daily)
+```
+
+The process is as follows, we use `floor_date` from `lubridate`, so that each time is rounded to 1 seconds.  This rounding is what allows us to use `group_by` on the time variable (which is really date/time variable) and summarize the data:
+
+```{r}
+library(dplyr)
+data = x$data.out
+data = data %>% 
+  mutate(time = lubridate::floor_date(time, unit = "1 seconds"),
+         enmo = sqrt(X^2 + Y^2 + Z^2) - 1)
+head(data)
+```
+
+In `summarize_daily_actigraphy`, the following process is done:
+
+```{r}
+data = data %>%
+  group_by(time) %>%
+  summarize(
+    mad = (mad(X, na.rm = TRUE) + 
+             mad(Y, na.rm = TRUE) +
+             mad(Z, na.rm = TRUE))/3,
+    ai = sqrt((var(X, na.rm = TRUE) + 
+                 var(Y, na.rm = TRUE) + 
+                 var(Z, na.rm = TRUE))/3),
+    n_values = sum(!is.na(enmo)),
+    enmo = mean(enmo, na.rm = TRUE)
+  )
+head(data)
+```
+
+This assumes that all non-NA values are valid, no wear-time estimation is done.  Also, estimating non-wear time/areas from this summarized data.  The `accelerometry::weartime` function estimates wear time, but is based on count values.  
+
+This daily-level data is good for thresholding activity, such as into categories like vigorous activity.  Also, this data is used for estimating sedentary and active bouts, and transition probability between them.   
+
+## ENMO 
+
+One of the statistics calculated are ENMO, the Euclidean Norm Minus One, which is:
+
+$$
+ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(\sqrt{X_{i}^2 + Y_{i}^2 + Z_{i}^2} - 1\right)
+$$
+where $t$ is the time point, rounded to one second.  In this case, $i$ represents each sample, so there are `r x$freq` ENMO measures per second, which means the number of samples for that time point, $n_{t}$, is `r x[["freq"]]`.  In most cases, however, ENMO and the other statstics are calculated at the 1-second level.  So the $ENMO_{t}$ from `summarize_daily_actigraphy` calculates $ENMO$ for each sample, then takes the mean $ENMO_{t}$ for 1-second intervals.  We will use $ENMO_{t}$ to represent this second-level data, leaving off any bar or hat, but in truth it is an average.  The subtraction of $1$ is to subtract $1$ gravity unit (g), from the data so it represents acceleration not due to gravity.
+
+
+## Activity Index (AI)
+
+The Activity Index (AI) was introduced by @bai.  It is calculated by:
+$$
+AI_{t} = \sqrt{\frac{Var(X_{t}) + Var(Y_{t}) + Var(Z_{t})}{3}}
+$$
+
+where 
+
+$$
+Var(X_{t}) = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(X_{i} - \bar{X_{t}}\right)^2
+$$
+
+where $\bar{X_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} X_{i}$.  
+
+## Median Absolute Deviation (MAD)
+
+The Median Absolute Deviation (MAD) was introduced by XX.   It is calculated by:
+
+$$
+MAD_{t} = \frac{MAD(X_{t}) + MAD(Y_{t}) + MAD(Z_{t})}{3}
+$$
+
+where 
+
+$$
+MAD(X_{t}) = \text{median}_{t} \left|X_{i} - \text{median}(X_{t})\right|
+$$
+where $\text{median}_{t}$ is the median over all values $i = 1, \dots, n_{t}$, and $\text{median}(X_{t}) = \text{median}_{t} (X_{i})$. 
+
+
+# Summarizing the data: Second Level
+
+The `summarize_actigraphy` summarizes an `AccData` into second-level data for an "average" day or average profile.   For each second of the day, a summary statistic is taken, either the mean or the median.  The `summarize_actigraphy` gives both, and the output is an `tsibble`:
+
+```{r}
+average_day = summarize_actigraphy(x)
+head(average_day)
+```
+
+The number of rows is 86400, which is 60 seconds per minute, 60 minutes per hour, 24 hours per day: 
+
+```{r}
+nrow(average_day)
+range(average_day$time)
+```
+
+These values represent an "average" day, where average is determined by mean and median.  
+
+# Plotting an Average Day
+
+Here we plot the AI values for each minute, summarized over mean and median:
+
+```{r}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  library(ggplot2)
+  library(magrittr)
+  average_day %>%
+    ggplot(aes(x = time, y = ai_mean)) +
+    geom_line()
+  
+  average_day %>%
+    ggplot(aes(x = time, y = ai_median)) +
+    geom_line()
 }
 ```
 
-We can also look at the mean image over all voxels:
-```{r}
-mask = array(TRUE, dim = dim(img))
-mean_image = limmi:::remake_nifti_image(rowMeans(mat), img, mask = mask >0)
-if (have_neurobase) {
-  neurobase::ortho2(mean_image, pdim = pdim)
-}
-```
-
-Now, we could run `limma` directly on this matrix.  The `nifti_limma` function does this as a wrapper for the process.  We should likely have a mask file of the voxels we want to perform the operation, but otherwise it will work over all voxels, even those with `NaN` in all the regions. 
-
-Let's make a mask of voxels where there is **any** non-missing in the data:
-
-```{r}
-keep = rowSums(!is.na(mat)) > 0
-mask = array(keep, dim = dim(img))
-mask = asNifti(mask, reference = img)
-if (have_neurobase) {
-  neurobase::ortho2(mask, pdim = pdim)
-}
-```
-
-# Run `limma`
-
-Now that we have the mask we want, let's run `limma` and a linear fit:
-```{r}
-fit = limma::lmFit(mat[keep, ])
-```
-
-## All in one line
-
-We can use the `nifti_lmFit` function to perform this all in one function:
-```{r}
-check_fit = nifti_lmFit(imgs = files, mask = mask, verbose = FALSE)
-all.equal(check_fit$coefficients, fit$coefficients)
-```
-
-# Running `eBayes`
-
-Let's run `eBayes` with the defaults (not likely a good idea with this data), getting the results:
-```{r}
-eb = limma::eBayes(fit = fit)
-coef_vec = eb$coefficients[,1]
-coef_image = limmi:::remake_nifti_image(coef_vec, img, mask = mask > 0)
-if (have_neurobase) {
-  neurobase::double_ortho(mean_image, coef_image, pdim = pdim)
-}
-```
-
-
-## All in one line
-The `nifti_eBayes` function will do the reading, fitting, and `eBayes`:
-
-```{r}
-check_eb = nifti_eBayes(files, mask, verbose = FALSE)
-all.equal(check_eb$empirical_bayes$coefficients, eb$coefficients)
-```
-
-```{r}
-diff_from_mean = mean_image - coef_image
-if (have_neurobase) {
-  neurobase::ortho2(diff_from_mean, pdim = pdim)
-}
-hist(diff_from_mean)
-```
-
-The output of `nifti_eBayes` does the remaking of images, and the `images` element is a list of these output images from `eBayes`:
-
-```{r}
-if (have_neurobase) {
-  neurobase::ortho2(check_eb$images$p.value, pdim = pdim)
-}
-```
-
-By default, `nifti_eBayes` also does a `topTable` from `limma` to adjust the p-values, using a Benjamini-Hochberg adjustment:
-
-```{r}
-if (have_neurobase) {
-  neurobase::ortho2(check_eb$images$adjusted_p_value, pdim = pdim)
-  neurobase::ortho2(check_eb$images$adjusted_p_value <= 0.05, pdim = pdim)
-}
-```
-
-Here we can compare the 2 maps, before and after adjustment:
-
-```{r}
-if (have_neurobase) {
-  neurobase::ortho2(check_eb$images$p.value <= 0.05, pdim = pdim)
-  neurobase::ortho2(check_eb$images$adjusted_p_value <= 0.05, pdim = pdim)
-}
-```

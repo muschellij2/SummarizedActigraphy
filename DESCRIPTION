@@ -20,7 +20,8 @@ Suggests:
     covr,
     knitr,
     httr,
-    rmarkdown
+    rmarkdown,
+    ggplot2
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
@@ -33,6 +34,11 @@ Imports:
     GENEAread,
     R.utils,
     tools,
-    tibble
+    tibble,
+    magrittr,
+    dplyr,
+    lubridate,
+    tsibble,
+    hms
 URL: https://github.com/muschellij2/SummarizedActigraphy
 BugReports: https://github.com/muschellij2/SummarizedActigraphy/issues
