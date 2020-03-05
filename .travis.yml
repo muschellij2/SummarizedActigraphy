@@ -16,7 +16,7 @@ deploy:
   provider: releases
   skip_cleanup: yes
   file_glob: yes
-  file: limmi*.t*gz
+  file: SummarizedActigraphy*.t*gz
   'on':
     tags: yes
-    repo: muschellij2/limmi
+    repo: muschellij2/SummarizedActigraphy

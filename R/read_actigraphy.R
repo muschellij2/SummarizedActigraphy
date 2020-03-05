@@ -2,6 +2,7 @@
 #'
 #' @param file file to read
 #' @param ... additional arguments to pass to function
+#' @param read_function A custom function to read the data in.
 #'
 #' @return An accelerometer object from the function used to
 #' read the file.
@@ -27,9 +28,48 @@
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
 #'
+#' file = system.file("binfile", "ax3_testfile.cwa", package = "GGIR")
+#' if (file.exists(file)) {
+#' res = read_actigraphy(file)
+#' }
+#'
+#' file = system.file("binfile", "genea_testfile.bin", package = "GGIR")
+#' if (file.exists(file)) {
+#' res = read_actigraphy(file)
+#' }
+#'
+#' file = system.file("binfile", "GENEActiv_testfile.bin", package = "GGIR")
+#' if (file.exists(file)) {
+#' res = read_actigraphy(file)
+#' }
+#'
+#'
 #' file = "blah.exe"
 #' testthat::expect_error(read_actigraphy(file))
-read_actigraphy = function(file, ...) {
+read_actigraphy = function(file, ..., read_function = NULL) {
+  file = test_unzip_file(file)
+  ext = tools::file_ext(file)
+  ext = tolower(ext)
+  if (ext %in% "bin") {
+    suppressWarnings({
+      res = try({
+        .read_actigraphy(file, ..., read_function = read_function)
+      }, silent = TRUE)
+    })
+    if (inherits(res, "try_error")) {
+      res = .read_actigraphy(file, ..., read_function = GGIR::g.binread)
+    }
+  } else {
+    res = .read_actigraphy(file, ..., read_function = read_function)
+  }
+  return(res)
+}
+
+test_unzip_file = function(file) {
+  if (is.factor(file)) {
+    file = as.character(file)
+  }
+  stopifnot(length(file) == 1 && is.character(file))
   ext = tools::file_ext(file)
   ext = tolower(ext)
   if (ext %in% c("gz", "xz", "bz2")) {
@@ -45,14 +85,25 @@ read_actigraphy = function(file, ...) {
       temporary = TRUE,
       overwrite = TRUE,
       remove = FALSE)
-    ext = tools::file_ext(file)
-    ext = tolower(ext)
   }
-  func = switch(
-    ext,
-    GGIR::g.readaccfile,
-    gt3x = read.gt3x::read.gt3x
-  )
+  return(file)
+}
+
+.read_actigraphy = function(file, ..., read_function = NULL) {
+  ext = tools::file_ext(file)
+  ext = tolower(ext)
+
+  if (is.null(read_function)) {
+    func = switch(
+      ext,
+      # bin = GGIR::g.binread,
+      cwa = GGIR::g.cwaread,
+      GGIR::g.readaccfile,
+      gt3x = read.gt3x::read.gt3x
+    )
+  } else {
+    func = read_function
+  }
   stopifnot(!is.null(func))
   if (ext %in% "gt3x") {
     default_args = list(asDataFrame = TRUE,
@@ -90,14 +141,27 @@ read_actigraphy = function(file, ...) {
       missingness = attr(res, "missingness"))
     class(res) = "AccData"
   } else {
-    hdr = GGIR::g.inspectfile(file)
-    filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
-    default_args = list(inspectfileobject = hdr,
-        blocksize = 2,
-        blocknumber = 1,
-        ws = 3,
-        desiredtz = "UTC",
-        filequality = filequality)
+    args = list(...)
+    if ("desiredtz" %in% names(args)) {
+      desiredtz = args$desiredtz
+    } else {
+      desiredtz = "UTC"
+    }
+    hdr = GGIR::g.inspectfile(file, desiredtz = desiredtz)
+
+    if (ext %in% "cwa") {
+      default_args = list(desiredtz = "UTC")
+    } else if (ext %in% "bin" && !is.null(read_function)) {
+      default_args = list()
+    } else {
+      filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
+      default_args = list(inspectfileobject = hdr,
+                          blocksize = 2,
+                          blocknumber = 1,
+                          ws = 3,
+                          desiredtz = "UTC",
+                          filequality = filequality)
+    }
     args = list(file,
                 ...)
     for (iarg in names(default_args)) {
@@ -122,5 +186,6 @@ read_actigraphy = function(file, ...) {
                                               var = "Field")
     }
   }
+  # attr(res, "function_to_read") = func
   return(res)
 }

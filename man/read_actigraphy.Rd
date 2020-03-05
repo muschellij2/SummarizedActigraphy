@@ -4,12 +4,14 @@
 \alias{read_actigraphy}
 \title{Read Actigraphy File}
 \usage{
-read_actigraphy(file, ...)
+read_actigraphy(file, ..., read_function = NULL)
 }
 \arguments{
 \item{file}{file to read}
 
 \item{...}{additional arguments to pass to function}
+
+\item{read_function}{A custom function to read the data in.}
 }
 \value{
 An accelerometer object from the function used to
@@ -34,6 +36,22 @@ file = system.file("extdata",
 "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
+
+file = system.file("binfile", "ax3_testfile.cwa", package = "GGIR")
+if (file.exists(file)) {
+res = read_actigraphy(file)
+}
+
+file = system.file("binfile", "genea_testfile.bin", package = "GGIR")
+if (file.exists(file)) {
+res = read_actigraphy(file)
+}
+
+file = system.file("binfile", "GENEActiv_testfile.bin", package = "GGIR")
+if (file.exists(file)) {
+res = read_actigraphy(file)
+}
+
 
 file = "blah.exe"
 testthat::expect_error(read_actigraphy(file))
