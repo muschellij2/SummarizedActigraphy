@@ -62,20 +62,21 @@ summarize_daily_actigraphy = function(
     x = x$data.out
   }
   if (verbose) {
-    message("Calculating ENMO")
-  }
-  if (verbose) {
     message("Rounding Time Column")
   }
   x$time = lubridate::floor_date(x$time, unit = units)
 
+
   if (verbose) {
-    message("Calculating Statistics")
+    message("Calculating ENMO")
   }
   x = x %>%
     mutate(enmo = sqrt(X^2 + Y^2 + Z^2) - 1)
   if (any(is.na(x$enmo))) {
     warning("There were NA values in ENMO")
+  }
+  if (verbose) {
+    message("Calculating Statistics")
   }
   x = x %>%
     group_by(time) %>%
