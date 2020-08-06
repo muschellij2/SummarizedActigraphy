@@ -172,6 +172,9 @@ test_unzip_file = function(file) {
     res = do.call(func, args = args)
     res = res$P
     res$data.out = tibble::as_tibble(res$data.out)
+    if (is.data.frame(res$missingness)) {
+      res$missingness = tibble::as_tibble(res$missingness)
+    }
     res$data.out$timestamp =
       lubridate::as_datetime(res$data.out$timestamp)
     n_values = sapply(res$header$Value, length)
