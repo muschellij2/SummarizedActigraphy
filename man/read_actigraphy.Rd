@@ -21,7 +21,8 @@ read the file.
 Read Actigraphy File
 }
 \examples{
-url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X\%2B.01.day.gt3x.zip"
+url = paste0("https://github.com/THLfi/read.gt3x/files/",
+"3522749/GT3X\%2B.01.day.gt3x.zip")
 destfile = tempfile(fileext = ".zip")
 dl = utils::download.file(url, destfile = destfile)
 gt3x_file = utils::unzip(destfile, exdir = tempdir())
