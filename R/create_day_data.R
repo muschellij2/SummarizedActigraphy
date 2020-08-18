@@ -91,7 +91,7 @@ summarise_daily_actigraphy = summarize_daily_actigraphy
 summarize_actigraphy = function(
   x,
   units = "1 min",
-  .fns = base::mean,
+  .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...) {
 
@@ -126,9 +126,10 @@ summarize_actigraphy = function(
     dplyr::summarise(
       dplyr::across(
         dplyr::one_of("AI", "SD", "MAD", "MEDAD",
-                      "mean_r", "MIMS_UNIT")),
-      .fns = .fns,
-      na.rm = TRUE)
+                      "mean_r", "MIMS_UNIT"),
+        .fns = .fns,
+        na.rm = TRUE)
+    )
 
   ts = tsibble::build_tsibble(average_day,
                               index = time)

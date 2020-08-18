@@ -149,7 +149,7 @@ where $\text{median}_{t}$ is the median over all values $i = 1, \dots, n_{t}$, a
 The `summarize_actigraphy` summarizes an `AccData` into second-level data for an "average" day or average profile.   For each second of the day, a summary statistic is taken, either the mean or the median.  The `summarize_actigraphy` gives both, and the output is an `tsibble`:
 
 ```{r}
-average_day = summarize_actigraphy(x)
+average_day = summarize_actigraphy(x, .fns = list(mean = mean, median = median),)
 head(average_day)
 ```
 
@@ -171,10 +171,12 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
   library(ggplot2)
   library(magrittr)
   average_day %>%
+    dplyr::rename_with(tolower) %>% 
     ggplot(aes(x = time, y = ai_mean)) +
     geom_line()
   
   average_day %>%
+    dplyr::rename_with(tolower) %>% 
     ggplot(aes(x = time, y = ai_median)) +
     geom_line()
 }
