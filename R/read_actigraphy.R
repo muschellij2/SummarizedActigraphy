@@ -12,7 +12,8 @@
 #' @importFrom R.utils decompressFile
 #'
 #' @examples
-#' url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip"
+#' url = paste0("https://github.com/THLfi/read.gt3x/files/",
+#' "3522749/GT3X%2B.01.day.gt3x.zip")
 #' destfile = tempfile(fileext = ".zip")
 #' dl = utils::download.file(url, destfile = destfile)
 #' gt3x_file = utils::unzip(destfile, exdir = tempdir())
@@ -172,9 +173,6 @@ test_unzip_file = function(file) {
     res = do.call(func, args = args)
     res = res$P
     res$data.out = tibble::as_tibble(res$data.out)
-    if (is.data.frame(res$missingness)) {
-      res$missingness = tibble::as_tibble(res$missingness)
-    }
     res$data.out$timestamp =
       lubridate::as_datetime(res$data.out$timestamp)
     n_values = sapply(res$header$Value, length)
@@ -188,6 +186,9 @@ test_unzip_file = function(file) {
       res$header = tibble::rownames_to_column(res$header,
                                               var = "Field")
     }
+  }
+  if (is.data.frame(res$missingness)) {
+    res$missingness = tibble::as_tibble(res$missingness)
   }
   # attr(res, "function_to_read") = func
   return(res)
