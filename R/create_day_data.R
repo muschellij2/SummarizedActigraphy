@@ -6,6 +6,11 @@
 #' \code{\link{read_actigraphy}}
 #' @param verbose print diagnostic messages
 #' @param units units to group the data to take the statistic over
+#' @param fix_zeros Should \code{\link{fix_zeros}} be run before calculating
+#' the measures?
+#' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
+#' filled in with the last
+#' observation carried forward?
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
@@ -49,7 +54,9 @@
 #' @export
 summarize_daily_actigraphy = function(
   x,
-  units = "1 seconds",
+  units = "1 min",
+  fix_zeros = TRUE,
+  fill_in = TRUE,
   verbose = TRUE,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
@@ -58,35 +65,14 @@ summarize_daily_actigraphy = function(
   if (is.character(x)) {
     x = read_actigraphy(x, ...)
   }
-  if ("data.out" %in% names(x)) {
-    x = x$data.out
-  }
-  if (verbose) {
-    message("Rounding Time Column")
-  }
-  x$time = lubridate::floor_date(x$time, unit = units)
 
-
-  if (verbose) {
-    message("Calculating ENMO")
-  }
-  x = x %>%
-    mutate(enmo = sqrt(X^2 + Y^2 + Z^2) - 1)
-  if (any(is.na(x$enmo))) {
-    warning("There were NA values in ENMO")
-  }
-  if (verbose) {
-    message("Calculating Statistics")
-  }
-  x = x %>%
-    group_by(time) %>%
-    summarize(
-      mad = (mad(X, na.rm = TRUE) + mad(Y, na.rm = TRUE) + mad(Z, na.rm = TRUE))/3,
-      ai = sqrt((var(X, na.rm = TRUE) + var(Y, na.rm = TRUE) + var(Z, na.rm = TRUE))/3),
-      n_values = sum(!is.na(enmo)),
-      sd_enmo = sd(enmo, na.rm = TRUE),
-      enmo = mean(enmo, na.rm = TRUE)
-    )
+  x = calculate_measures(
+    x,
+    epoch = units,
+    fix_zeros = fix_zeros,
+    fill_in = fill_in,
+    calculate_mims = FALSE,
+    verbose = verbose)
 
   ts = tsibble::build_tsibble(x,
                               index = time)
@@ -99,19 +85,26 @@ summarise_daily_actigraphy = summarize_daily_actigraphy
 
 
 #' @rdname summarize_actigraphy
+#' @param .fns Functions to apply to each of the selected columns.
+#' See \code{\link{across}}
 #' @export
 summarize_actigraphy = function(
   x,
-  units = "1 seconds",
+  units = "1 min",
+  .fns = base::mean,
   verbose = TRUE,
   ...) {
 
   first_day = NULL
-  time = ai = enmo = mad = NULL
+  mean_r = time = ai = enmo = mad = NULL
   rm(list = c("first_day", "ai", "time", "enmo", "mad"))
 
-
-  x = summarize_daily_actigraphy(x, units = units, verbose = verbose,...)
+  if (verbose) {
+    message("Running Daily Actigraphy")
+  }
+  x = summarize_daily_actigraphy(x, units = units,
+                                 verbose = verbose > 1,
+                                 ...)
   x = tibble::as_tibble(x) %>%
     dplyr::ungroup()
 
@@ -119,24 +112,23 @@ summarize_actigraphy = function(
     message("Getting the First Day")
   }
   x = x %>%
-    mutate(first_day = lubridate::floor_date(time, unit = "day"))
+    dplyr::mutate(first_day = lubridate::floor_date(time, unit = "day"))
 
   x = x %>%
-    mutate(time = hms::hms(as.numeric(time - first_day,
-                                           unit = "secs")))
-
-  # average_day = x %>%
-  #   group_by(time_only) %>%
-  #   summarize_at(.vars = vars(ai, mad, enmo),
-  #                mean, na.rm = TRUE)
+    dplyr::mutate(time = hms::hms(as.numeric(time - first_day,
+                                             unit = "secs")))
 
   if (verbose) {
     message("Summarizing Data")
   }
   average_day = x %>%
-    group_by(time) %>%
-    summarize_at(.vars = vars(ai, mad, enmo),
-                 list(mean = mean, median = median), na.rm = TRUE)
+    dplyr::group_by(time) %>%
+    dplyr::summarise(
+      dplyr::across(
+        dplyr::one_of("AI", "SD", "MAD", "MEDAD",
+                      "mean_r", "MIMS_UNIT")),
+      .fns = .fns,
+      na.rm = TRUE)
 
   ts = tsibble::build_tsibble(average_day,
                               index = time)

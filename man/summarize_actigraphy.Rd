@@ -7,13 +7,39 @@
 \alias{summarise_actigraphy}
 \title{Summarize Actigraphy Data}
 \usage{
-summarize_daily_actigraphy(x, units = "1 seconds", verbose = TRUE, ...)
+summarize_daily_actigraphy(
+  x,
+  units = "1 min",
+  fix_zeros = TRUE,
+  fill_in = TRUE,
+  verbose = TRUE,
+  ...
+)
 
-summarise_daily_actigraphy(x, units = "1 seconds", verbose = TRUE, ...)
+summarise_daily_actigraphy(
+  x,
+  units = "1 min",
+  fix_zeros = TRUE,
+  fill_in = TRUE,
+  verbose = TRUE,
+  ...
+)
 
-summarize_actigraphy(x, units = "1 seconds", verbose = TRUE, ...)
+summarize_actigraphy(
+  x,
+  units = "1 min",
+  .fns = base::mean,
+  verbose = TRUE,
+  ...
+)
 
-summarise_actigraphy(x, units = "1 seconds", verbose = TRUE, ...)
+summarise_actigraphy(
+  x,
+  units = "1 min",
+  .fns = base::mean,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{an AccData object.  If `x` is a character, then
@@ -21,10 +47,20 @@ summarise_actigraphy(x, units = "1 seconds", verbose = TRUE, ...)
 
 \item{units}{units to group the data to take the statistic over}
 
+\item{fix_zeros}{Should \code{\link{fix_zeros}} be run before calculating
+the measures?}
+
+\item{fill_in}{if \code{fix_zeros = TRUE}, should the zeros be
+filled in with the last
+observation carried forward?}
+
 \item{verbose}{print diagnostic messages}
 
 \item{...}{Additional arguments to pass to
 \code{\link{read_actigraphy}}}
+
+\item{.fns}{Functions to apply to each of the selected columns.
+See \code{\link{across}}}
 }
 \value{
 A \code{tsibble} object, with 86400 rows,

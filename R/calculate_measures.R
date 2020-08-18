@@ -1,0 +1,189 @@
+#' Calculate Summary Measures from Raw Accelerometer Data
+#'
+#' @param df An object with columns `X`, `Y`, and `Z` or an
+#' object of class `AccData`
+#' @param epoch length of time to calculate measures over.  a character string
+#' specifying a time unit or a multiple of a unit to be rounded to.
+#' Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
+#' `bimonth`, `quarter`, `season`, `halfyear`, and `year`.
+#' Arbitrary unique English abbreviations as in the \code{\link{period}}
+#' constructor are allowed.
+#' @param dynamic_range Dynamic range of the device, in gravity units
+#' @param verbose print diagnostic messages
+#' @param fix_zeros Should \code{\link{fix_zeros}} be run before calculating
+#' the measures?
+#' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
+#' filled in with the last
+#' observation carried forward?
+#' @param calculate_mims Should MIMS units be calculated?
+#' @param ... additional arguments to pass to \code{\link{mims_unit}}
+#'
+#' @return A data set with the calculated features
+#' @export
+calculate_measures = function(
+  df, epoch = "1 min",
+  fix_zeros = TRUE,
+  fill_in = TRUE,
+  dynamic_range = c(-6, 6),
+  calculate_mims = TRUE,
+  verbose = TRUE,
+  ...) {
+
+  HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  if (is.AccData(df)) {
+    df = df$data.out %>%
+      dplyr::rename(HEADER_TIME_STAMP = time) %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
+  if (fix_zeros) {
+    if (verbose) {
+      message(
+        paste0("Fixing Zeros with fix_zeros")
+      )
+    }
+    df = fix_zeros(df, fill_in = fill_in)
+  }
+  if (verbose) {
+    message("Calculating ai0")
+  }
+  ai0 = calculate_ai(df, epoch = epoch)
+  if (verbose) {
+    message("Calculating MAD")
+  }
+  mad = calculate_mad(df, epoch = epoch)
+  if (verbose) {
+    message("Calculating MIMS")
+  }
+  if (calculate_mims) {
+    mims = calculate_mims(df, epoch = epoch,
+                          dynamic_range = dynamic_range,
+                          ...)
+  }
+
+  if (verbose) {
+    message("Joining")
+  }
+  res = dplyr::full_join(ai0, mad)
+  if (calculate_mims) {
+    res = dplyr::full_join(res, mims)
+  }
+  res = res %>%
+    dplyr::rename(time = HEADER_TIME_STAMP)
+  res
+}
+
+#' @export
+#' @rdname calculate_measures
+calculate_ai = function(df, epoch = "1 min") {
+  HEADER_TIME_STAMP = X = Y = Z = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z"))
+
+  if (is.AccData(df)) {
+    df = df$data.out %>%
+      dplyr::rename(HEADER_TIME_STAMP = time) %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
+
+  AI = NULL
+  rm(list= c("AI"))
+  sec_df = df %>%
+    dplyr::mutate(
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                "1 sec")) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      AI = sqrt((
+        var(X, na.rm = TRUE) +
+          var(Y, na.rm = TRUE) +
+          var(Z, na.rm = TRUE)) / 3),
+    )
+  sec_df %>%
+    dplyr::mutate(
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                epoch)) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      AI = sum(AI)
+    )
+}
+
+#' @export
+#' @rdname calculate_measures
+calculate_n_idle = function(df, epoch = "1 min") {
+  HEADER_TIME_STAMP = X = Y = Z = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z"))
+
+  if (is.AccData(df)) {
+    df = df$data.out %>%
+      dplyr::rename(HEADER_TIME_STAMP = time) %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
+  df = fix_zeros(df, fill_in = FALSE)
+
+
+  n_idle = r = all_zero = NULL
+  rm(list= c("n_idle", "r", "all_zero"))
+  df %>%
+    dplyr::mutate(
+      r = sqrt(X^2+Y^2+Z^2),
+      all_zero = X == 0 & Y == 0 & Z == 0,
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                epoch)) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      n_idle = sum(is.na(r) | all_zero)
+    )
+}
+
+#' @export
+#' @rdname calculate_measures
+calculate_mad = function(df, epoch = "1 min") {
+  HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  if (is.AccData(df)) {
+    df = df$data.out %>%
+      dplyr::rename(HEADER_TIME_STAMP = time) %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
+
+  df %>%
+    dplyr::mutate(
+      r = sqrt(X^2+Y^2+Z^2),
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                epoch)) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      SD = sd(r, na.rm = TRUE),
+      MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+      MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+      mean_r = mean(r, na.rm = TRUE)
+    )
+}
+
+#' @export
+#' @rdname calculate_measures
+calculate_mims = function(
+  df,
+  epoch = "1 min",
+  dynamic_range = c(-6, 6),
+  ...) {
+  HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  if (is.AccData(df)) {
+    df = df$data.out %>%
+      dplyr::rename(HEADER_TIME_STAMP = time) %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
+  if (!requireNamespace("MIMSunit", quietly = TRUE)) {
+    stop("MIMSunit package required for calculating MIMS")
+  }
+  MIMSunit::mims_unit(
+    df,
+    epoch = epoch,
+    dynamic_range = dynamic_range,
+    ...)
+}
+
+
+

@@ -1,7 +1,7 @@
 Type: Package
 Package: SummarizedActigraphy
 Title: Coerce Actigraphy to Summarized Experiments
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: c(
     person(given = "John",
            family = "Muschelli",
@@ -21,7 +21,8 @@ Suggests:
     knitr,
     httr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    MIMSunit
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
@@ -39,8 +40,9 @@ Imports:
     dplyr,
     lubridate,
     tsibble,
-    hms
+    hms,
+    zoo
 Remotes:
-	THLfi/read.gt3x
+    THLfi/read.gt3x
 URL: https://github.com/muschellij2/SummarizedActigraphy
 BugReports: https://github.com/muschellij2/SummarizedActigraphy/issues
