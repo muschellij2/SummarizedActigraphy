@@ -2,9 +2,9 @@
 output: github_document
 ---
 
-[![Travis build status](https://travis-ci.com/muschellij2/limmi.svg?branch=master)](https://travis-ci.com/muschellij2/limmi)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/muschellij2/limmi?branch=master&svg=true)](https://ci.appveyor.com/project/muschellij2/limmi)
-[![Coverage status](https://codecov.io/gh/muschellij2/limmi/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/limmi)
+[![Travis build status](https://travis-ci.com/muschellij2/SummarizedActigraphy.svg?branch=master)](https://travis-ci.com/muschellij2/SummarizedActigraphy)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/muschellij2/SummarizedActigraphy?branch=master&svg=true)](https://ci.appveyor.com/project/muschellij2/SummarizedActigraphy)
+[![Coverage status](https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/SummarizedActigraphy)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r setup, include = FALSE}
@@ -15,16 +15,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-# limmi Package: 
-The goal of `limmi` is to provide functions for running LIMMA against
-medical images.
+# SummarizedActigraphy Package: 
+The goal of `SummarizedActigraphy` is to provide functions for reading Actigraphy data and turn it into `SummarizedExperiment`s.
 
 ## Installation
 
-You can install `limmi` from GitHub with:
+You can install `SummarizedActigraphy` from GitHub with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("remotes")
-remotes::install_github("muschellij2/limmi")
+remotes::install_github("muschellij2/SummarizedActigraphy")
 ```
 

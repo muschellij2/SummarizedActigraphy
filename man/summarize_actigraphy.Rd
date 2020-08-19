@@ -28,7 +28,7 @@ summarise_daily_actigraphy(
 summarize_actigraphy(
   x,
   units = "1 min",
-  .fns = base::mean,
+  .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...
 )
@@ -36,7 +36,7 @@ summarize_actigraphy(
 summarise_actigraphy(
   x,
   units = "1 min",
-  .fns = base::mean,
+  .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...
 )
