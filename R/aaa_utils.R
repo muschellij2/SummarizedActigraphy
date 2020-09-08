@@ -17,7 +17,7 @@ ticks2datetime = function (ticks, tz = "GMT")
 
 # read it in
 read_acc_csv = function(file, ...) {
-  hdr = readr::read_lines(file, n_max = 10)
+  hdr = readLines(file, n = 10)
   df = readr::read_csv(
     file, skip = 10,
     col_types = readr::cols(

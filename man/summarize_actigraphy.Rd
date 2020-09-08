@@ -12,6 +12,7 @@ summarize_daily_actigraphy(
   units = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  trim = FALSE,
   verbose = TRUE,
   ...
 )
@@ -21,6 +22,7 @@ summarise_daily_actigraphy(
   units = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  trim = FALSE,
   verbose = TRUE,
   ...
 )

@@ -11,13 +11,11 @@ df = data.frame(file = files,
 
 testthat::test_that("eBayes works", {
   se = actigraphy_df_to_SummarizedExperiment(df, "file")
-  eb = limmi::nifti_eBayes(files)
-  vals = head(na.omit(eb$lm_fit$coefficients[,1]), 10)
-
+  eb = limma::lmFit(SummarizedExperiment::assay(se))
+  vals = head(na.omit(eb$coefficients[,1]), 10)
+  check_vals = head(SummarizedExperiment::assay(se), 10)[,1]
   testthat::expect_equal(
     vals,
-    c(0.121366907221576, 0.127145683858544, 0.158761932048947, 0.1563262026757,
-      0.0135644840387007, 0.0429873446313044, 0.0688248955023786, 0.0809315139971053,
-      0.0801648885632555, 0.121430590748787)
+    check_vals
   )
 })

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • SummarizedActigraphy</title>
+<title>Calculate Summary Measures from Raw Accelerometer Data — calculate_measures • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Calculate Summary Measures from Raw Accelerometer Data — calculate_measures" />
+<meta property="og:description" content="Calculate Summary Measures from Raw Accelerometer Data" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,18 +114,96 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Calculate Summary Measures from Raw Accelerometer Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/calculate_measures.R'><code>R/calculate_measures.R</code></a></small>
+    <div class="hidden name"><code>calculate_measures.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="SummarizedActigraphy.html">Summarizing Actigraphy Data</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Calculate Summary Measures from Raw Accelerometer Data</p>
     </div>
+
+    <pre class="usage"><span class='fu'>calculate_measures</span>(
+  <span class='no'>df</span>,
+  <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='st'>"1 min"</span>,
+  <span class='kw'>fix_zeros</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>fill_in</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>dynamic_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>6</span>, <span class='fl'>6</span>),
+  <span class='kw'>calculate_mims</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)
+
+<span class='fu'>calculate_ai</span>(<span class='no'>df</span>, <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='st'>"1 min"</span>)
+
+<span class='fu'>calculate_n_idle</span>(<span class='no'>df</span>, <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='st'>"1 min"</span>)
+
+<span class='fu'>calculate_mad</span>(<span class='no'>df</span>, <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='st'>"1 min"</span>)
+
+<span class='fu'>calculate_mims</span>(<span class='no'>df</span>, <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='st'>"1 min"</span>, <span class='kw'>dynamic_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>6</span>, <span class='fl'>6</span>), <span class='no'>...</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>An object with columns `X`, `Y`, and `Z` or an
+object of class `AccData`</p></td>
+    </tr>
+    <tr>
+      <th>epoch</th>
+      <td><p>length of time to calculate measures over.  a character string
+specifying a time unit or a multiple of a unit to be rounded to.
+Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
+`bimonth`, `quarter`, `season`, `halfyear`, and `year`.
+Arbitrary unique English abbreviations as in the <code>period</code>
+constructor are allowed.</p></td>
+    </tr>
+    <tr>
+      <th>fix_zeros</th>
+      <td><p>Should <code><a href='fix_zeros.html'>fix_zeros</a></code> be run before calculating
+the measures?</p></td>
+    </tr>
+    <tr>
+      <th>fill_in</th>
+      <td><p>if <code>fix_zeros = TRUE</code>, should the zeros be
+filled in with the last</p></td>
+    </tr>
+    <tr>
+      <th>trim</th>
+      <td><p>if <code>fix_zeros = TRUE</code>,
+should the time course be trimmed for zero values at
+the beginning and the end of the time course?
+observation carried forward?</p></td>
+    </tr>
+    <tr>
+      <th>dynamic_range</th>
+      <td><p>Dynamic range of the device, in gravity units</p></td>
+    </tr>
+    <tr>
+      <th>calculate_mims</th>
+      <td><p>Should MIMS units be calculated?</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>print diagnostic messages</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments to pass to <code>mims_unit</code></p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data set with the calculated features</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

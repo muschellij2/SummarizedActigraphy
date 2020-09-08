@@ -4,6 +4,8 @@
 #' object of class `AccData`
 #' @param fill_in Should the zeros be filled in with the last
 #' observation carried forward?
+#' @param trim Should the time course be trimmed for zero values at
+#' the beginning and the end of the time course?
 #'
 #' @return A data set with the zeros filled in
 #' @export
@@ -16,13 +18,31 @@
 #'   stringsAsFactors = FALSE)
 #' fix_zeros(df)
 #' fix_zeros(df, fill_in = FALSE)
-fix_zeros = function(df, fill_in = TRUE) {
+fix_zeros = function(df, fill_in = TRUE,
+                     trim = FALSE) {
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
     df = df$data.out
   }
+  if ("time" %in% names(df)) {
+    if (!is.unsorted(df$time)) {
+      ord = order(df$time)
+      if (!all(ord == 1:nrow(df))) {
+        warning("Time is unsorted, will resort the data set")
+        gt3x = gt3x[ ord, ]
+      }
+    }
+  }
   zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
+  if (trim) {
+    not_zero = rle(!zero)
+    not_zero$values[2:(length(not_zero$values)-1)] = TRUE
+    not_zero = inverse.rle(not_zero)
+    zero = zero[not_zero]
+    df = df[ not_zero, ]
+  }
+
   names(zero) = NULL
   df$X[zero] = NA
   df$Y[zero] = NA

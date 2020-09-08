@@ -4,7 +4,8 @@
 #' @param path_column column in `x` that is the paths to the file
 #' names of the data.  Can also be a list column of `x` where this column
 #' are the images
-#' @param measure measure to grab to create an assay
+#' @param measure measure to grab to create an assay.  If \code{NULL},
+#' then every measure that is not the column \code{time}
 #' @param assay_name Name of the `assay` in the
 #' \code{\link{SummarizedExperiment}}
 #' @param verbose print diagnostic messages
@@ -26,9 +27,7 @@
 actigraphy_df_to_SummarizedExperiment = function(
   x,
   path_column = "file",
-  measure = c("ai_mean", "mad_mean", "enmo_mean",
-               "ai_median", "mad_median",
-               "enmo_median"),
+  measure = NULL,
   assay_name = measure,
   rowData = NULL,
   ...,
@@ -39,9 +38,14 @@ actigraphy_df_to_SummarizedExperiment = function(
     files = as.character(files)
   }
   mat = lapply(files, summarize_actigraphy, ..., verbose = verbose)
-  mat = lapply(mat, function(x) {
-    x[, measure, drop = FALSE]
-  })
+  if (!is.null(measure)) {
+    mat = lapply(mat, function(x) {
+      x[, measure, drop = FALSE]
+    })
+  } else {
+    cn = unique(c(sapply(mat, colnames)))
+    measure = setdiff(cn, "time")
+  }
   mat = lapply(measure, function(x) {
     mat = sapply(mat, function(r) {
       r[[x]]

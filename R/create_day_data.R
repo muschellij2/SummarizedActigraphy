@@ -57,6 +57,7 @@ summarize_daily_actigraphy = function(
   units = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  trim = FALSE,
   verbose = TRUE,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
@@ -71,6 +72,7 @@ summarize_daily_actigraphy = function(
     epoch = units,
     fix_zeros = fix_zeros,
     fill_in = fill_in,
+    trim = trim,
     calculate_mims = FALSE,
     verbose = verbose)
 

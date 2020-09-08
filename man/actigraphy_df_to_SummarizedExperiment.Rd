@@ -7,8 +7,7 @@
 actigraphy_df_to_SummarizedExperiment(
   x,
   path_column = "file",
-  measure = c("ai_mean", "mad_mean", "enmo_mean", "ai_median", "mad_median",
-    "enmo_median"),
+  measure = NULL,
   assay_name = measure,
   rowData = NULL,
   ...,
@@ -22,7 +21,8 @@ actigraphy_df_to_SummarizedExperiment(
 names of the data.  Can also be a list column of `x` where this column
 are the images}
 
-\item{measure}{measure to grab to create an assay}
+\item{measure}{measure to grab to create an assay.  If \code{NULL},
+then every measure that is not the column \code{time}}
 
 \item{assay_name}{Name of the `assay` in the
 \code{\link{SummarizedExperiment}}}

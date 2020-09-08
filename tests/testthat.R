@@ -1,4 +1,4 @@
 library(testthat)
-library(limmi)
+library(SummarizedActigraphy)
 
-test_check("limmi")
+test_check("SummarizedActigraphy")

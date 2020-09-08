@@ -13,6 +13,7 @@ calculate_measures(
   epoch = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  trim = FALSE,
   dynamic_range = c(-6, 6),
   calculate_mims = TRUE,
   verbose = TRUE,
@@ -42,7 +43,11 @@ constructor are allowed.}
 the measures?}
 
 \item{fill_in}{if \code{fix_zeros = TRUE}, should the zeros be
-filled in with the last
+filled in with the last}
+
+\item{trim}{if \code{fix_zeros = TRUE},
+should the time course be trimmed for zero values at
+the beginning and the end of the time course?
 observation carried forward?}
 
 \item{dynamic_range}{Dynamic range of the device, in gravity units}

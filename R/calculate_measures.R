@@ -14,6 +14,9 @@
 #' the measures?
 #' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
 #' filled in with the last
+#' @param trim if \code{fix_zeros = TRUE},
+#' should the time course be trimmed for zero values at
+#' the beginning and the end of the time course?
 #' observation carried forward?
 #' @param calculate_mims Should MIMS units be calculated?
 #' @param ... additional arguments to pass to \code{\link{mims_unit}}
@@ -24,6 +27,7 @@ calculate_measures = function(
   df, epoch = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  trim = FALSE,
   dynamic_range = c(-6, 6),
   calculate_mims = TRUE,
   verbose = TRUE,
@@ -42,7 +46,7 @@ calculate_measures = function(
         paste0("Fixing Zeros with fix_zeros")
       )
     }
-    df = fix_zeros(df, fill_in = fill_in)
+    df = fix_zeros(df, fill_in = fill_in, trim = trim)
   }
   if (verbose) {
     message("Calculating ai0")
@@ -119,7 +123,7 @@ calculate_n_idle = function(df, epoch = "1 min") {
       dplyr::rename(HEADER_TIME_STAMP = time) %>%
       dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
   }
-  df = fix_zeros(df, fill_in = FALSE)
+  df = fix_zeros(df, fill_in = FALSE, trim = FALSE)
 
 
   n_idle = r = all_zero = NULL

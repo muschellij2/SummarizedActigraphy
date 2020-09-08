@@ -5,7 +5,7 @@
 \alias{idle_na_locf}
 \title{Fix Zeros from Idle Sleep Mode}
 \usage{
-fix_zeros(df, fill_in = TRUE)
+fix_zeros(df, fill_in = TRUE, trim = FALSE)
 
 idle_na_locf(df)
 }
@@ -15,6 +15,9 @@ object of class `AccData`}
 
 \item{fill_in}{Should the zeros be filled in with the last
 observation carried forward?}
+
+\item{trim}{Should the time course be trimmed for zero values at
+the beginning and the end of the time course?}
 }
 \value{
 A data set with the zeros filled in
