@@ -52,20 +52,23 @@ calculate_measures = function(
     message("Calculating MAD")
   }
   mad = calculate_mad(df, epoch = epoch)
-  if (verbose) {
-    message("Calculating MIMS")
-  }
   if (calculate_mims) {
+    if (verbose) {
+      message("Calculating MIMS")
+    }
     mims = calculate_mims(df, epoch = epoch,
                           dynamic_range = dynamic_range,
                           ...)
   }
 
   if (verbose) {
-    message("Joining")
+    message("Joining AI and MAD")
   }
   res = dplyr::full_join(ai0, mad)
   if (calculate_mims) {
+    if (verbose) {
+      message("Joining MIMS")
+    }
     res = dplyr::full_join(res, mims)
   }
   res = res %>%
