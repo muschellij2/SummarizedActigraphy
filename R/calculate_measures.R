@@ -34,12 +34,8 @@ calculate_measures = function(
   ...) {
 
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  if (is.AccData(df)) {
-    df = df$data.out %>%
-      dplyr::rename(HEADER_TIME_STAMP = time) %>%
-      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  }
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  df = ensure_header_timestamp(df)
   if (fix_zeros) {
     if (verbose) {
       message(
@@ -80,14 +76,9 @@ calculate_measures = function(
 #' @export
 #' @rdname calculate_measures
 calculate_ai = function(df, epoch = "1 min") {
-  time = HEADER_TIME_STAMP = X = Y = Z = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
-
-  if (is.AccData(df)) {
-    df = df$data.out %>%
-      dplyr::rename(HEADER_TIME_STAMP = time) %>%
-      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  }
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  df = ensure_header_timestamp(df)
 
   AI = NULL
   rm(list= c("AI"))
@@ -115,14 +106,10 @@ calculate_ai = function(df, epoch = "1 min") {
 #' @export
 #' @rdname calculate_measures
 calculate_n_idle = function(df, epoch = "1 min") {
-  time = HEADER_TIME_STAMP = X = Y = Z = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  df = ensure_header_timestamp(df)
 
-  if (is.AccData(df)) {
-    df = df$data.out %>%
-      dplyr::rename(HEADER_TIME_STAMP = time) %>%
-      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  }
   df = fix_zeros(df, fill_in = FALSE, trim = FALSE)
 
 
@@ -145,11 +132,7 @@ calculate_n_idle = function(df, epoch = "1 min") {
 calculate_mad = function(df, epoch = "1 min") {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  if (is.AccData(df)) {
-    df = df$data.out %>%
-      dplyr::rename(HEADER_TIME_STAMP = time) %>%
-      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  }
+  df = ensure_header_timestamp(df)
 
   df %>%
     dplyr::mutate(
@@ -172,13 +155,7 @@ calculate_mims = function(
   epoch = "1 min",
   dynamic_range = c(-6, 6),
   ...) {
-  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  if (is.AccData(df)) {
-    df = df$data.out %>%
-      dplyr::rename(HEADER_TIME_STAMP = time) %>%
-      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  }
+  df = ensure_header_timestamp(df)
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for calculating MIMS")
   }
@@ -189,5 +166,19 @@ calculate_mims = function(
     ...)
 }
 
-
+ensure_header_timestamp = function(df) {
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  if (is.AccData(df)) {
+    df = df$data.out
+  }
+  cn = colnames(df)
+  if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
+    df = df %>%
+      dplyr::rename(HEADER_TIME_STAMP = time)
+  }
+  df = df %>%
+    dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  df
+}
 
