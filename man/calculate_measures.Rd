@@ -56,7 +56,7 @@ observation carried forward?}
 
 \item{verbose}{print diagnostic messages}
 
-\item{...}{additional arguments to pass to \code{\link{mims_unit}}}
+\item{...}{additional arguments to pass to [MIMSunit::mims_unit]}
 }
 \value{
 A data set with the calculated features

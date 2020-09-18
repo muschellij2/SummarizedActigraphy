@@ -11,6 +11,7 @@ df = data.frame(file = files,
 
 testthat::test_that("eBayes works", {
   se = actigraphy_df_to_SummarizedExperiment(df, "file")
+  testthat::skip_if_not_installed("limma")
   eb = limma::lmFit(SummarizedExperiment::assay(se))
   vals = head(na.omit(eb$coefficients[,1]), 10)
   check_vals = head(SummarizedExperiment::assay(se), 10)[,1]

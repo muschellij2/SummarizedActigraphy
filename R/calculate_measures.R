@@ -19,7 +19,7 @@
 #' the beginning and the end of the time course?
 #' observation carried forward?
 #' @param calculate_mims Should MIMS units be calculated?
-#' @param ... additional arguments to pass to \code{\link{mims_unit}}
+#' @param ... additional arguments to pass to [MIMSunit::mims_unit]
 #'
 #' @return A data set with the calculated features
 #' @export
