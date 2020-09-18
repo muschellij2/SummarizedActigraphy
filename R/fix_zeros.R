@@ -69,9 +69,9 @@ idle_na_locf = function(df) {
   df$Y = zoo::na.locf(df$Y, na.rm = FALSE)
   df$Z = zoo::na.locf(df$Z, na.rm = FALSE)
 
-  df$X[ is.na(df$X)] = 0
-  df$Y[ is.na(df$Y)] = 0
-  df$Z[ is.na(df$Z)] = 0
+  df$X[is.na(df$X)] = 0
+  df$Y[is.na(df$Y)] = 0
+  df$Z[is.na(df$Z)] = 0
   if (acc_data) {
     xdf$data.out = df
     df = xdf
