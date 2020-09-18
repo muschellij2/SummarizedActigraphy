@@ -44,8 +44,8 @@ read_acc_csv = function(file, ...) {
   })
   readr::stop_for_problems(df)
 
-  HEADER_TIME_STAMP = Date = Time = NULL
-  rm(list= c("HEADER_TIME_STAMP", "Date", "Time"))
+  time = HEADER_TIME_STAMP = Date = Time = NULL
+  rm(list= c("HEADER_TIME_STAMP", "Date", "Time", "time"))
   if (all(c("Date", "Time") %in% colnames(df))) {
     df = df %>%
       dplyr::mutate(
@@ -60,6 +60,8 @@ read_acc_csv = function(file, ...) {
   colnames(df) = trimws(sub("Accelerometer", "", colnames(df)))
 
   df = df[, c("HEADER_TIME_STAMP", "X", "Y", "Z")]
+  df = df %>%
+    dplyr::rename(time = HEADER_TIME_STAMP)
   parsed_header = try({
     parse_acc_header(hdr)
   }, silent = FALSE)
