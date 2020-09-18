@@ -11,6 +11,10 @@
 #' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
 #' filled in with the last
 #' observation carried forward?
+#' @param trim if \code{fix_zeros = TRUE},
+#' should the time course be trimmed for zero values at
+#' the beginning and the end of the time course?
+#' observation carried forward?
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.

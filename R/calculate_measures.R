@@ -33,8 +33,8 @@ calculate_measures = function(
   verbose = TRUE,
   ...) {
 
-  HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   if (is.AccData(df)) {
     df = df$data.out %>%
       dplyr::rename(HEADER_TIME_STAMP = time) %>%
@@ -80,8 +80,8 @@ calculate_measures = function(
 #' @export
 #' @rdname calculate_measures
 calculate_ai = function(df, epoch = "1 min") {
-  HEADER_TIME_STAMP = X = Y = Z = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z"))
+  time = HEADER_TIME_STAMP = X = Y = Z = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
 
   if (is.AccData(df)) {
     df = df$data.out %>%
@@ -115,8 +115,8 @@ calculate_ai = function(df, epoch = "1 min") {
 #' @export
 #' @rdname calculate_measures
 calculate_n_idle = function(df, epoch = "1 min") {
-  HEADER_TIME_STAMP = X = Y = Z = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z"))
+  time = HEADER_TIME_STAMP = X = Y = Z = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
 
   if (is.AccData(df)) {
     df = df$data.out %>%
@@ -143,8 +143,8 @@ calculate_n_idle = function(df, epoch = "1 min") {
 #' @export
 #' @rdname calculate_measures
 calculate_mad = function(df, epoch = "1 min") {
-  HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   if (is.AccData(df)) {
     df = df$data.out %>%
       dplyr::rename(HEADER_TIME_STAMP = time) %>%
@@ -172,8 +172,8 @@ calculate_mims = function(
   epoch = "1 min",
   dynamic_range = c(-6, 6),
   ...) {
-  HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r"))
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   if (is.AccData(df)) {
     df = df$data.out %>%
       dplyr::rename(HEADER_TIME_STAMP = time) %>%

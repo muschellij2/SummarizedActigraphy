@@ -56,6 +56,11 @@ the measures?}
 filled in with the last
 observation carried forward?}
 
+\item{trim}{if \code{fix_zeros = TRUE},
+should the time course be trimmed for zero values at
+the beginning and the end of the time course?
+observation carried forward?}
+
 \item{verbose}{print diagnostic messages}
 
 \item{...}{Additional arguments to pass to

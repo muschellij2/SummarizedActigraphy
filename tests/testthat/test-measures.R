@@ -17,6 +17,6 @@ testthat::test_that("Calculating Summaries Works", {
   testthat::expect_equal(
     cm,
     c(AI = 1.55390057389385, SD = 0.0501211543332476, MAD = 0.0294511550834217
-    )
+    ), tolerance = 1e-6
   )
 })

@@ -40,7 +40,8 @@ Imports:
     lubridate,
     tsibble,
     hms,
-    zoo
+    zoo,
+    readr
 Remotes:
     THLfi/read.gt3x
 URL: https://github.com/muschellij2/SummarizedActigraphy
