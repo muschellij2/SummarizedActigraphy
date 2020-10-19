@@ -17,3 +17,10 @@ A list of the header and the data set
 \description{
 Read ActiGraph Accelerometer CSV
 }
+\examples{
+file = system.file("extdata", "TAS1H30182785_2019-09-17.csv.gz",
+package = "SummarizedActigraphy")
+if (file.exists(file)) {
+    out = read_acc_csv(file)
+}
+}

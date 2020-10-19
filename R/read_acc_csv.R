@@ -13,6 +13,12 @@ sub_thing = function(hdr, string) {
 #'
 #' @return A list of the header and the data set
 #' @export
+#' @examples
+#' file = system.file("extdata", "TAS1H30182785_2019-09-17.csv.gz",
+#' package = "SummarizedActigraphy")
+#' if (file.exists(file)) {
+#'     out = read_acc_csv(file)
+#' }
 read_acc_csv = function(file, ...) {
   hdr = readLines(file, n = 10)
   st = sub_thing(hdr, "Start Time")
@@ -70,7 +76,7 @@ read_acc_csv = function(file, ...) {
     parsed_header = NULL
   }
 
-
+  df = tibble::as_tibble(df)
   L = list(
     header = hdr,
     parsed_header = parsed_header,
