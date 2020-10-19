@@ -173,7 +173,7 @@ ensure_header_timestamp = function(df) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   if (is.AccData(df)) {
-    df = df$data.out
+    df = df$data
   }
   cn = colnames(df)
   if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {

@@ -23,7 +23,7 @@ fix_zeros = function(df, fill_in = TRUE,
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
-    df = df$data.out
+    df = df$data
   }
   if ("time" %in% names(df)) {
     if (!is.unsorted(df$time)) {
@@ -51,7 +51,7 @@ fix_zeros = function(df, fill_in = TRUE,
     df =  idle_na_locf(df)
   }
   if (acc_data) {
-    xdf$data.out = df
+    xdf$data = df
     df = xdf
   }
   df
@@ -63,7 +63,7 @@ idle_na_locf = function(df) {
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
-    df = df$data.out
+    df = df$data
   }
   df$X = zoo::na.locf(df$X, na.rm = FALSE)
   df$Y = zoo::na.locf(df$Y, na.rm = FALSE)
@@ -73,7 +73,7 @@ idle_na_locf = function(df) {
   df$Y[is.na(df$Y)] = 0
   df$Z[is.na(df$Z)] = 0
   if (acc_data) {
-    xdf$data.out = df
+    xdf$data = df
     df = xdf
   }
   df

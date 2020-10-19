@@ -131,8 +131,8 @@ summarize_actigraphy = function(
     dplyr::group_by(time) %>%
     dplyr::summarise(
       dplyr::across(
-        dplyr::one_of("AI", "SD", "MAD", "MEDAD",
-                      "mean_r", "MIMS_UNIT"),
+        dplyr::any_of(c("AI", "SD", "MAD", "MEDAD",
+                      "mean_r", "MIMS_UNIT")),
         .fns = .fns,
         na.rm = TRUE)
     )

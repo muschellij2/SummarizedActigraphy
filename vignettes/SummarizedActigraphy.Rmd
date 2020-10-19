@@ -47,7 +47,7 @@ names(x)
 
 The `read_actigraphy` function uses the `read.gt3x::read.gt3x` for gt3x files, and uses functions from the `GGIR` package [@GGIR].  
 
-The output has a data matrix in the `data.out`, which has `X`, `Y`, and `Z` columns, with an additional `time` column, which is a date/time column.  Additionally, the `header` object has additional metadata about the object:
+The output has a data matrix in the `data`, which has `X`, `Y`, and `Z` columns, with an additional `time` column, which is a date/time column.  Additionally, the `header` object has additional metadata about the object:
 
 
 ```{r}
@@ -74,7 +74,7 @@ The process is as follows, we use `floor_date` from `lubridate`, so that each ti
 
 ```{r}
 library(dplyr)
-data = x$data.out
+data = x$data
 data = data %>% 
   mutate(time = lubridate::floor_date(time, unit = "1 seconds"),
          enmo = sqrt(X^2 + Y^2 + Z^2) - 1)

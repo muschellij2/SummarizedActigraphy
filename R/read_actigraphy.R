@@ -20,28 +20,35 @@
 #' gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 #' path = gt3x_file
 #' res = read_actigraphy(path)
+#' testthat::expect_equal(mean(res$data$X), -0.228406351135833)
 #' file = system.file("extdata",
 #' "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
+#' testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
 #' file = system.file("extdata",
 #' "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
+#' testthat::expect_equal(mean(res$data$X), -0.147653632966532)
 #'
-#' file = system.file("binfile", "ax3_testfile.cwa", package = "GGIR")
+#' file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
 #' if (file.exists(file)) {
 #' res = read_actigraphy(file)
+#' testthat::expect_equal(mean(res$data$X), 0.775495573675064)
 #' }
 #'
-#' file = system.file("binfile", "genea_testfile.bin", package = "GGIR")
+#' file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
 #' if (file.exists(file)) {
 #' res = read_actigraphy(file)
+#' # mg not g (or vector magnitude?)
+#' testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
 #' }
 #'
-#' file = system.file("binfile", "GENEActiv_testfile.bin", package = "GGIR")
+#' file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
 #' if (file.exists(file)) {
 #' res = read_actigraphy(file)
+#' testthat::expect_equal(mean(res$data$X), -0.194275899087493)
 #' }
 #'
 #'
@@ -135,7 +142,7 @@ test_unzip_file = function(file) {
       }
     }
     res <- list(
-      data.out = res,
+      data = res,
       freq = attr(res, "sample_rate"),
       filename = basename(file),
       header = hdr,
@@ -151,7 +158,10 @@ test_unzip_file = function(file) {
     hdr = GGIR::g.inspectfile(file, desiredtz = desiredtz)
 
     if (ext %in% "cwa") {
-      default_args = list(desiredtz = "UTC")
+      default_args = list(desiredtz = "UTC",
+                          start = 0,
+                          end = Inf,
+                          progressBar = TRUE)
     } else if (ext %in% "bin" && !is.null(read_function)) {
       default_args = list()
     } else {
@@ -171,20 +181,69 @@ test_unzip_file = function(file) {
       }
     }
     res = do.call(func, args = args)
-    res = res$P
-    res$data.out = tibble::as_tibble(res$data.out)
-    res$data.out$timestamp =
-      lubridate::as_datetime(res$data.out$timestamp)
-    n_values = sapply(res$header$Value, length)
-    if (all(n_values == 1)) {
-      res$header$Value = unlist(res$header$Value)
-      if (is.character(res$header$Value)) {
-        res$header$Value = trimws(res$header$Value)
+    hdr = c(hdr, res$header)
+    check_data = function(x) "data" %in% names(x)
+    if ("P" %in% names(res) && !check_data(res)) {
+      res = res$P
+    }
+    if ("rawxyz" %in% names(res) && !check_data(res)) {
+      res$data = res$rawxyz
+      colnames(res$data) = c("X", "Y", "Z")
+    }
+    if (!check_data(res)) {
+      if ("data.out" %in% names(res)) {
+        names(res)[ names(res) == "data.out" ] = "data"
       }
-      res$header = tibble::as_tibble(res$header,
-                                     rownames = NA)
-      res$header = tibble::rownames_to_column(res$header,
-                                              var = "Field")
+    }
+    res$data = tibble::as_tibble(res$data)
+    ndata = names(res$data)
+    if ("timestamp" %in% ndata && !"time" %in% ndata) {
+      ndata[ ndata == "timestamp" ] = "time"
+    }
+    names(res$data) = ndata
+    if (!"time" %in% names(res$data) && "timestamps1" %in% names(res)) {
+      res$data$time = res$timestamps1[,1]
+    }
+    if ("time" %in% names(res$data)) {
+      res$data$time = lubridate::as_datetime(res$data$time)
+    }
+    if (!"time" %in% names(res$data) && "timestamps2" %in% names(res)) {
+      res$data$time = res$timestamps2[,1]
+    }
+    if (!"time" %in% names(res$data)) {
+      warning("time may not be in the data set")
+    }
+    for (i in c("x", "y", "z")) {
+      cn = colnames(res$data)
+      if (i %in% cn) {
+        cn[cn==i] = toupper(i)
+      }
+      colnames(res$data) = cn
+    }
+    hdr = res$header
+    if (is.list(hdr) && !"Value" %in% names(hdr)) {
+      res$header = list(Value = res$header)
+    }
+    if (is.matrix(hdr) &&
+        ncol(hdr) == 2 && all(colnames(hdr) %in% c("hnames", "hvalues"))) {
+      hdr = hdr[, c("hnames", "hvalues")]
+      colnames(hdr) = c("Field", "Value")
+      hdr = tibble::as_tibble(hdr)
+    } else {
+      n_values = sapply(res$header$Value, length)
+      if (all(n_values == 1)) {
+        res$header$Value = unlist(res$header$Value)
+        if (is.character(res$header$Value)) {
+          res$header$Value = trimws(res$header$Value)
+        }
+        res$header = tibble::as_tibble(res$header,
+                                       rownames = NA)
+        res$header = tibble::rownames_to_column(res$header,
+                                                var = "Field")
+      }
+    }
+    if (all(c("data", "header") %in% names(res))) {
+      class(res) = "AccData"
     }
   }
   if (is.data.frame(res$missingness)) {

@@ -15,7 +15,7 @@ ticks2datetime = function (ticks, tz = "GMT")
 
 quick_check = function(df) {
   if (is.AccData(df)) {
-    df = df$data.out
+    df = df$data
   }
   HEADER_TIME_STAMP = Axis1 = Axis2 = Axis3 = NULL
   rm(list= c("HEADER_TIME_STAMP", "Axis1", "Axis2", "Axis3"))

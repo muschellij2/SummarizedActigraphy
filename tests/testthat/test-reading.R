@@ -20,3 +20,27 @@ testthat::test_that("eBayes works", {
     check_vals
   )
 })
+
+
+testthat::context("Reading in CWA")
+
+
+file  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
+files = rep(file, 3)
+df = data.frame(file = files,
+                age = stats::rpois(length(files), 50),
+                stringsAsFactors = FALSE)
+
+
+testthat::test_that("eBayes works", {
+  se = actigraphy_df_to_SummarizedExperiment(df, "file")
+  testthat::skip_if_not_installed("limma")
+  eb = limma::lmFit(SummarizedExperiment::assay(se))
+  vals = head(na.omit(eb$coefficients[,1]), 10)
+  check_vals = head(SummarizedExperiment::assay(se), 10)[,1]
+  testthat::expect_equal(
+    vals,
+    check_vals
+  )
+})
+

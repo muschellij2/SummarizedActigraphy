@@ -29,28 +29,35 @@ gt3x_file = utils::unzip(destfile, exdir = tempdir())
 gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 res = read_actigraphy(path)
+testthat::expect_equal(mean(res$data$X), -0.228406351135833)
 file = system.file("extdata",
 "TAS1H30182785_2019-09-17.gt3x",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
+testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
 file = system.file("extdata",
 "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
+testthat::expect_equal(mean(res$data$X), -0.147653632966532)
 
-file = system.file("binfile", "ax3_testfile.cwa", package = "GGIR")
+file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
 if (file.exists(file)) {
 res = read_actigraphy(file)
+testthat::expect_equal(mean(res$data$X), 0.775495573675064)
 }
 
-file = system.file("binfile", "genea_testfile.bin", package = "GGIR")
+file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
 if (file.exists(file)) {
 res = read_actigraphy(file)
+# mg not g (or vector magnitude?)
+testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
 }
 
-file = system.file("binfile", "GENEActiv_testfile.bin", package = "GGIR")
+file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
 if (file.exists(file)) {
 res = read_actigraphy(file)
+testthat::expect_equal(mean(res$data$X), -0.194275899087493)
 }
 
 
