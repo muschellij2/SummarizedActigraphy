@@ -169,7 +169,7 @@ calculate_mims = function(
     epoch = epoch,
     dynamic_range = dynamic_range,
     ...)
-  out = dplyr::mutate(
+  out = out %>% dplyr::mutate(
     HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                               unit = epoch))
   out
