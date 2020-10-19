@@ -4,12 +4,14 @@
 \alias{read_acc_csv}
 \title{Read ActiGraph Accelerometer CSV}
 \usage{
-read_acc_csv(file, ...)
+read_acc_csv(file, ..., only_xyz = TRUE)
 }
 \arguments{
 \item{file}{CSV file to read in}
 
 \item{...}{additional arguments to pass to \code{\link{read_csv}}}
+
+\item{only_xyz}{should the data be subset for only X/Y/Z values (and time)?}
 }
 \value{
 A list of the header and the data set
@@ -23,5 +25,13 @@ package = "SummarizedActigraphy")
 if (file.exists(file)) {
    out = read_acc_csv(file)
    SummarizedActigraphy:::parse_acc_header(file)
+}
+file = system.file("extdata", "example1sec.csv", package = "AGread")
+if (file.exists(file)) {
+   out = read_acc_csv(file, only_xyz = FALSE)
+   SummarizedActigraphy:::quick_check(out$data)
+   acc = out
+   class(acc) = "AccData"
+   SummarizedActigraphy:::quick_check(acc)
 }
 }

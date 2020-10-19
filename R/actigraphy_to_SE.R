@@ -19,13 +19,15 @@
 #' file = system.file("extdata",
 #' "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
-#' files = rep(file, 10)
+#' files = rep(file, 4)
 #' df = data.frame(file = files,
 #' age = stats::rpois(length(files), 50),
 #' stringsAsFactors = FALSE)
 #' se = actigraphy_df_to_SummarizedExperiment(df, "file")
+#' \donttest{
 #' df$file = factor(df$file)
 #' se = actigraphy_df_to_SummarizedExperiment(df, "file", measure = "AI_mean")
+#' }
 #'
 actigraphy_df_to_SummarizedExperiment = function(
   x,

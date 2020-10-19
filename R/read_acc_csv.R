@@ -10,6 +10,7 @@ sub_thing = function(hdr, string) {
 #'
 #' @param file CSV file to read in
 #' @param ... additional arguments to pass to \code{\link{read_csv}}
+#' @param only_xyz should the data be subset for only X/Y/Z values (and time)?
 #'
 #' @return A list of the header and the data set
 #' @export
@@ -20,11 +21,20 @@ sub_thing = function(hdr, string) {
 #'    out = read_acc_csv(file)
 #'    SummarizedActigraphy:::parse_acc_header(file)
 #' }
-read_acc_csv = function(file, ...) {
+#' file = system.file("extdata", "example1sec.csv", package = "AGread")
+#' if (file.exists(file)) {
+#'    out = read_acc_csv(file, only_xyz = FALSE)
+#'    SummarizedActigraphy:::quick_check(out$data)
+#'    acc = out
+#'    class(acc) = "AccData"
+#'    SummarizedActigraphy:::quick_check(acc)
+#' }
+
+read_acc_csv = function(file, ..., only_xyz = TRUE) {
   hdr = readLines(file, n = 10)
   st = sub_thing(hdr, "Start Time")
   sd = sub_thing(hdr, "Start Date")
-  format = sub(".*date format (.*) at.*", "\\1", hdr[1])
+  format = sub(".*date format (.*) (Filter|at).*", "\\1", hdr[1])
   if (format == "") {
     warning("No format for date in the header, using mdy")
     format = "mdy"
@@ -54,10 +64,15 @@ read_acc_csv = function(file, ...) {
   time = HEADER_TIME_STAMP = Date = Time = NULL
   rm(list= c("HEADER_TIME_STAMP", "Date", "Time", "time"))
   if (all(c("Date", "Time") %in% colnames(df))) {
+    # df = df %>%
+    #   dplyr::mutate(
+    #     HEADER_TIME_STAMP = paste(Date, Time),
+    #     HEADER_TIME_STAMP = lubridate::dmy_hms(HEADER_TIME_STAMP))
     df = df %>%
       dplyr::mutate(
         HEADER_TIME_STAMP = paste(Date, Time),
-        HEADER_TIME_STAMP = lubridate::dmy_hms(HEADER_TIME_STAMP))
+        HEADER_TIME_STAMP = do.call(lubridate_func , args = list(HEADER_TIME_STAMP))
+      )
   } else {
     df$HEADER_TIME_STAMP = seq(0, nrow(df) - 1)/srate
     df$HEADER_TIME_STAMP = start_date + df$HEADER_TIME_STAMP
@@ -66,7 +81,12 @@ read_acc_csv = function(file, ...) {
   stopifnot(!anyNA(df$HEADER_TIME_STAMP))
   colnames(df) = trimws(sub("Accelerometer", "", colnames(df)))
 
-  df = df[, c("HEADER_TIME_STAMP", "X", "Y", "Z")]
+  if (only_xyz) {
+    df = df[, c("HEADER_TIME_STAMP", "X", "Y", "Z")]
+  } else {
+    cn = colnames(df)
+    df = df[, c("HEADER_TIME_STAMP", setdiff(cn, "HEADER_TIME_STAMP"))]
+  }
   df = df %>%
     dplyr::rename(time = HEADER_TIME_STAMP)
   parsed_header = try({
@@ -101,7 +121,7 @@ parse_acc_header = function(hdr) {
   filter = sub("-*$", "", filter)
   filter = trimws(filter)
 
-  format = sub(".*date format (.*) at.*", "\\1", hdr[1])
+  format = sub(".*date format (.*) (Filter|at).*", "\\1", hdr[1])
   if (format == "") {
     warning("No format for date in the header, using mdy")
   } else {

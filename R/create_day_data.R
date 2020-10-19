@@ -44,8 +44,11 @@
 #' library(lubridate)
 #' options(digit.secs = 2)
 #'
-#' daily = summarize_daily_actigraphy(x)
-#' average_day = summarize_actigraphy(x)
+#' fixed = fix_zeros(x)
+#' \dontrun{
+#' daily = summarize_daily_actigraphy(fixed, fix_zeros = FALSE)
+#' }
+#' average_day = summarize_actigraphy(fixed, fix_zeros = FALSE)
 #' \dontrun{
 #' if (requireNamespace("ggplot2", quietly = TRUE)) {
 #' library(magrittr)
