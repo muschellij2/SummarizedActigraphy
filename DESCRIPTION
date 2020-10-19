@@ -1,6 +1,6 @@
 Type: Package
 Package: SummarizedActigraphy
-Title: Coerce Actigraphy to Summarized Experiments
+Title: Coerce 'Actigraphy' to Summarized Experiments
 Version: 0.3.0
 Authors@R: c(
     person(given = "John",
@@ -9,8 +9,10 @@ Authors@R: c(
            email = "muschellij2@gmail.com",
            comment = c(ORCID = "0000-0001-6469-1750"))
     )
-Description: Provides functions for coercing actigraphy data into
-    'SummarizedExperiment' objects to be used in genomic analysis.
+Description: Provides functions for coercing 'actigraphy' data into
+    'SummarizedExperiment' objects used for genomic analysis.  This
+    conversion enables the use of functions that work on the 
+    'SummarizedExperiment' class.
 License: GPL-3
 Depends: 
     R (>= 2.10)

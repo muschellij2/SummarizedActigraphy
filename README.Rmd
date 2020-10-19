@@ -11,7 +11,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-"
+  fig.path = "man/figures/README-",
+  cache = TRUE
 )
 ```
 
@@ -27,3 +28,33 @@ You can install `SummarizedActigraphy` from GitHub with:
 remotes::install_github("muschellij2/SummarizedActigraphy")
 ```
 
+## Reading in some data
+
+```{r}
+library(SummarizedActigraphy)
+url = paste0("https://github.com/THLfi/read.gt3x/files/",
+             "3522749/GT3X%2B.01.day.gt3x.zip")
+destfile = tempfile(fileext = ".zip")
+dl = utils::download.file(url, destfile = destfile)
+gt3x_file = utils::unzip(destfile, exdir = tempdir())
+gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
+path = gt3x_file
+result = summarize_actigraphy(path)
+result
+```
+
+## Converting to wide 1440 format
+
+```{r make1440}
+hms_times = structure(seq(0, 86340, by = 60), class = c("hms", "difftime"),
+                      units = "secs")
+hms_times = tibble::tibble(time = hms_times)
+measure = "AI_mean"
+tmeasure = c("time", measure)
+x = result[, tmeasure, drop = FALSE]
+x = tibble::as_tibble(x)
+x = dplyr::left_join(hms_times, x)
+head(x)
+x1440 = tidyr::spread(x, time, value = measure)
+x1440
+```

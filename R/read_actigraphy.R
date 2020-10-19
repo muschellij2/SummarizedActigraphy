@@ -12,6 +12,17 @@
 #' @importFrom R.utils decompressFile
 #'
 #' @examples
+#'
+#'
+#' file = system.file("extdata",
+#' "TAS1H30182785_2019-09-17.gt3x",
+#' package = "SummarizedActigraphy")
+#' res = read_actigraphy(file)
+#' testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
+#'
+#' file = "blah.exe"
+#' testthat::expect_error(read_actigraphy(file))
+#' \donttest{
 #' url = paste0("https://github.com/THLfi/read.gt3x/files/",
 #' "3522749/GT3X%2B.01.day.gt3x.zip")
 #' destfile = tempfile(fileext = ".zip")
@@ -27,39 +38,6 @@
 #'  SummarizedActigraphy:::ticks2datetime(dob)
 #' }
 #'
-#'
-#' file = system.file("extdata",
-#' "TAS1H30182785_2019-09-17.gt3x",
-#' package = "SummarizedActigraphy")
-#' res = read_actigraphy(file)
-#' testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
-#'
-#' file = "blah.exe"
-#' testthat::expect_error(read_actigraphy(file))
-#' \donttest{
-#'   file = system.file("extdata",
-#'                      "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
-#'                      package = "SummarizedActigraphy")
-#'   res = read_actigraphy(file)
-#'   testthat::expect_equal(mean(res$data$X), -0.147653632966532)
-#'   file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
-#'   if (file.exists(file)) {
-#'     res = read_actigraphy(file)
-#'     testthat::expect_equal(mean(res$data$X), 0.775495573675064)
-#'   }
-#'
-#'   file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
-#'   if (file.exists(file)) {
-#'     res = read_actigraphy(file)
-#'     # mg not g (or vector magnitude?)
-#'     testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
-#'   }
-#'
-#'   file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
-#'   if (file.exists(file)) {
-#'     res = read_actigraphy(file)
-#'     testthat::expect_equal(mean(res$data$X), -0.194275899087493)
-#'   }
 #' }
 read_actigraphy = function(file, ..., read_function = NULL) {
   file = test_unzip_file(file)
