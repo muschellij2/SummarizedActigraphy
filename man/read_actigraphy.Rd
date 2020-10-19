@@ -31,7 +31,7 @@ path = gt3x_file
 res = read_actigraphy(path)
 testthat::expect_equal(mean(res$data$X), -0.228406351135833)
 
-dob = x$header$Value[x$header$Field == "DateOfBirth"]
+dob = res$header$Value[res$header$Field == "DateOfBirth"]
 if (length(dob) > 0) {
  SummarizedActigraphy:::ticks2datetime(dob)
 }
