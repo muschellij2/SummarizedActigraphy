@@ -75,7 +75,8 @@ df = data.frame(file = files,
 
 
 testthat::test_that("eBayes works - same file", {
-  se = actigraphy_df_to_SummarizedExperiment(df, "file")
+  df$file = factor(df$file)
+  se = actigraphy_df_to_SummarizedExperiment(df, "file", measure = "AI_mean")
   testthat::skip_if_not_installed("limma")
   eb = limma::lmFit(SummarizedExperiment::assay(se))
   vals = head(na.omit(eb$coefficients[,1]), 10)

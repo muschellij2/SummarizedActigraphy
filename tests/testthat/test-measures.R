@@ -32,19 +32,35 @@ file = system.file("extdata",
 testthat::test_that("Calculating Summaries Works", {
   res = read_actigraphy(file)
 
-  output = calculate_measures(res, calculate_mims = TRUE)
-  cm = colMeans(output[c("AI", "SD", "MAD", "MIMS_UNIT")])
-  testthat::expect_equal(
-    cm,
-    c(AI = 1.93017183478711, SD = 0.104740319672159, MAD = 0.0606835327590105,
-      MIMS_UNIT = 5.32015536241241)
-    , tolerance = 1e-5
-  )
-  n_idle = calculate_n_idle(res, epoch = "5 min")
-  testthat::expect_equal(
-    n_idle$n_idle,
-    c(4300L, 28900L, 30000L, 28600L, 30000L,
-      30000L, 27400L, 27800L,
-      500L))
+  if (requireNamespace("MIMSunit", quietly = TRUE)) {
+    output = calculate_measures(res, calculate_mims = TRUE)
+    cm = colMeans(output[c("AI", "SD", "MAD", "MIMS_UNIT")])
+    testthat::expect_equal(
+      cm,
+      c(AI = 1.93017183478711, SD = 0.104740319672159, MAD = 0.0606835327590105,
+        MIMS_UNIT = 5.32015536241241)
+      , tolerance = 1e-5
+    )
+    n_idle = calculate_n_idle(res, epoch = "5 min")
+    testthat::expect_equal(
+      n_idle$n_idle,
+      c(4300L, 28900L, 30000L, 28600L, 30000L,
+        30000L, 27400L, 27800L,
+        500L))
+  } else {
+    output = calculate_measures(res, calculate_mims = FALSE)
+    cm = colMeans(output[c("AI", "SD", "MAD")])
+    testthat::expect_equal(
+      cm,
+      c(AI = 1.93017183478711, SD = 0.104740319672159, MAD = 0.0606835327590105)
+      , tolerance = 1e-5
+    )
+    n_idle = calculate_n_idle(res, epoch = "5 min")
+    testthat::expect_equal(
+      n_idle$n_idle,
+      c(4300L, 28900L, 30000L, 28600L, 30000L,
+        30000L, 27400L, 27800L,
+        500L))
+  }
 })
 
