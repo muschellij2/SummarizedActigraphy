@@ -35,6 +35,10 @@
 #' path = gt3x_file
 #'
 #' x = read_actigraphy(path)
+#' dob = x$header$Value[x$header$Field == "DateOfBirth"]
+#' if (length(dob) > 0) {
+#'  SummarizedActigraphy:::ticks2datetime(dob)
+#' }
 #'
 #' library(dplyr)
 #' library(lubridate)

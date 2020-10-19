@@ -229,6 +229,7 @@ test_unzip_file = function(file) {
       hdr = hdr[, c("hnames", "hvalues")]
       colnames(hdr) = c("Field", "Value")
       hdr = tibble::as_tibble(hdr)
+      res$header = hdr
     } else {
       n_values = sapply(res$header$Value, length)
       if (all(n_values == 1)) {
@@ -236,11 +237,20 @@ test_unzip_file = function(file) {
         if (is.character(res$header$Value)) {
           res$header$Value = trimws(res$header$Value)
         }
+        nn = names(res$header$Value)
         res$header = tibble::as_tibble(res$header,
                                        rownames = NA)
-        res$header = tibble::rownames_to_column(res$header,
-                                                var = "Field")
+        if (all(rownames(res$header) == 1:nrow(res$header))) {
+          res$header$Field = nn
+        }
+        # res$header = tibble::rownames_to_column(res$header,
+        #                                         var = "Field")
       }
+    }
+    if (!is.data.frame(res$header) ||
+        (is.data.frame(res$header) &&
+        !all(c("Value", "Field") %in% colnames(res$header)))) {
+      warning("Header may not have value/field columns")
     }
     if (all(c("data", "header") %in% names(res))) {
       class(res) = "AccData"

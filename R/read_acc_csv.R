@@ -17,7 +17,8 @@ sub_thing = function(hdr, string) {
 #' file = system.file("extdata", "TAS1H30182785_2019-09-17.csv.gz",
 #' package = "SummarizedActigraphy")
 #' if (file.exists(file)) {
-#'     out = read_acc_csv(file)
+#'    out = read_acc_csv(file)
+#'    SummarizedActigraphy:::parse_acc_header(file)
 #' }
 read_acc_csv = function(file, ...) {
   hdr = readLines(file, n = 10)
@@ -87,7 +88,7 @@ read_acc_csv = function(file, ...) {
 
 parse_acc_header = function(hdr) {
   if (length(hdr) == 1 && file.exists(hdr)) {
-    hdr = readLines(hdr)
+    hdr = readLines(hdr, n = 10)
   }
   hdr = gsub("^-*", "", hdr)
   hdr = gsub("-*$", "", hdr)

@@ -3,7 +3,6 @@ is.AccData = function(x) {
 }
 
 
-
 ticks2datetime = function (ticks, tz = "GMT")
 {
   ticks <- as.numeric(ticks)

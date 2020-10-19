@@ -85,6 +85,10 @@ gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 
 x = read_actigraphy(path)
+dob = x$header$Value[x$header$Field == "DateOfBirth"]
+if (length(dob) > 0) {
+ SummarizedActigraphy:::ticks2datetime(dob)
+}
 
 library(dplyr)
 library(lubridate)

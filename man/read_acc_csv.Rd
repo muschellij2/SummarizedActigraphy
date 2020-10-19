@@ -21,6 +21,7 @@ Read ActiGraph Accelerometer CSV
 file = system.file("extdata", "TAS1H30182785_2019-09-17.csv.gz",
 package = "SummarizedActigraphy")
 if (file.exists(file)) {
-    out = read_acc_csv(file)
+   out = read_acc_csv(file)
+   SummarizedActigraphy:::parse_acc_header(file)
 }
 }

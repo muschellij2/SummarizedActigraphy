@@ -19,12 +19,13 @@
 #' fix_zeros(df)
 #' fix_zeros(df, fill_in = FALSE)
 #' fix_zeros(df, trim = TRUE)
-#' df$time = rnorm(nrow(df))
+#' df$time = c(1,3,2, 4)
 #' fix_zeros(df)
 #' acc = list(header = NULL,
 #' data = df
 #' )
 #' class(acc) = "AccData"
+#' idle_na_locf(acc)
 #' fix_zeros(acc, trim = TRUE)
 fix_zeros = function(df, fill_in = TRUE,
                      trim = FALSE) {
@@ -33,15 +34,7 @@ fix_zeros = function(df, fill_in = TRUE,
     xdf = df
     df = df$data
   }
-  if ("time" %in% names(df)) {
-    if (!is.unsorted(df$time)) {
-      ord = order(df$time)
-      if (!all(ord == 1:nrow(df))) {
-        warning("Time is unsorted, will resort the data set")
-        gt3x = gt3x[ ord, ]
-      }
-    }
-  }
+  df = sort_time_df(df)
   zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
   if (trim) {
     not_zero = rle(!zero)
@@ -73,6 +66,8 @@ idle_na_locf = function(df) {
     xdf = df
     df = df$data
   }
+  df = sort_time_df(df)
+
   df$X = zoo::na.locf(df$X, na.rm = FALSE)
   df$Y = zoo::na.locf(df$Y, na.rm = FALSE)
   df$Z = zoo::na.locf(df$Z, na.rm = FALSE)
@@ -83,6 +78,19 @@ idle_na_locf = function(df) {
   if (acc_data) {
     xdf$data = df
     df = xdf
+  }
+  df
+}
+
+sort_time_df = function(df) {
+  if ("time" %in% names(df)) {
+    if (is.unsorted(df$time)) {
+      ord = order(df$time)
+      if (!all(ord == 1:nrow(df))) {
+        warning("Time is unsorted, will resort the data set")
+        df = df[ ord, ]
+      }
+    }
   }
   df
 }

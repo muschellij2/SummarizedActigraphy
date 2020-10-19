@@ -1,6 +1,11 @@
-# limmi 0.1.0
+# SummarizedActigraphy 0.3.0
 
-* Added `nifti_*`, where we currently have `eBayes` and `lmFit`.
+- Slot is now `data`  not `data.out` in `read_actigraphy`.
+
+
+# SummarizedActigraphy 0.1.0
+
+* Added `actigraph*`, where we currently have `eBayes` and `lmFit`.
 
 * Added a `NEWS.md` file to track changes to the package.
 

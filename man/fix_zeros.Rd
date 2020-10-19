@@ -34,11 +34,12 @@ df = data.frame(
 fix_zeros(df)
 fix_zeros(df, fill_in = FALSE)
 fix_zeros(df, trim = TRUE)
-df$time = rnorm(nrow(df))
+df$time = c(1,3,2, 4)
 fix_zeros(df)
 acc = list(header = NULL,
 data = df
 )
 class(acc) = "AccData"
+idle_na_locf(acc)
 fix_zeros(acc, trim = TRUE)
 }
