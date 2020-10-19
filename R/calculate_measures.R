@@ -158,15 +158,22 @@ calculate_mims = function(
   epoch = "1 min",
   dynamic_range = c(-6, 6),
   ...) {
+  HEADER_TIME_STAMP = NULL
+  rm(list= "HEADER_TIME_STAMP")
   df = ensure_header_timestamp(df)
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for calculating MIMS")
   }
-  MIMSunit::mims_unit(
+  out = MIMSunit::mims_unit(
     df,
     epoch = epoch,
     dynamic_range = dynamic_range,
     ...)
+  out = dplyr::mutate(
+    HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                              unit = epoch)) %>%
+  out
+
 }
 
 ensure_header_timestamp = function(df) {
