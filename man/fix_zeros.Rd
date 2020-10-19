@@ -33,4 +33,12 @@ df = data.frame(
   stringsAsFactors = FALSE)
 fix_zeros(df)
 fix_zeros(df, fill_in = FALSE)
+fix_zeros(df, trim = TRUE)
+df$time = rnorm(nrow(df))
+fix_zeros(df)
+acc = list(header = NULL,
+data = df
+)
+class(acc) = "AccData"
+fix_zeros(acc, trim = TRUE)
 }
