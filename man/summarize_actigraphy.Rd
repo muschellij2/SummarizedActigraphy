@@ -77,27 +77,16 @@ with one row for each secon d of the day `24*60*60`.
 Summarize Actigraphy Data
 }
 \examples{
-url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X\%2B.01.day.gt3x.zip"
-destfile = tempfile(fileext = ".zip")
-dl = utils::download.file(url, destfile = destfile)
-gt3x_file = utils::unzip(destfile, exdir = tempdir())
-gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
-path = gt3x_file
+path = system.file("extdata",
+"TAS1H30182785_2019-09-17.gt3x",
+package = "SummarizedActigraphy")
 
 x = read_actigraphy(path)
-dob = x$header$Value[x$header$Field == "DateOfBirth"]
-if (length(dob) > 0) {
- SummarizedActigraphy:::ticks2datetime(dob)
-}
 
-library(dplyr)
-library(lubridate)
 options(digit.secs = 2)
 
 fixed = fix_zeros(x)
-\dontrun{
 daily = summarize_daily_actigraphy(fixed, fix_zeros = FALSE)
-}
 average_day = summarize_actigraphy(fixed, fix_zeros = FALSE)
 \dontrun{
 if (requireNamespace("ggplot2", quietly = TRUE)) {

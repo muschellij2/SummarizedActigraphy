@@ -21,6 +21,13 @@
 #' path = gt3x_file
 #' res = read_actigraphy(path)
 #' testthat::expect_equal(mean(res$data$X), -0.228406351135833)
+#'
+#' dob = x$header$Value[x$header$Field == "DateOfBirth"]
+#' if (length(dob) > 0) {
+#'  SummarizedActigraphy:::ticks2datetime(dob)
+#' }
+#'
+#'
 #' file = system.file("extdata",
 #' "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
