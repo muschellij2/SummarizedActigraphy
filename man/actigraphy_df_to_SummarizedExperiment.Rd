@@ -43,7 +43,7 @@ Convert Actigraphy data.frame to a SummarizedExperiment
 file = system.file("extdata",
 "TAS1H30182785_2019-09-17.gt3x",
 package = "SummarizedActigraphy")
-files = rep(file, 4)
+files = rep(file, 3)
 df = data.frame(file = files,
 age = stats::rpois(length(files), 50),
 stringsAsFactors = FALSE)
