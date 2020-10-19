@@ -171,7 +171,7 @@ calculate_mims = function(
     ...)
   out = dplyr::mutate(
     HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                              unit = epoch)) %>%
+                                              unit = epoch))
   out
 
 }
