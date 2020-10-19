@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SummarizedActigraphy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -165,7 +165,42 @@ the beginning and the end of the time course?</p></td>
 #&gt; 1 0.4242641 0.5656854 0.7071068
 #&gt; 2        NA        NA        NA
 #&gt; 3        NA        NA        NA
-#&gt; 4        NA        NA        NA</div></pre>
+#&gt; 4        NA        NA        NA</div><div class='input'><span class='fu'>fix_zeros</span>(<span class='no'>df</span>, <span class='kw'>trim</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;           X         Y         Z
+#&gt; 1 0.4242641 0.5656854 0.7071068
+#&gt; 2 0.4242641 0.5656854 0.7071068
+#&gt; 3 0.4242641 0.5656854 0.7071068
+#&gt; 4 0.4242641 0.5656854 0.7071068</div><div class='input'><span class='no'>df</span>$<span class='no'>time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>, <span class='fl'>4</span>)
+<span class='fu'>fix_zeros</span>(<span class='no'>df</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Time is unsorted, will resort the data set</span></div><div class='output co'>#&gt;           X         Y         Z time
+#&gt; 1 0.4242641 0.5656854 0.7071068    1
+#&gt; 3 0.4242641 0.5656854 0.7071068    2
+#&gt; 2 0.4242641 0.5656854 0.7071068    3
+#&gt; 4 0.4242641 0.5656854 0.7071068    4</div><div class='input'><span class='no'>acc</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>header</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>df</span>
+)
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>acc</span>) <span class='kw'>=</span> <span class='st'>"AccData"</span>
+<span class='fu'>idle_na_locf</span>(<span class='no'>acc</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Time is unsorted, will resort the data set</span></div><div class='output co'>#&gt; $header
+#&gt; NULL
+#&gt; 
+#&gt; $data
+#&gt;           X         Y         Z time
+#&gt; 1 0.4242641 0.5656854 0.7071068    1
+#&gt; 3 0.0000000 0.0000000 0.0000000    2
+#&gt; 2 0.0000000 0.0000000 0.0000000    3
+#&gt; 4 0.0000000 0.0000000 0.0000000    4
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "AccData"</div><div class='input'><span class='fu'>fix_zeros</span>(<span class='no'>acc</span>, <span class='kw'>trim</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Time is unsorted, will resort the data set</span></div><div class='output co'>#&gt; $header
+#&gt; NULL
+#&gt; 
+#&gt; $data
+#&gt;           X         Y         Z time
+#&gt; 1 0.4242641 0.5656854 0.7071068    1
+#&gt; 3 0.4242641 0.5656854 0.7071068    2
+#&gt; 2 0.4242641 0.5656854 0.7071068    3
+#&gt; 4 0.4242641 0.5656854 0.7071068    4
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "AccData"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

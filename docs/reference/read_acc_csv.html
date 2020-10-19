@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • SummarizedActigraphy</title>
+<title>Read ActiGraph Accelerometer CSV — read_acc_csv • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Read ActiGraph Accelerometer CSV — read_acc_csv" />
+<meta property="og:description" content="Read ActiGraph Accelerometer CSV" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,72 +112,96 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Read ActiGraph Accelerometer CSV</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/read_acc_csv.R'><code>R/read_acc_csv.R</code></a></small>
+    <div class="hidden name"><code>read_acc_csv.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Read ActiGraph Accelerometer CSV</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>read_acc_csv</span>(<span class='no'>file</span>, <span class='no'>...</span>, <span class='kw'>only_xyz</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="actigraphy_df_to_SummarizedExperiment.html">actigraphy_df_to_SummarizedExperiment()</a></code> </p>
-        </td>
-        <td><p>Convert Actigraphy data.frame to a SummarizedExperiment</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="calculate_measures.html">calculate_measures()</a></code> <code><a href="calculate_measures.html">calculate_ai()</a></code> <code><a href="calculate_measures.html">calculate_n_idle()</a></code> <code><a href="calculate_measures.html">calculate_mad()</a></code> <code><a href="calculate_measures.html">calculate_mims()</a></code> </p>
-        </td>
-        <td><p>Calculate Summary Measures from Raw Accelerometer Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fix_zeros.html">fix_zeros()</a></code> <code><a href="fix_zeros.html">idle_na_locf()</a></code> </p>
-        </td>
-        <td><p>Fix Zeros from Idle Sleep Mode</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_acc_csv.html">read_acc_csv()</a></code> </p>
-        </td>
-        <td><p>Read ActiGraph Accelerometer CSV</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_actigraphy.html">read_actigraphy()</a></code> </p>
-        </td>
-        <td><p>Read Actigraphy File</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summarize_actigraphy.html">summarize_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarize_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_actigraphy()</a></code> </p>
-        </td>
-        <td><p>Summarize Actigraphy Data</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>file</th>
+      <td><p>CSV file to read in</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments to pass to <code>read_csv</code></p></td>
+    </tr>
+    <tr>
+      <th>only_xyz</th>
+      <td><p>should the data be subset for only X/Y/Z values (and time)?</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list of the header and the data set</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"TAS1H30182785_2019-09-17.csv.gz"</span>,
+<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SummarizedActigraphy"</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='no'>file</span>)) {
+   <span class='no'>out</span> <span class='kw'>=</span> <span class='fu'>read_acc_csv</span>(<span class='no'>file</span>)
+   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>parse_acc_header</span>(<span class='no'>file</span>)
+}</div><div class='output co'>#&gt; $serial
+#&gt; [1] "TAS1H30182785"
+#&gt; 
+#&gt; $start_time
+#&gt; [1] "18:40:00"
+#&gt; 
+#&gt; $start_date
+#&gt; [1] "9/17/2019"
+#&gt; 
+#&gt; $epoch
+#&gt; [1] "00:00:00"
+#&gt; 
+#&gt; $download_time
+#&gt; [1] "19:20:05"
+#&gt; 
+#&gt; $download_date
+#&gt; [1] "9/17/2019"
+#&gt; 
+#&gt; $battery_voltage
+#&gt; [1] "4.18"
+#&gt; 
+#&gt; $memory_address
+#&gt; [1] "0"
+#&gt; 
+#&gt; $mode
+#&gt; [1] "12"
+#&gt; 
+#&gt; $firmware
+#&gt; [1] "1.7.2"
+#&gt; 
+#&gt; $actilife_version
+#&gt; [1] "6.13.3"
+#&gt; 
+#&gt; $filter
+#&gt; [1] "Normal"
+#&gt; 
+#&gt; $date_format
+#&gt; [1] "mdy"
+#&gt; 
+#&gt; $sample_rate
+#&gt; [1] 100
+#&gt; </div><div class='input'><span class='no'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example1sec.csv"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"AGread"</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='no'>file</span>)) {
+   <span class='no'>out</span> <span class='kw'>=</span> <span class='fu'>read_acc_csv</span>(<span class='no'>file</span>, <span class='kw'>only_xyz</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>quick_check</span>(<span class='no'>out</span>$<span class='no'>data</span>)
+   <span class='no'>acc</span> <span class='kw'>=</span> <span class='no'>out</span>
+   <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>acc</span>) <span class='kw'>=</span> <span class='st'>"AccData"</span>
+   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>quick_check</span>(<span class='no'>acc</span>)
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

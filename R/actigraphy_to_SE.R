@@ -43,6 +43,17 @@ actigraphy_df_to_SummarizedExperiment = function(
     files = as.character(files)
   }
   mat = lapply(files, summarize_actigraphy, ..., verbose = verbose)
+
+  # making them the same dimension with respect to time
+  # NAs are filled in
+  all_time = lapply(mat, function(x) x$time)
+  all_time = sort(unique(unlist(all_time, recursive = FALSE)))
+  all_time = hms::as_hms(all_time)
+  all_time = data.frame(time = all_time, stringsAsFactors = FALSE)
+  mat = lapply(mat, function(x) {
+    dplyr::left_join(all_time, x, by = "time")
+  })
+
   if (!is.null(measure)) {
     mat = lapply(mat, function(x) {
       x[, measure, drop = FALSE]
@@ -57,6 +68,7 @@ actigraphy_df_to_SummarizedExperiment = function(
     })
     mat
   })
+
 
   if (!is.null(assay_name)) {
     names(mat) = assay_name

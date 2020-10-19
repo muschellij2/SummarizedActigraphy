@@ -33,34 +33,34 @@
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
 #' testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
-#' file = system.file("extdata",
-#' "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
-#' package = "SummarizedActigraphy")
-#' res = read_actigraphy(file)
-#' testthat::expect_equal(mean(res$data$X), -0.147653632966532)
-#'
-#' file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
-#' if (file.exists(file)) {
-#' res = read_actigraphy(file)
-#' testthat::expect_equal(mean(res$data$X), 0.775495573675064)
-#' }
-#'
-#' file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
-#' if (file.exists(file)) {
-#' res = read_actigraphy(file)
-#' # mg not g (or vector magnitude?)
-#' testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
-#' }
-#'
-#' file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
-#' if (file.exists(file)) {
-#' res = read_actigraphy(file)
-#' testthat::expect_equal(mean(res$data$X), -0.194275899087493)
-#' }
-#'
 #'
 #' file = "blah.exe"
 #' testthat::expect_error(read_actigraphy(file))
+#' \donttest{
+#'   file = system.file("extdata",
+#'                      "MECSLEEP17_left_wrist_012854_2013-12-09_11-37-24.bin.xz",
+#'                      package = "SummarizedActigraphy")
+#'   res = read_actigraphy(file)
+#'   testthat::expect_equal(mean(res$data$X), -0.147653632966532)
+#'   file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
+#'   if (file.exists(file)) {
+#'     res = read_actigraphy(file)
+#'     testthat::expect_equal(mean(res$data$X), 0.775495573675064)
+#'   }
+#'
+#'   file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
+#'   if (file.exists(file)) {
+#'     res = read_actigraphy(file)
+#'     # mg not g (or vector magnitude?)
+#'     testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
+#'   }
+#'
+#'   file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
+#'   if (file.exists(file)) {
+#'     res = read_actigraphy(file)
+#'     testthat::expect_equal(mean(res$data$X), -0.194275899087493)
+#'   }
+#' }
 read_actigraphy = function(file, ..., read_function = NULL) {
   file = test_unzip_file(file)
   ext = tools::file_ext(file)
