@@ -110,6 +110,22 @@ summarize_actigraphy = function(
   x = summarize_daily_actigraphy(x, unit = unit,
                                  verbose = verbose > 1,
                                  ...)
+  ts = collapse_daily_actigraphy(x, .fns = .fns, verbose = verbose)
+
+  ts
+}
+
+#' @rdname summarize_actigraphy
+#' @export
+collapse_daily_actigraphy = function(
+  x,
+  .fns = list(mean = mean, median = median),
+  verbose = TRUE) {
+
+  first_day = NULL
+  mean_r = time = ai = enmo = mad = NULL
+  rm(list = c("first_day", "ai", "time", "enmo", "mad"))
+
   x = tibble::as_tibble(x) %>%
     dplyr::ungroup()
 
@@ -131,14 +147,14 @@ summarize_actigraphy = function(
     dplyr::summarise(
       dplyr::across(
         dplyr::any_of(c("AI", "SD", "MAD", "MEDAD",
-                      "mean_r", "MIMS_UNIT")),
+                        "mean_r", "MIMS_UNIT")),
         .fns = .fns,
         na.rm = TRUE)
     )
 
-  ts = tsibble::build_tsibble(average_day,
-                              index = time)
-  ts
+  average_day = tsibble::build_tsibble(average_day,
+                                       index = time)
+  average_day
 }
 
 #' @export

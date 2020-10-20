@@ -4,6 +4,7 @@
 \alias{summarize_daily_actigraphy}
 \alias{summarise_daily_actigraphy}
 \alias{summarize_actigraphy}
+\alias{collapse_daily_actigraphy}
 \alias{summarise_actigraphy}
 \title{Summarize Actigraphy Data}
 \usage{
@@ -35,6 +36,12 @@ summarize_actigraphy(
   .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...
+)
+
+collapse_daily_actigraphy(
+  x,
+  .fns = list(mean = mean, median = median),
+  verbose = TRUE
 )
 
 summarise_actigraphy(
