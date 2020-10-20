@@ -1,7 +1,8 @@
 # SummarizedActigraphy 0.3.0
 
-- Slot is now `data` not `data.out` in `read_actigraphy`.
-- All things `epoch` changed to `unit`. 
+* Slot is now `data` not `data.out` in `read_actigraphy`.
+* All things `epoch` changed to `unit`. 
+* Added `collapse_daily_actigraphy` so that you can collapse daily data.
 
 # SummarizedActigraphy 0.1.0
 
