@@ -2,7 +2,7 @@
 #'
 #' @param df An object with columns `X`, `Y`, and `Z` or an
 #' object of class `AccData`
-#' @param epoch length of time to calculate measures over.  a character string
+#' @param unit length of time to calculate measures over.  a character string
 #' specifying a time unit or a multiple of a unit to be rounded to.
 #' Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
 #' `bimonth`, `quarter`, `season`, `halfyear`, and `year`.
@@ -24,7 +24,7 @@
 #' @return A data set with the calculated features
 #' @export
 calculate_measures = function(
-  df, epoch = "1 min",
+  df, unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
   trim = FALSE,
@@ -47,16 +47,16 @@ calculate_measures = function(
   if (verbose) {
     message("Calculating ai0")
   }
-  ai0 = calculate_ai(df, epoch = epoch)
+  ai0 = calculate_ai(df, unit = unit)
   if (verbose) {
     message("Calculating MAD")
   }
-  mad = calculate_mad(df, epoch = epoch)
+  mad = calculate_mad(df, unit = unit)
   if (calculate_mims) {
     if (verbose) {
       message("Calculating MIMS")
     }
-    mims = calculate_mims(df, epoch = epoch,
+    mims = calculate_mims(df, unit = unit,
                           dynamic_range = dynamic_range,
                           ...)
   }
@@ -78,7 +78,7 @@ calculate_measures = function(
 
 #' @export
 #' @rdname calculate_measures
-calculate_ai = function(df, epoch = "1 min") {
+calculate_ai = function(df, unit = "1 min") {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
@@ -99,7 +99,7 @@ calculate_ai = function(df, epoch = "1 min") {
   sec_df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                epoch)) %>%
+                                                unit)) %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       AI = sum(AI)
@@ -108,7 +108,7 @@ calculate_ai = function(df, epoch = "1 min") {
 
 #' @export
 #' @rdname calculate_measures
-calculate_n_idle = function(df, epoch = "1 min") {
+calculate_n_idle = function(df, unit = "1 min") {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
@@ -123,7 +123,7 @@ calculate_n_idle = function(df, epoch = "1 min") {
       r = sqrt(X^2+Y^2+Z^2),
       all_zero = X == 0 & Y == 0 & Z == 0,
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                epoch)) %>%
+                                                unit)) %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       n_idle = sum(is.na(r) | all_zero)
@@ -132,7 +132,7 @@ calculate_n_idle = function(df, epoch = "1 min") {
 
 #' @export
 #' @rdname calculate_measures
-calculate_mad = function(df, epoch = "1 min") {
+calculate_mad = function(df, unit = "1 min") {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
@@ -141,7 +141,7 @@ calculate_mad = function(df, epoch = "1 min") {
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                epoch)) %>%
+                                                unit)) %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       SD = sd(r, na.rm = TRUE),
@@ -155,7 +155,7 @@ calculate_mad = function(df, epoch = "1 min") {
 #' @rdname calculate_measures
 calculate_mims = function(
   df,
-  epoch = "1 min",
+  unit = "1 min",
   dynamic_range = c(-6, 6),
   ...) {
   HEADER_TIME_STAMP = NULL
@@ -166,12 +166,12 @@ calculate_mims = function(
   }
   out = MIMSunit::mims_unit(
     df,
-    epoch = epoch,
+    epoch = unit,
     dynamic_range = dynamic_range,
     ...)
   out = out %>% dplyr::mutate(
     HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                              unit = epoch))
+                                              unit = unit))
   out
 
 }

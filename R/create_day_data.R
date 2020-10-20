@@ -5,7 +5,7 @@
 #' @param ... Additional arguments to pass to
 #' \code{\link{read_actigraphy}}
 #' @param verbose print diagnostic messages
-#' @param units units to group the data to take the statistic over
+#' @param unit units to group the data to take the statistic over
 #' @param fix_zeros Should \code{\link{fix_zeros}} be run before calculating
 #' the measures?
 #' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
@@ -15,6 +15,8 @@
 #' should the time course be trimmed for zero values at
 #' the beginning and the end of the time course?
 #' observation carried forward?
+#' @param calculate_mims Should MIMS units be calculated?
+#' Passed to \code{\link{calculate_measures}}
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
@@ -54,11 +56,12 @@
 #' @export
 summarize_daily_actigraphy = function(
   x,
-  units = "1 min",
+  unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
   trim = FALSE,
   verbose = TRUE,
+  calculate_mims = FALSE,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
   rm(list = c("X", "Y", "Z", "enmo", "mad", "time"))
@@ -69,11 +72,11 @@ summarize_daily_actigraphy = function(
 
   x = calculate_measures(
     x,
-    epoch = units,
+    unit = unit,
     fix_zeros = fix_zeros,
     fill_in = fill_in,
     trim = trim,
-    calculate_mims = FALSE,
+    calculate_mims = calculate_mims,
     verbose = verbose)
 
   ts = tsibble::build_tsibble(x,
@@ -92,7 +95,7 @@ summarise_daily_actigraphy = summarize_daily_actigraphy
 #' @export
 summarize_actigraphy = function(
   x,
-  units = "1 min",
+  unit = "1 min",
   .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...) {
@@ -104,7 +107,7 @@ summarize_actigraphy = function(
   if (verbose) {
     message("Running Daily Actigraphy")
   }
-  x = summarize_daily_actigraphy(x, units = units,
+  x = summarize_daily_actigraphy(x, unit = unit,
                                  verbose = verbose > 1,
                                  ...)
   x = tibble::as_tibble(x) %>%

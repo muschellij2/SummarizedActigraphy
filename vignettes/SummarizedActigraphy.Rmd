@@ -2,7 +2,7 @@
 title: "Summarizing Actigraphy Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Summarization}
+  %\VignetteIndexEntry{Summarizing Actigraphy Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

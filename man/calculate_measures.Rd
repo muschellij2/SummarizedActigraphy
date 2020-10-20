@@ -10,7 +10,7 @@
 \usage{
 calculate_measures(
   df,
-  epoch = "1 min",
+  unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
   trim = FALSE,
@@ -20,19 +20,19 @@ calculate_measures(
   ...
 )
 
-calculate_ai(df, epoch = "1 min")
+calculate_ai(df, unit = "1 min")
 
-calculate_n_idle(df, epoch = "1 min")
+calculate_n_idle(df, unit = "1 min")
 
-calculate_mad(df, epoch = "1 min")
+calculate_mad(df, unit = "1 min")
 
-calculate_mims(df, epoch = "1 min", dynamic_range = c(-6, 6), ...)
+calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
 }
 \arguments{
 \item{df}{An object with columns `X`, `Y`, and `Z` or an
 object of class `AccData`}
 
-\item{epoch}{length of time to calculate measures over.  a character string
+\item{unit}{length of time to calculate measures over.  a character string
 specifying a time unit or a multiple of a unit to be rounded to.
 Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
 `bimonth`, `quarter`, `season`, `halfyear`, and `year`.

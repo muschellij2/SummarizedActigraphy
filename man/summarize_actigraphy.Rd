@@ -9,27 +9,29 @@
 \usage{
 summarize_daily_actigraphy(
   x,
-  units = "1 min",
+  unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
   trim = FALSE,
   verbose = TRUE,
+  calculate_mims = FALSE,
   ...
 )
 
 summarise_daily_actigraphy(
   x,
-  units = "1 min",
+  unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
   trim = FALSE,
   verbose = TRUE,
+  calculate_mims = FALSE,
   ...
 )
 
 summarize_actigraphy(
   x,
-  units = "1 min",
+  unit = "1 min",
   .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...
@@ -37,7 +39,7 @@ summarize_actigraphy(
 
 summarise_actigraphy(
   x,
-  units = "1 min",
+  unit = "1 min",
   .fns = list(mean = mean, median = median),
   verbose = TRUE,
   ...
@@ -47,7 +49,7 @@ summarise_actigraphy(
 \item{x}{an AccData object.  If `x` is a character, then
 \code{\link{read_actigraphy}} will be run}
 
-\item{units}{units to group the data to take the statistic over}
+\item{unit}{units to group the data to take the statistic over}
 
 \item{fix_zeros}{Should \code{\link{fix_zeros}} be run before calculating
 the measures?}
@@ -62,6 +64,9 @@ the beginning and the end of the time course?
 observation carried forward?}
 
 \item{verbose}{print diagnostic messages}
+
+\item{calculate_mims}{Should MIMS units be calculated?
+Passed to \code{\link{calculate_measures}}}
 
 \item{...}{Additional arguments to pass to
 \code{\link{read_actigraphy}}}
