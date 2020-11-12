@@ -1,3 +1,13 @@
+copy_attributes = function(res, old_at) {
+  new_at = attributes(res)
+  sd = setdiff(names(old_at), names(new_at))
+  rm(new_at)
+  for (isd in sd) {
+    attr(res, isd) = old_at[[isd]]
+  }
+  return(res)
+}
+
 #' Read Actigraphy File
 #'
 #' @param file file to read
@@ -110,13 +120,16 @@ test_unzip_file = function(file) {
     }
     res = do.call(func, args = args)
     # reordering columns
-    hdr = attributes(res)$header
+    tmp_at = attributes(res)
 
     cn = colnames(res)
     cn  = unique(c("time", "X", "Y", "Z", cn))
     cn = intersect(cn, colnames(res))
     res = res[, cn]
+    res = copy_attributes(res, tmp_at)
+    rm(tmp_at)
 
+    hdr = attributes(res)$header
     if (!is.null(hdr)) {
       hdr = lapply(hdr, function(x) {
         if (length(x) == 0) {
