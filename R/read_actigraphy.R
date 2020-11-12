@@ -110,12 +110,13 @@ test_unzip_file = function(file) {
     }
     res = do.call(func, args = args)
     # reordering columns
+    hdr = attributes(res)$header
+
     cn = colnames(res)
     cn  = unique(c("time", "X", "Y", "Z", cn))
     cn = intersect(cn, colnames(res))
     res = res[, cn]
 
-    hdr = attributes(res)$header
     if (!is.null(hdr)) {
       hdr = lapply(hdr, function(x) {
         if (length(x) == 0) {
