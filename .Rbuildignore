@@ -12,3 +12,4 @@
 ^pkgdown$
 ^SummarizedActigraphy\.Rproj$
 ^README_cache$
+^\.github$

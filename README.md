@@ -1,28 +1,31 @@
 
+<!-- badges: start -->
+
 [![Travis build
 status](https://travis-ci.com/muschellij2/SummarizedActigraphy.svg?branch=master)](https://travis-ci.com/muschellij2/SummarizedActigraphy)
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/muschellij2/SummarizedActigraphy?branch=master&svg=true)](https://ci.appveyor.com/project/muschellij2/SummarizedActigraphy)
 [![Coverage
 status](https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/SummarizedActigraphy)
+[![R build
+status](https://github.com/muschellij2/SummarizedActigraphy/workflows/R-CMD-check/badge.svg)](https://github.com/muschellij2/SummarizedActigraphy/actions)
+<!-- badges: end -->
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-SummarizedActigraphy Package:
-=============================
+# SummarizedActigraphy Package:
 
 The goal of `SummarizedActigraphy` is to provide functions for reading
 Actigraphy data and turn it into `SummarizedExperiment`s.
 
-Installation
-------------
+## Installation
 
 You can install `SummarizedActigraphy` from GitHub with:
 
     # install.packages("remotes")
     remotes::install_github("muschellij2/SummarizedActigraphy")
 
-Reading in some data
---------------------
+## Reading in some data
 
     library(SummarizedActigraphy)
     url = paste0("https://github.com/THLfi/read.gt3x/files/",
@@ -89,8 +92,7 @@ Reading in some data
     #> # … with 1,430 more rows, and 3 more variables: MEDAD_median <dbl>,
     #> #   mean_r_mean <dbl>, mean_r_median <dbl>
 
-Converting to wide 1440 format
-------------------------------
+## Converting to wide 1440 format
 
     hms_times = structure(seq(0, 86340, by = 60), class = c("hms", "difftime"),
                           units = "secs")
