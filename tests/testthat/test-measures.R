@@ -10,7 +10,7 @@ path = gt3x_file
 
 csv_file = tempfile(fileext = ".csv.gz")
 dl = download.file(url = "https://ndownloader.figshare.com/files/24459683",
-                    destfile = csv_file)
+                    destfile = csv_file, mode = "wb")
 
 
 testthat::test_that("Calculating Summaries Works", {
