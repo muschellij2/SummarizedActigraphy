@@ -1,3 +1,7 @@
+# SummarizedActigraphy 0.3.1
+
+* Added `by_second` option for `fix_zeros`.
+
 # SummarizedActigraphy 0.3.0
 
 * Slot is now `data` not `data.out` in `read_actigraphy`.

@@ -13,6 +13,7 @@ calculate_measures(
   unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  by_second = FALSE,
   trim = FALSE,
   dynamic_range = c(-6, 6),
   calculate_mims = TRUE,
@@ -44,6 +45,9 @@ the measures?}
 
 \item{fill_in}{if \code{fix_zeros = TRUE}, should the zeros be
 filled in with the last}
+
+\item{by_second}{Should the last observation carried forward be done
+only within the same second?}
 
 \item{trim}{if \code{fix_zeros = TRUE},
 should the time course be trimmed for zero values at

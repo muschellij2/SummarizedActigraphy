@@ -3,21 +3,83 @@ testthat::context("Calculating Summaries")
 url = paste0("https://github.com/THLfi/read.gt3x/files/",
              "3522749/GT3X%2B.01.day.gt3x.zip")
 destfile = tempfile(fileext = ".zip")
-dl = utils::download.file(url, destfile = destfile)
+dl = utils::download.file(url, destfile = destfile, mode = "wb")
 gt3x_file = utils::unzip(destfile, exdir = tempdir())
 gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 
+csv_file = tempfile(fileext = ".csv.gz")
+dl = download.file(url = "https://ndownloader.figshare.com/files/24459683",
+                    destfile = csv_file)
+
 
 testthat::test_that("Calculating Summaries Works", {
+  csv = read_acc_csv(csv_file)
+  csv = csv$data
   res = read_actigraphy(path)
+  lubridate::tz(res$data$time) = "UTC"
 
+  xyz = c("X", "Y", "Z")
+  testthat::expect_true(all(unlist(c(csv[60631,xyz])) == 0))
+  testthat::expect_true(all(unlist(c(res$data[60631,xyz])) == 0))
+
+  csv_output = calculate_measures(csv, calculate_mims = FALSE)
   output = calculate_measures(res, calculate_mims = FALSE)
+  testthat::expect_equal(csv_output, output)
   cm = colMeans(output[c("AI", "SD", "MAD")])
+
   testthat::expect_equal(
     cm,
-    c(AI = 1.55390057389385, SD = 0.0501211543332476, MAD = 0.0294511550834217
-    ), tolerance = 1e-5
+    c(AI = 1.93594188261824, SD = 0.0650732323834855, MAD = 0.0325750622274331),
+    # c(AI = 1.55390057389385, SD = 0.0501211543332476, MAD = 0.0294511550834217),
+    tolerance = 1e-5
+  )
+
+
+
+  ##################################
+  # BY second
+  ##################################
+  csv_fixed = fix_zeros(csv, by_second = FALSE)
+  testthat::expect_false(all(unlist(c(csv_fixed[60631,xyz])) == 0))
+  rm(csv_fixed)
+
+  # zeros are still there - stays on one second
+  csv = fix_zeros(csv, by_second = TRUE)
+  testthat::expect_true(all(unlist(c(csv[60631,xyz])) == 0))
+
+  csv_output = calculate_measures(csv, fix_zeros = FALSE, calculate_mims = FALSE)
+  output = calculate_measures(res, by_second = TRUE, calculate_mims = FALSE)
+  testthat::expect_equal(csv_output, output)
+  cm = colMeans(output[c("AI", "SD", "MAD")])
+
+  testthat::expect_equal(
+    cm,
+    c(AI = 1.93596393318777, SD = 0.065882608891451, MAD = 0.0334080714317491),
+    # c(AI = 1.55390057389385, SD = 0.0501211543332476, MAD = 0.0294511550834217),
+    tolerance = 1e-5
+  )
+
+
+})
+
+testthat::test_that("Calculating Summaries BY_SECOND", {
+  csv = read_acc_csv(csv_file)
+  csv = csv$data
+  res = read_actigraphy(path)
+  lubridate::tz(res$data$time) = "UTC"
+
+
+  csv_output = calculate_measures(csv, calculate_mims = FALSE)
+  output = calculate_measures(res, calculate_mims = FALSE)
+  testthat::expect_equal(csv_output, output)
+  cm = colMeans(output[c("AI", "SD", "MAD")])
+
+  testthat::expect_equal(
+    cm,
+    c(AI = 1.93594188261824, SD = 0.0650732323834855, MAD = 0.0325750622274331),
+    # c(AI = 1.55390057389385, SD = 0.0501211543332476, MAD = 0.0294511550834217),
+    tolerance = 1e-5
   )
 })
 

@@ -14,6 +14,8 @@
 #' the measures?
 #' @param fill_in if \code{fix_zeros = TRUE}, should the zeros be
 #' filled in with the last
+#' @param by_second Should the last observation carried forward be done
+#' only within the same second?
 #' @param trim if \code{fix_zeros = TRUE},
 #' should the time course be trimmed for zero values at
 #' the beginning and the end of the time course?
@@ -27,6 +29,7 @@ calculate_measures = function(
   df, unit = "1 min",
   fix_zeros = TRUE,
   fill_in = TRUE,
+  by_second = FALSE,
   trim = FALSE,
   dynamic_range = c(-6, 6),
   calculate_mims = TRUE,
@@ -42,7 +45,7 @@ calculate_measures = function(
         paste0("Fixing Zeros with fix_zeros")
       )
     }
-    df = fix_zeros(df, fill_in = fill_in, trim = trim)
+    df = fix_zeros(df, fill_in = fill_in, trim = trim, by_second = by_second)
   }
   if (verbose) {
     message("Calculating ai0")

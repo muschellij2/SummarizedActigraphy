@@ -6,6 +6,8 @@
 #' observation carried forward?
 #' @param trim Should the time course be trimmed for zero values at
 #' the beginning and the end of the time course?
+#' @param by_second Should the last observation carried forward be done
+#' only within the same second?
 #'
 #' @return A data set with the zeros filled in
 #' @export
@@ -27,7 +29,9 @@
 #' class(acc) = "AccData"
 #' idle_na_locf(acc)
 #' fix_zeros(acc, trim = TRUE)
-fix_zeros = function(df, fill_in = TRUE,
+fix_zeros = function(df,
+                     fill_in = TRUE,
+                     by_second = FALSE,
                      trim = FALSE) {
   acc_data = is.AccData(df)
   if (acc_data) {
@@ -49,7 +53,7 @@ fix_zeros = function(df, fill_in = TRUE,
   df$Y[zero] = NA
   df$Z[zero] = NA
   if (fill_in) {
-    df =  idle_na_locf(df)
+    df =  idle_na_locf(df, by_second = by_second)
   }
   if (acc_data) {
     xdf$data = df
@@ -60,7 +64,9 @@ fix_zeros = function(df, fill_in = TRUE,
 
 #' @rdname fix_zeros
 #' @export
-idle_na_locf = function(df) {
+idle_na_locf = function(df, by_second = FALSE) {
+  second = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "second"))
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
@@ -68,9 +74,24 @@ idle_na_locf = function(df) {
   }
   df = sort_time_df(df)
 
-  df$X = zoo::na.locf(df$X, na.rm = FALSE)
-  df$Y = zoo::na.locf(df$Y, na.rm = FALSE)
-  df$Z = zoo::na.locf(df$Z, na.rm = FALSE)
+  if (by_second) {
+    df = ensure_header_timestamp(df)
+    df = df %>%
+      dplyr::mutate(second = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                   unit = "1 second")) %>%
+      dplyr::group_by(second)
+  }
+
+  df = df %>%
+    dplyr::mutate(X = zoo::na.locf(X, na.rm = FALSE),
+                  Y = zoo::na.locf(Y, na.rm = FALSE),
+                  Z = zoo::na.locf(Z, na.rm = FALSE)
+    )
+  if (by_second) {
+    df = df %>%
+      dplyr::select(-second) %>%
+      dplyr::ungroup()
+  }
 
   df$X[is.na(df$X)] = 0
   df$Y[is.na(df$Y)] = 0

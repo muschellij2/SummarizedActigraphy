@@ -1,7 +1,7 @@
 Type: Package
 Package: SummarizedActigraphy
 Title: Coerce 'Actigraphy' to Summarized Experiments
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person(given = "John",
            family = "Muschelli",
