@@ -89,8 +89,9 @@ idle_na_locf = function(df, by_second = FALSE) {
     )
   if (by_second) {
     df = df %>%
+      dplyr::ungroup() %>%
       dplyr::select(-second) %>%
-      dplyr::ungroup()
+      dplyr::rename(time = HEADER_TIME_STAMP)
   }
 
   df$X[is.na(df$X)] = 0
