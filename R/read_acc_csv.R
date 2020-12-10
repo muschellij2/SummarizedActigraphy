@@ -31,24 +31,13 @@ sub_thing = function(hdr, string) {
 #' }
 
 read_acc_csv = function(file, ..., only_xyz = TRUE) {
-  hdr = readLines(file, n = 10)
-  st = sub_thing(hdr, "Start Time")
-  sd = sub_thing(hdr, "Start Date")
-  format = sub(".*date format (.*) (Filter|at).*", "\\1", hdr[1])
-  if (format == "") {
-    warning("No format for date in the header, using mdy")
-    format = "mdy"
-  } else {
-    format = tolower(format)
-    format = c(sapply(strsplit(format, "/"), substr, 1,1))
-    format = paste(format, collapse = "")
-  }
-  all_formats = c("ydm", "dym", "ymd", "myd", "dmy", "mdy")
-  stopifnot(format %in% all_formats)
-  lubridate_func = paste0(format, "_hms")
-  lubridate_func = utils::getFromNamespace(lubridate_func, "lubridate")
-  start_date = do.call(lubridate_func, args = list(paste0(sd, " ", st)))
-  srate = as.numeric(sub(".*at (\\d*) Hz.*", "\\1", hdr[1]))
+  L = extract_acc_header(file)
+  hdr = L$header
+  srate = L$sample_rate
+  lubridate_func = L$lubridate_func
+  format = L$format
+  start_date = L$start_date
+
 
   suppressWarnings({
     df = readr::read_csv(
@@ -89,6 +78,44 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
   }
   df = df %>%
     dplyr::rename(time = HEADER_TIME_STAMP)
+
+  df = tibble::as_tibble(df)
+  L = list(
+    header = hdr,
+    parsed_header = L$parsed_header,
+    data = df
+  )
+}
+
+#' @rdname read_acc_csv
+#' @export
+extract_acc_header = function(file) {
+  hdr = readLines(file, n = 10)
+  st = sub_thing(hdr, "Start Time")
+  sd = sub_thing(hdr, "Start Date")
+  format = sub(".*date format (.*) (Filter|at).*", "\\1", hdr[1])
+  if (format == "") {
+    warning("No format for date in the header, using mdy")
+    format = "mdy"
+  } else {
+    format = tolower(format)
+    format = c(sapply(strsplit(format, "/"), substr, 1,1))
+    format = paste(format, collapse = "")
+  }
+  all_formats = c("ydm", "dym", "ymd", "myd", "dmy", "mdy")
+  stopifnot(format %in% all_formats)
+  lubridate_func = paste0(format, "_hms")
+  lubridate_func = utils::getFromNamespace(lubridate_func, "lubridate")
+  start_date = do.call(lubridate_func, args = list(paste0(sd, " ", st)))
+  srate = as.numeric(sub(".*at (\\d*) Hz.*", "\\1", hdr[1]))
+  L = list(
+    format = format,
+    start_date = start_date,
+    sample_rate = srate,
+    lubridate_func = lubridate_func)
+  parsed_header = try({
+    parse_acc_header(hdr)
+  }, silent = FALSE)
   parsed_header = try({
     parse_acc_header(hdr)
   }, silent = FALSE)
@@ -96,15 +123,11 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
     warning("Header parsing errored, no parsed header returned")
     parsed_header = NULL
   }
+  L$parsed_header = parsed_header
+  L$header = hdr
 
-  df = tibble::as_tibble(df)
-  L = list(
-    header = hdr,
-    parsed_header = parsed_header,
-    data = df
-  )
+  return(L)
 }
-
 
 parse_acc_header = function(hdr) {
   if (length(hdr) == 1 && file.exists(hdr)) {

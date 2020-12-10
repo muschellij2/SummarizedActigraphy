@@ -2,9 +2,12 @@
 % Please edit documentation in R/read_acc_csv.R
 \name{read_acc_csv}
 \alias{read_acc_csv}
+\alias{extract_acc_header}
 \title{Read ActiGraph Accelerometer CSV}
 \usage{
 read_acc_csv(file, ..., only_xyz = TRUE)
+
+extract_acc_header(file)
 }
 \arguments{
 \item{file}{CSV file to read in}
