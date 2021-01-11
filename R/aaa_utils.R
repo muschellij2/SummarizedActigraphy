@@ -24,4 +24,3 @@ quick_check = function(df) {
   stopifnot(max(abs(df$VM_check - df$`Vector Magnitude`)) <
               1e-5)
 }
-
