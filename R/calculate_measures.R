@@ -163,6 +163,11 @@ calculate_mims = function(
   ...) {
   HEADER_TIME_STAMP = NULL
   rm(list= "HEADER_TIME_STAMP")
+  check = check_dynamic_range(df, dynamic_range = dynamic_range)
+  if (!check) {
+    msg = "Dynamic range does not cover all the data in df, please check data"
+    warning(msg)
+  }
   df = ensure_header_timestamp(df)
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for calculating MIMS")
@@ -193,5 +198,35 @@ ensure_header_timestamp = function(df) {
   df = df %>%
     dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
   df
+}
+
+check_dynamic_range = function(df, dynamic_range = c(-6, 6)) {
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  hdr = NULL
+  if (is.AccData(df)) {
+    hdr = df$header
+    if (is.null(dynamic_range)) {
+      dynamic_range = c(hdr$Value[hdr$Field== "Acceleration Min"],
+                        hdr$Value[hdr$Field== "Acceleration Max"])
+      dynamic_range = as.numeric(dynamic_range)
+      if (length(dynamic_range) == 0) {
+        dynamic_range = NULL
+      }
+    }
+    df = df$data
+  }
+  stopifnot(length(dynamic_range) == 2,
+            is.numeric(dynamic_range))
+
+  cn = colnames(df)
+  if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
+    df = df %>%
+      dplyr::rename(HEADER_TIME_STAMP = time)
+  }
+  df = df %>%
+    dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  r = range(df[xyz], na.rm = TRUE)
+  all(r >= dynamic_range[1] & r <= dynamic_range[2])
 }
 
