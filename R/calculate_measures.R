@@ -226,7 +226,7 @@ check_dynamic_range = function(df, dynamic_range = c(-6, 6)) {
   }
   df = df %>%
     dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
-  r = range(df[xyz], na.rm = TRUE)
+  r = range(df[SummarizedActigraphy::xyz], na.rm = TRUE)
   all(r >= dynamic_range[1] & r <= dynamic_range[2])
 }
 
