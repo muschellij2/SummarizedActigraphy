@@ -28,7 +28,7 @@ calculate_n_idle(df, unit = "1 min")
 
 calculate_mad(df, unit = "1 min")
 
-calculate_auc(df, unit = "1 min")
+calculate_auc(df, unit = "1 min", sample_rate = NULL, truncate = FALSE)
 
 calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
 }
@@ -64,6 +64,10 @@ observation carried forward?}
 \item{verbose}{print diagnostic messages}
 
 \item{...}{additional arguments to pass to [MIMSunit::mims_unit]}
+
+\item{sample_rate}{sample rate of data, if not specified in header of object}
+
+\item{truncate}{truncate small values}
 }
 \value{
 A data set with the calculated features

@@ -157,29 +157,68 @@ calculate_mad = function(df, unit = "1 min") {
 
 #' @export
 #' @rdname calculate_measures
-calculate_auc = function(df, unit = "1 min") {
-  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+#' @param sample_rate sample rate of data, if not specified in header of object
+#' @param truncate truncate small values
+calculate_auc = function(df, unit = "1 min",
+                         sample_rate = NULL,
+                         truncate = FALSE) {
+  dtime = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time", "dtime"))
   AUC_X = AUC_Y = AUC_Z = NULL
   rm(list= c("AUC_X", "AUC_Z", "AUC_Y"))
   df = ensure_header_timestamp(df)
+  if (is.null(sample_rate)) {
+    sample_rate = attr(df, "sample_rate")
+  }
 
-  df %>%
+  n_total = n_in_interval(unit, sample_rate)
+  df = df %>%
     dplyr::mutate(
       X = abs(X),
       Y = abs(Y),
       Z = abs(Z),
-      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                unit)) %>%
-    dplyr::group_by(HEADER_TIME_STAMP) %>%
-    dplyr::summarise(
-      AUC_X = sum(X),
-      AUC_Y = sum(Y),
-      AUC_Z = sum(Z)) %>%
-    ungroup() %>%
+      floor_HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                      unit))
+  df = df %>%
+    dplyr::group_by(floor_HEADER_TIME_STAMP) %>%
+    # trapezoidal
+    dplyr::mutate(
+      dtime = difftime(HEADER_TIME_STAMP, dplyr::lag(HEADER_TIME_STAMP, n = 1),
+                       units = "secs"),
+      dtime = as.numeric(dtime),
+      X = (X + dplyr::lag(X, n = 1)) * dtime,
+      Y = (Y + dplyr::lag(Y, n = 1)) * dtime,
+      Z = (Z + dplyr::lag(Z, n = 1)) * dtime
+    )
+  df = df %>% dplyr::summarise(
+    good = sum(!(is.na(X) | is.na(Y) | is.na(Z))) >= 0.9 * n_total,
+    AUC_X = sum(X, na.rm  = TRUE) / 2,
+    AUC_Y = sum(Y, na.rm  = TRUE) / 2,
+    AUC_Z = sum(Z, na.rm  = TRUE) / 2
+  ) %>%
+    dplyr::rename(HEADER_TIME_STAMP = floor_HEADER_TIME_STAMP) %>%
+    dplyr::ungroup()
+  df = df %>%
+    dplyr::mutate(
+      AUC_X = ifelse(!good, NA, AUC_X),
+      AUC_Y = ifelse(!good, NA, AUC_Y),
+      AUC_Z = ifelse(!good, NA, AUC_Z)
+    )
+  if (truncate) {
+    minimum = 1e-04 * n_total
+    df = df %>%
+      dplyr::mutate(
+        AUC_X = ifelse(AUC_X <= minimum, 0, AUC_X),
+        AUC_Y = ifelse(AUC_Y <= minimum, 0, AUC_Y),
+        AUC_Z = ifelse(AUC_Z <= minimum, 0, AUC_Z)
+      )
+  }
+  df = df %>%
     dplyr::mutate(
       AUC = AUC_X + AUC_Y + AUC_Z
-    )
+    ) %>%
+    dplyr::select(-good)
+
 }
 
 
@@ -216,8 +255,13 @@ calculate_mims = function(
 ensure_header_timestamp = function(df) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  sample_rate = NULL
   if (is.AccData(df)) {
+    sample_rate = df$freq
     df = df$data
+  }
+  if (is.null(sample_rate)) {
+    sample_rate = attr(df, "sample_rate")
   }
   cn = colnames(df)
   if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
@@ -226,6 +270,7 @@ ensure_header_timestamp = function(df) {
   }
   df = df %>%
     dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  attr(df, "sample_rate") = sample_rate
   df
 }
 
@@ -259,3 +304,23 @@ check_dynamic_range = function(df, dynamic_range = c(-6, 6)) {
   all(r >= dynamic_range[1] & r <= dynamic_range[2])
 }
 
+n_in_interval = function(epoch, sample_rate = NULL) {
+  stopifnot(!is.null(sample_rate))
+  epoch = strsplit(epoch, " ")[[1]]
+  if (length(epoch) == 1) {
+    token = 1
+  } else {
+    stopifnot(length(epoch) == 2)
+    token = as.numeric(epoch[1])
+    epoch = epoch[2]
+  }
+  epoch = sub("s$", "", trimws(epoch))
+  epoch = match.arg(epoch, c("seconds", "minutes", "hours", "days"))
+  multiplier = switch(epoch,
+                      seconds = 1,
+                      minutes = 60,
+                      hours = 60*60,
+                      days = 60*60*24)
+  n = token * sample_rate * multiplier
+  return(n)
+}
