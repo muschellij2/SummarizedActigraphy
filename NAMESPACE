@@ -3,6 +3,7 @@
 export("%>%")
 export(actigraphy_df_to_SummarizedExperiment)
 export(calculate_ai)
+export(calculate_auc)
 export(calculate_mad)
 export(calculate_measures)
 export(calculate_mims)

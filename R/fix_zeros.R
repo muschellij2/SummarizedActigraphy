@@ -46,6 +46,7 @@ fix_zeros = function(df,
     not_zero = inverse.rle(not_zero)
     zero = zero[not_zero]
     df = df[ not_zero, ]
+    zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
   }
 
   names(zero) = NULL

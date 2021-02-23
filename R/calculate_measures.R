@@ -154,6 +154,35 @@ calculate_mad = function(df, unit = "1 min") {
     )
 }
 
+
+#' @export
+#' @rdname calculate_measures
+calculate_auc = function(df, unit = "1 min") {
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  AUC_X = AUC_Y = AUC_Z = NULL
+  rm(list= c("AUC_X", "AUC_Z", "AUC_Y"))
+  df = ensure_header_timestamp(df)
+
+  df %>%
+    dplyr::mutate(
+      X = abs(X),
+      Y = abs(Y),
+      Z = abs(Z),
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                unit)) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      AUC_X = sum(X),
+      AUC_Y = sum(Y),
+      AUC_Z = sum(Z)) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      AUC = AUC_X + AUC_Y + AUC_Z
+    )
+}
+
+
 #' @export
 #' @rdname calculate_measures
 calculate_mims = function(

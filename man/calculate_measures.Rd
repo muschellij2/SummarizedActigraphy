@@ -5,6 +5,7 @@
 \alias{calculate_ai}
 \alias{calculate_n_idle}
 \alias{calculate_mad}
+\alias{calculate_auc}
 \alias{calculate_mims}
 \title{Calculate Summary Measures from Raw Accelerometer Data}
 \usage{
@@ -26,6 +27,8 @@ calculate_ai(df, unit = "1 min")
 calculate_n_idle(df, unit = "1 min")
 
 calculate_mad(df, unit = "1 min")
+
+calculate_auc(df, unit = "1 min")
 
 calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
 }
