@@ -28,7 +28,13 @@ calculate_n_idle(df, unit = "1 min")
 
 calculate_mad(df, unit = "1 min")
 
-calculate_auc(df, unit = "1 min", sample_rate = NULL, truncate = FALSE)
+calculate_auc(
+  df,
+  unit = "1 min",
+  sample_rate = NULL,
+  allow_truncation = FALSE,
+  verbose = TRUE
+)
 
 calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
 }
@@ -67,11 +73,19 @@ observation carried forward?}
 
 \item{sample_rate}{sample rate of data, if not specified in header of object}
 
-\item{truncate}{truncate small values}
+\item{allow_truncation}{truncate small values}
 }
 \value{
 A data set with the calculated features
 }
 \description{
 Calculate Summary Measures from Raw Accelerometer Data
+}
+\examples{
+file = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+package = "SummarizedActigraphy")
+res = read_actigraphy(file)
+measures = calculate_measures(res, dynamic_range = NULL)
+auc = calculate_auc(res)
+
 }

@@ -97,12 +97,18 @@ test_unzip_file = function(file) {
   ext = tolower(ext)
 
   if (is.null(read_function)) {
+    if (ext == "" && dir.exists(file)) {
+      L = list.files(path = file)
+      if (any(c("info.txt", "log.bin", "activity.bin") %in% L)) {
+        ext = "gt3x"
+      }
+    }
     func = switch(
       ext,
       # bin = GGIR::g.binread,
+      gt3x = read.gt3x::read.gt3x,
       cwa = GGIR::g.cwaread,
-      GGIR::g.readaccfile,
-      gt3x = read.gt3x::read.gt3x
+      GGIR::g.readaccfile
     )
   } else {
     func = read_function
