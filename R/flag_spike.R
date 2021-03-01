@@ -7,6 +7,8 @@
 #' @return A data set back
 #' @export
 #'
+#' @source \url{https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm}
+#'
 #' @examples
 #' file = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
@@ -30,7 +32,7 @@ flag_spike = function(df, spike_size = 11) {
   df = ensure_header_timestamp(df, subset = FALSE)
   df = df %>%
     dplyr::mutate(
-      spike =
+      flag_spike =
         abs(c(0, diff(X))) >= spike_size |
         abs(c(0, diff(Y))) >= spike_size |
         abs(c(0, diff(Z))) >= spike_size
@@ -184,7 +186,7 @@ flag_spike_second = function(df, spike_size = 11) {
     # "spike" is really the range is greater than spike_size
     # don't need abs because range is always ordered
     dplyr::mutate(
-      spike_second =
+      flag_spike_second =
         diff(range(X, na.rm = TRUE)) >= spike_size |
         diff(range(Y, na.rm = TRUE)) >= spike_size |
         diff(range(Z, na.rm = TRUE)) >= spike_size
@@ -220,7 +222,7 @@ flag_device_limit = function(df, dynamic_range = NULL, epsilon = 0.05) {
   df = ensure_header_timestamp(df, subset = FALSE)
   df = df %>%
     dplyr::mutate(
-      device_limit =
+      flag_device_limit =
         abs(X) >= limit |
         abs(Y) >= limit |
         abs(Z) >= limit
@@ -252,13 +254,14 @@ flag_same_value = function(df, min_length = 1) {
   dynamic_range = attr(df, "dynamic_range")
   df = df %>%
     dplyr::mutate(
-      same_value  =
+      flag_same_value  =
         c(1, diff(X)) == 0 &
         c(1, diff(Y)) == 0 &
         c(1, diff(Z)) == 0
     )
   df = df %>%
-    dplyr::mutate(same_value = mark_condition(same_value, min_length = min_length))
+    dplyr::mutate(flag_same_value = mark_condition(flag_same_value,
+                                                   min_length = min_length))
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range")   = dynamic_range
   df
@@ -281,10 +284,11 @@ flag_all_zero = function(df, min_length = 3) {
   dynamic_range = attr(df, "dynamic_range")
   df = df %>%
     dplyr::mutate(
-      all_zero = X == 0 & Y == 0 & Z == 0
+      flag_all_zero = X == 0 & Y == 0 & Z == 0
     )
   df = df %>%
-    dplyr::mutate(all_zero = mark_condition(all_zero, min_length = min_length))
+    dplyr::mutate(flag_all_zero = mark_condition(flag_all_zero,
+                                                 min_length = min_length))
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range")   = dynamic_range
   df
@@ -316,12 +320,72 @@ flag_impossible = function(df, min_length = 6) {
       abs_X = abs(X),
       abs_Y = abs(Y),
       abs_Z = abs(Z),
-      impossible = abs_X <= 0.01 | abs_Y <= 0.01 | abs_Z <= 0.01,
-      impossible = impossible &
+      flag_impossible = abs_X <= 0.01 | abs_Y <= 0.01 | abs_Z <= 0.01,
+      flag_impossible = flag_impossible &
         (abs_X >= 1.25 | abs_Y >= 1.25 | abs_Z >= 1.25)
     ) %>%
     dplyr::select(-abs_X, -abs_Y, -abs_Z)
   df = df %>%
-    dplyr::mutate(impossible = mark_condition(impossible, min_length = min_length))
+    dplyr::mutate(flag_impossible = mark_condition(flag_impossible,
+                                                   min_length = min_length))
   df
+}
+
+#' Flag Quality Control Values
+#'
+#' @param df A data set of actigraphy
+#' @param verbose print diagnostic messages
+#' @param dynamic_range dynamic range of the device, used to find the
+#' device limit.
+#'
+#' @return A data set
+#' @export
+#'
+#' @examples
+#' file = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#' package = "SummarizedActigraphy")
+#' res = read_actigraphy(file)
+#' out = flag_qc(res)
+flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
+  df = ensure_header_timestamp(df, subset = FALSE)
+  if (any(startsWith(colnames(df), "flag"))) {
+    warning(paste0(
+      "Data has columns starting with flag - may affect results",
+      " and column will be removed"))
+  }
+  if (verbose) {
+    message("Flagging Spikes")
+  }
+  df = flag_spike(df)
+  if (verbose) {
+    message("Flagging Interval Jumps")
+  }
+  df = flag_interval_jump(df)
+  if (verbose) {
+    message("Flagging Spikes at Second-level")
+  }
+  df = flag_spike_second(df)
+  if (verbose) {
+    message("Flagging Repeated Values")
+  }
+  df = flag_same_value(df)
+  if (verbose) {
+    message("Flagging Device Limit Values")
+  }
+  df = flag_device_limit(df, dynamic_range = dynamic_range)
+  if (verbose) {
+    message("Flagging Zero Values")
+  }
+  df = flag_all_zero(df)
+  if (verbose) {
+    message("Flagging 'Impossible' Values")
+  }
+  df = flag_impossible(df)
+  df$flagged = rowSums(
+    df %>%
+      dplyr::select(dplyr::starts_with("flag_"))
+    )
+  df$flagged = df$flagged > 0
+  df %>%
+    dplyr::select(-dplyr::starts_with("flag_"))
 }

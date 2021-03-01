@@ -14,8 +14,8 @@ tidy_axes = function(df) {
   if (!requireNamespace("tidyr", quietly = TRUE)) {
     stop("tidyr required for tidy_axes")
   }
-  HEADER_TIME_STAMP = X = Y = Z = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z"))
+  time = HEADER_TIME_STAMP = X = Y = Z = NULL
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
   df = ensure_header_timestamp(df)
   cn = colnames(df)
   if (!"time" %in% cn && "HEADER_TIME_STAMP" %in% cn) {

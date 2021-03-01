@@ -9,6 +9,9 @@
 \alias{flag_all_zero}
 \alias{flag_impossible}
 \title{Flag Spikes}
+\source{
+\url{https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm}
+}
 \usage{
 flag_spike(df, spike_size = 11)
 
