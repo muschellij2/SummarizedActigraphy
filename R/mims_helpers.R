@@ -20,11 +20,14 @@ mims_default_extrapolation = function(df, dynamic_range = NULL) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_extrapolation")
   }
+  transforms = attr(df, "transformation")
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
   }
-  dynamic_range = SummarizedActigraphy::get_dynamic_range(df, dynamic_range = dynamic_range)
+  dynamic_range = SummarizedActigraphy::get_dynamic_range(
+    df,
+    dynamic_range = dynamic_range)
   # required for MIMS functionality
   df = ensure_header_timestamp(df)
   sample_rate = attr(df, "sample_rate")
@@ -40,8 +43,7 @@ mims_default_extrapolation = function(df, dynamic_range = NULL) {
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(attr(df, "transformation"),
-                                 "extrapolated")
+  attr(df, "transformation") = c(transforms, "extrapolated")
   df
 }
 
@@ -51,6 +53,8 @@ mims_default_interpolation = function(df) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_interpolation")
   }
+  transforms = attr(df, "transformation")
+
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -62,8 +66,7 @@ mims_default_interpolation = function(df) {
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(attr(df, "transformation"),
-                                 "interpolated")
+  attr(df, "transformation") = c(transforms, "interpolated")
   df
 }
 
@@ -75,6 +78,7 @@ mims_default_filtering = function(df) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_filtering")
   }
+  transforms = attr(df, "transformation")
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -99,7 +103,46 @@ mims_default_filtering = function(df) {
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(attr(df, "transformation"),
-                                 "filtered")
+  attr(df, "transformation") = c(transforms, "filtered")
+  df
+}
+
+#' Default MIMS Pre-processing
+#'
+#' @param df Data set of raw accelerometry values, usually time and X/Y/Z.
+#' Usually from \code{\link{read_actigraphy}}
+#' @param use_extrapolation If `TRUE` the function will apply extrapolation
+#' algorithm to the input signal, otherwise it will skip
+#' extrapolation but only linearly interpolate the signal to 100Hz.
+#' @param use_filtering If `TRUE` the function will apply bandpass
+#' filtering to the input signal, otherwise it will skip the filtering.
+#' @param verbose print diagnostic messages
+#' @param dynamic_range the dynamic ranges of the input signal.  Passed to
+#' \code{\link{mims_default_extrapolation}}.  Only needed if
+#' \code{use_extrapolation = TRUE}
+#'
+#' @return A process data set
+#' @export
+mims_default_processing = function(
+  df, use_extrapolation = TRUE, use_filtering = TRUE,
+  verbose = TRUE, dynamic_range = NULL) {
+  dynamic_range = get_dynamic_range(df, dynamic_range)
+  if (use_extrapolation) {
+    if (verbose) {
+      message("Running extrapolation")
+    }
+    df <- mims_default_extrapolation(df, dynamic_range)
+  } else {
+    if (verbose) {
+      message("Running interpolation")
+    }
+    df <- mims_default_interpolation(df)
+  }
+  if (use_filtering) {
+    if (verbose) {
+      message("Running filtering")
+    }
+    df = mims_default_filtering(df)
+  }
   df
 }

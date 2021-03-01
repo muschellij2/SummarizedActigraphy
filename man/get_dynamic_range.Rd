@@ -14,7 +14,7 @@ it will be guess from the header or the data}
 }
 \value{
 A length-2 numeric vector, or the original dynamic range (no
-checking done )
+checking done)
 }
 \description{
 Get Dynamic Range

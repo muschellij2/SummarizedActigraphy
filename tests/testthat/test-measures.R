@@ -95,12 +95,20 @@ testthat::test_that("Calculating Summaries Works", {
   res = read_actigraphy(file)
 
   if (requireNamespace("MIMSunit", quietly = TRUE)) {
-    output = calculate_measures(res, calculate_mims = TRUE)
+    output = calculate_measures(res, calculate_mims = TRUE, fix_zeros = TRUE)
+
+    testthat::expect_equal(
+      output$MIMS_UNIT,
+      c(63.242524442506, 54.5102327000229, 31.1747913899169, 25.2219789460452,
+        8.57512380428226, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13.8770214728778, 10.5567081544926,
+        0, 0, 0, 0, -0.01)
+    )
     cm = colMeans(output[c("AI", "SD", "MAD", "MIMS_UNIT")])
     testthat::expect_equal(
       cm,
       c(AI = 1.93017183478711, SD = 0.104740319672159, MAD = 0.0606835327590105,
-        MIMS_UNIT = 5.32015536241241)
+        MIMS_UNIT = 5.05239953439375)
       , tolerance = 1e-5
     )
     n_idle = calculate_n_idle(res, unit = "5 min")

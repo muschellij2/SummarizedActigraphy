@@ -24,3 +24,19 @@ quick_check = function(df) {
   stopifnot(max(abs(df$VM_check - df$`Vector Magnitude`)) <
               1e-5)
 }
+
+
+enorm = function(df) {
+  acc_data = is.AccData(df)
+  if (acc_data) {
+    xdf = df
+    df = df$data
+  }
+  df$enorm = sqrt(df$X^2 + df$Y^2 + df$Z^2)
+  if (acc_data) {
+    xdf$data = df
+    df = xdf
+    rm(xdf)
+  }
+  df
+}

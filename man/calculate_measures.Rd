@@ -6,6 +6,7 @@
 \alias{calculate_n_idle}
 \alias{calculate_mad}
 \alias{calculate_auc}
+\alias{calculate_fast_mims}
 \alias{calculate_mims}
 \title{Calculate Summary Measures from Raw Accelerometer Data}
 \usage{
@@ -34,6 +35,16 @@ calculate_auc(
   sample_rate = NULL,
   allow_truncation = FALSE,
   verbose = TRUE
+)
+
+calculate_fast_mims(
+  df,
+  unit = "1 min",
+  dynamic_range = NULL,
+  sample_rate = NULL,
+  allow_truncation = TRUE,
+  verbose = TRUE,
+  ...
 )
 
 calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
@@ -85,7 +96,11 @@ Calculate Summary Measures from Raw Accelerometer Data
 file = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 package = "SummarizedActigraphy")
 res = read_actigraphy(file)
-measures = calculate_measures(res, dynamic_range = NULL)
+measures = calculate_measures(res, dynamic_range = NULL,
+calculate_mims = FALSE)
 auc = calculate_auc(res)
+\donttest{
+mims = calculate_mims(res, dynamic_range = NULL)
+}
 
 }

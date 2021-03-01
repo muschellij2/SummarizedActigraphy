@@ -29,8 +29,12 @@
 #' file = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
-#' measures = calculate_measures(res, dynamic_range = NULL)
+#' measures = calculate_measures(res, dynamic_range = NULL,
+#' calculate_mims = FALSE)
 #' auc = calculate_auc(res)
+#' \donttest{
+#' mims = calculate_mims(res, dynamic_range = NULL)
+#' }
 #'
 calculate_measures = function(
   df, unit = "1 min",
@@ -107,9 +111,10 @@ calculate_ai = function(df, unit = "1 min") {
       AI = sqrt((
         var(X, na.rm = TRUE) +
           var(Y, na.rm = TRUE) +
-          var(Z, na.rm = TRUE)) / 3),
+          var(Z, na.rm = TRUE)) / 3)
     )
   sec_df %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit)) %>%
@@ -140,7 +145,8 @@ calculate_n_idle = function(df, unit = "1 min") {
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       n_idle = sum(is.na(r) | all_zero)
-    )
+    ) %>%
+    dplyr::ungroup()
 }
 
 #' @export
@@ -161,7 +167,8 @@ calculate_mad = function(df, unit = "1 min") {
       MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       mean_r = mean(r, na.rm = TRUE)
-    )
+    ) %>%
+    dplyr::ungroup()
 }
 
 
@@ -174,8 +181,8 @@ calculate_auc = function(df, unit = "1 min",
                          allow_truncation = FALSE,
                          verbose = TRUE
 ) {
-  floor_HEADER_TIME_STAMP = good = NULL
-  rm(list= c("floor_HEADER_TIME_STAMP", "good"))
+  dtime = good = NULL
+  rm(list = c("good", "dtime"))
   dtime = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time", "dtime"))
   AUC_X = AUC_Y = AUC_Z = NULL
@@ -195,9 +202,7 @@ calculate_auc = function(df, unit = "1 min",
     dplyr::mutate(
       X = abs(X),
       Y = abs(Y),
-      Z = abs(Z),
-      floor_HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                      unit))
+      Z = abs(Z))
   if (verbose) {
     message("Calculting trapezoids")
   }
@@ -210,7 +215,8 @@ calculate_auc = function(df, unit = "1 min",
       X = (X + dplyr::lag(X, n = 1)) / 2 * dtime,
       Y = (Y + dplyr::lag(Y, n = 1)) / 2 * dtime,
       Z = (Z + dplyr::lag(Z, n = 1)) / 2 * dtime
-    )
+    ) %>%
+    dplyr::select(-dtime)
   if (verbose) {
     message("Replacing first value as NA")
   }
@@ -219,29 +225,42 @@ calculate_auc = function(df, unit = "1 min",
     x
   }
   df = df %>%
-    dplyr::group_by(floor_HEADER_TIME_STAMP) %>%
+    dplyr::mutate(
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                unit)
+    ) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
     # trapezoidal
     dplyr::mutate(
       X = replace_first_na(X),
       Y = replace_first_na(Y),
       Z = replace_first_na(Z)
     )
+  df = df %>%
+    # ungroup for speed
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      good = !(is.na(X) | is.na(Y) | is.na(Z))
+    ) %>%
+    dplyr::group_by(HEADER_TIME_STAMP)
+
   if (verbose) {
     message("Calculating AUCs")
   }
-  df = df %>% dplyr::summarise(
-    good = sum(!(is.na(X) | is.na(Y) | is.na(Z))) >= 0.9 * n_total,
-    AUC_X = sum(X, na.rm  = TRUE),
-    AUC_Y = sum(Y, na.rm  = TRUE),
-    AUC_Z = sum(Z, na.rm  = TRUE)
-  ) %>%
-    dplyr::rename(HEADER_TIME_STAMP = floor_HEADER_TIME_STAMP) %>%
-    dplyr::ungroup()
+  df = df %>%
+    dplyr::summarise(
+      good = sum(good),
+      AUC_X = sum(X, na.rm = TRUE),
+      AUC_Y = sum(Y, na.rm = TRUE),
+      AUC_Z = sum(Z, na.rm = TRUE)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(good = good >= (0.9 * n_total))
   df = df %>%
     dplyr::mutate(
-      AUC_X = ifelse(!good, NA, AUC_X),
-      AUC_Y = ifelse(!good, NA, AUC_Y),
-      AUC_Z = ifelse(!good, NA, AUC_Z)
+      AUC_X = ifelse(good, AUC_X, NA),
+      AUC_Y = ifelse(good, AUC_Y, NA),
+      AUC_Z = ifelse(good, AUC_Z, NA)
     )
   if (allow_truncation) {
     if (verbose) {
@@ -266,6 +285,39 @@ calculate_auc = function(df, unit = "1 min",
       AUC = AUC_X + AUC_Y + AUC_Z
     ) %>%
     dplyr::select(-good)
+  df
+}
+
+#' @export
+#' @rdname calculate_measures
+calculate_fast_mims = function(
+  df,
+  unit = "1 min",
+  dynamic_range = NULL,
+  sample_rate = NULL,
+  allow_truncation = TRUE,
+  verbose = TRUE,
+  ...) {
+  args = list(df,
+              ...,
+              verbose = verbose,
+              dynamic_range = dynamic_range)
+  output_mims_per_axis = FALSE
+  if ("output_mims_per_axis" %in% names(args)) {
+    output_mims_per_axis = args$output_mims_per_axis
+    args$output_mims_per_axis = NULL
+  }
+  df = do.call(mims_default_processing, args = args)
+  df = calculate_auc(
+    df, unit = unit,
+    sample_rate = sample_rate,
+    allow_truncation = allow_truncation,
+    verbose = verbose
+  )
+  colnames(df) = sub("AUC", "MIMS_UNIT", colnames(df))
+  if (!output_mims_per_axis) {
+    df = df[, c("HEADER_TIME_STAMP", "MIMS_UNIT")]
+  }
   df
 }
 
@@ -302,14 +354,43 @@ calculate_mims = function(
 
 }
 
-ensure_header_timestamp = function(df) {
+#' Ensure `HEADER_TIME_STAMP` is in
+#'
+#' @param df A data set of time and X/Y/Z
+#' @param subset select only the columns of time and X/Y/Z
+#'
+#' @return A data set/`tibble`.  It does not return an `AccData` object
+#' @export
+#'
+#' @examples
+#' file = system.file("extdata",
+#' "TAS1H30182785_2019-09-17.gt3x",
+#' package = "SummarizedActigraphy")
+#' res = read_actigraphy(file, verbose = FALSE)
+#' df = ensure_header_timestamp(res)
+ensure_header_timestamp = function(df, subset = TRUE) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   sample_rate = NULL
+  dynamic_range = NULL
   if (is.AccData(df)) {
+    hdr = df$header
+    if (all(c("Field", "Value") %in% names(hdr))) {
+      dynamic_range = c(
+        hdr$Value[hdr$Field == "Acceleration Min"],
+        hdr$Value[hdr$Field == "Acceleration Max"])
+      dynamic_range = as.numeric(dynamic_range)
+    }
+    if (length(dynamic_range) == 0) {
+      dynamic_range = NULL
+    }
+
     sample_rate = df$freq
     df = df$data
+    attr(df, "dynamic_range") = dynamic_range
   }
+  dynamic_range = attr(df, "dynamic_range")
+
   if (is.null(sample_rate)) {
     sample_rate = attr(df, "sample_rate")
   }
@@ -318,9 +399,12 @@ ensure_header_timestamp = function(df) {
     df = df %>%
       dplyr::rename(HEADER_TIME_STAMP = time)
   }
-  df = df %>%
-    dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  if (subset) {
+    df = df %>%
+      dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
+  }
   attr(df, "sample_rate") = sample_rate
+  attr(df, "dynamic_range") = dynamic_range
   df
 }
 
@@ -331,7 +415,7 @@ ensure_header_timestamp = function(df) {
 #' it will be guess from the header or the data
 #'
 #' @return A length-2 numeric vector, or the original dynamic range (no
-#' checking done )
+#' checking done)
 #' @export
 get_dynamic_range = function(df, dynamic_range = NULL) {
   if (is.AccData(df)) {
@@ -344,7 +428,15 @@ get_dynamic_range = function(df, dynamic_range = NULL) {
         dynamic_range = NULL
       }
     }
+    drange = attr(df, "dynamic_range")
+    if (!is.null(drange)) {
+      dynamic_range = drange
+    }
     df = df$data
+  }
+  drange = attr(df, "dynamic_range")
+  if (!is.null(drange)) {
+    dynamic_range = drange
   }
   if (is.null(dynamic_range)) {
     warning("No dynamic range found in header, using data estimate")
