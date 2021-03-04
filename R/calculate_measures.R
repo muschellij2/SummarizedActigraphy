@@ -21,6 +21,9 @@
 #' the beginning and the end of the time course?
 #' observation carried forward?
 #' @param calculate_mims Should MIMS units be calculated?
+#' @param flag_data Should [SummarizedActigraphy::flag_qc()] be run?
+#' It will be executed after \code{fix_zeros} before any measure
+#' calculation
 #' @param ... additional arguments to pass to [MIMSunit::mims_unit]
 #'
 #' @return A data set with the calculated features
@@ -42,17 +45,20 @@ calculate_measures = function(
   fill_in = TRUE,
   by_second = FALSE,
   trim = FALSE,
-  dynamic_range = c(-6, 6),
+  dynamic_range = NULL,
   calculate_mims = TRUE,
+  flag_data = TRUE,
   verbose = TRUE,
   ...) {
 
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  if (calculate_mims) {
+  if (calculate_mims || flag_data) {
     dynamic_range = get_dynamic_range(df, dynamic_range)
   }
+  # keep flag here - so can calculate by epoch
   df = ensure_header_timestamp(df)
+  # or do flag_qc(verbose) if flag-dat = TRUE
   if (fix_zeros) {
     if (verbose) {
       message(
@@ -60,6 +66,13 @@ calculate_measures = function(
       )
     }
     df = fix_zeros(df, fill_in = fill_in, trim = trim, by_second = by_second)
+  }
+  if (flag_data) {
+    if (verbose) {
+      message("Flagging data")
+    }
+    df = flag_qc_all(df, dynamic_range = dynamic_range, verbose = verbose)
+    flags = calculate_flags(df, unit = unit)
   }
   if (verbose) {
     message("Calculating ai0")
@@ -81,12 +94,20 @@ calculate_measures = function(
   if (verbose) {
     message("Joining AI and MAD")
   }
+
+  rm(df)
   res = dplyr::full_join(ai0, mad)
   if (calculate_mims) {
     if (verbose) {
       message("Joining MIMS")
     }
     res = dplyr::full_join(res, mims)
+  }
+  if (flag_data) {
+    if (verbose) {
+      message("Joining flags")
+    }
+    res = dplyr::full_join(res, flags)
   }
   res = res %>%
     dplyr::rename(time = HEADER_TIME_STAMP)
@@ -123,6 +144,31 @@ calculate_ai = function(df, unit = "1 min") {
       AI = sum(AI)
     )
 }
+
+#' @export
+#' @rdname calculate_measures
+calculate_flags = function(df, unit = "1 min") {
+  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  df = ensure_header_timestamp(df, subset = FALSE)
+  if (!any(grepl("^flag", colnames(df)))) {
+    stop("flag is not in the data, please run flag_qc")
+  }
+
+  AI = NULL
+  rm(list= c("AI"))
+  df = df %>%
+    dplyr::mutate(
+      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                unit)) %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with("flag"), sum)
+      ) %>%
+    ungroup()
+  df
+}
+
 
 #' @export
 #' @rdname calculate_measures

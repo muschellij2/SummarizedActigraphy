@@ -3,6 +3,7 @@
 \name{calculate_measures}
 \alias{calculate_measures}
 \alias{calculate_ai}
+\alias{calculate_flags}
 \alias{calculate_n_idle}
 \alias{calculate_mad}
 \alias{calculate_auc}
@@ -17,13 +18,16 @@ calculate_measures(
   fill_in = TRUE,
   by_second = FALSE,
   trim = FALSE,
-  dynamic_range = c(-6, 6),
+  dynamic_range = NULL,
   calculate_mims = TRUE,
+  flag_data = TRUE,
   verbose = TRUE,
   ...
 )
 
 calculate_ai(df, unit = "1 min")
+
+calculate_flags(df, unit = "1 min")
 
 calculate_n_idle(df, unit = "1 min")
 
@@ -77,6 +81,10 @@ observation carried forward?}
 \item{dynamic_range}{Dynamic range of the device, in gravity units}
 
 \item{calculate_mims}{Should MIMS units be calculated?}
+
+\item{flag_data}{Should [SummarizedActigraphy::flag_qc()] be run?
+It will be executed after \code{fix_zeros} before any measure
+calculation}
 
 \item{verbose}{print diagnostic messages}
 

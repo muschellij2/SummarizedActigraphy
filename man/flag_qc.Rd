@@ -2,9 +2,12 @@
 % Please edit documentation in R/flag_spike.R
 \name{flag_qc}
 \alias{flag_qc}
+\alias{flag_qc_all}
 \title{Flag Quality Control Values}
 \usage{
 flag_qc(df, dynamic_range = NULL, verbose = TRUE)
+
+flag_qc_all(df, dynamic_range = NULL, verbose = TRUE)
 }
 \arguments{
 \item{df}{A data set of actigraphy}

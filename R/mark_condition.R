@@ -14,6 +14,9 @@
 #' mark_condition(x, 15)
 mark_condition = function(x, min_length = 1) {
   stopifnot(is.logical(x))
+  if (all(x) | !any(x)) {
+    return(x)
+  }
   bad = rle(x)
   # 3 contiguous
   min_observed_length = min(bad$lengths[bad$values])
