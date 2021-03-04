@@ -69,9 +69,9 @@ flag_interval_jump = function(df) {
 
   # data is now long by axis
   df = tidy_axes(df)
-  # sort it
-  df = df %>%
-    dplyr::arrange(time, axis, value)
+  # sort it - not needed
+  # df = df %>%
+  #   dplyr::arrange(time, axis, value)
   # round data, in case it's not rounded
   # needed because count() is using unique values
   df = df %>%
@@ -347,6 +347,13 @@ flag_impossible = function(df, min_length = 6) {
 #' res = read_actigraphy(file)
 #' out = flag_qc(res)
 flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
+  is_acc = is.AccData(df)
+  if (is_acc) {
+    hdr = df$header
+    freq = df$freq
+    filename = df$filename
+    missingness = df$missingness
+  }
   df = ensure_header_timestamp(df, subset = FALSE)
   if (any(startsWith(colnames(df), "flag"))) {
     warning(paste0(
@@ -384,8 +391,19 @@ flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
   df$flagged = rowSums(
     df %>%
       dplyr::select(dplyr::starts_with("flag_"))
-    )
-  df$flagged = df$flagged > 0
-  df %>%
+  )
+  df = df %>%
     dplyr::select(-dplyr::starts_with("flag_"))
+  df$flagged = df$flagged > 0
+  if (is_acc) {
+    df = list(
+      data = df,
+      header = hdr,
+      freq = freq,
+      filename = filename,
+      missingness = missingness
+    )
+    class(df) = "AccData"
+  }
+  df
 }

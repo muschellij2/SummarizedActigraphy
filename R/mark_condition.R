@@ -17,7 +17,8 @@ mark_condition = function(x, min_length = 1) {
   bad = rle(x)
   # 3 contiguous
   min_observed_length = min(bad$lengths[bad$values])
-  if (min_observed_length >= min_length) {
+  if (min_observed_length >= min_length ||
+      all(!bad$values)) {
     return(x)
   }
   mark_bad = bad$lengths >= min_length & bad$values
