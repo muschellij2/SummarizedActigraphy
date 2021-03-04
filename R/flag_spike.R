@@ -347,6 +347,7 @@ flag_impossible = function(df, min_length = 6) {
 #' res = read_actigraphy(file)
 #' out = flag_qc(res)
 flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
+  df = flag_qc_all(df, dynamic_range, verbose)
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -354,15 +355,14 @@ flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
     filename = df$filename
     missingness = df$missingness
   }
-  df = flag_qc_all(df, dynamic_range, verbose)
-
-  df$flagged = rowSums(
+  df = ensure_header_timestamp(df, subset = FALSE)
+  df$flags = rowSums(
     df %>%
-      dplyr::select(dplyr::starts_with("flag_"))
+      dplyr::select(dplyr::starts_with("flag_")) > 0
   )
   df = df %>%
     dplyr::select(-dplyr::starts_with("flag_"))
-  df$flagged = df$flagged > 0
+
   if (is_acc) {
     df = list(
       data = df,
