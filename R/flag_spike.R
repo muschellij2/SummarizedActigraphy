@@ -338,7 +338,8 @@ flag_impossible = function(df, min_length = 6) {
 #' @param dynamic_range dynamic range of the device, used to find the
 #' device limit.
 #'
-#' @return A data set
+#' @return A data set with a `flags` column (`flag_qc`) or a number of
+#' columns starting with `flag_*` (`flag_qc_all`)
 #' @export
 #'
 #' @examples

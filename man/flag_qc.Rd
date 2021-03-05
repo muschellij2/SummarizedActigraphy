@@ -18,7 +18,8 @@ device limit.}
 \item{verbose}{print diagnostic messages}
 }
 \value{
-A data set
+A data set with a `flags` column (`flag_qc`) or a number of
+columns starting with `flag_*` (`flag_qc_all`)
 }
 \description{
 Flag Quality Control Values
