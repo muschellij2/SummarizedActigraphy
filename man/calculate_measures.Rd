@@ -5,6 +5,7 @@
 \alias{calculate_ai}
 \alias{calculate_flags}
 \alias{calculate_n_idle}
+\alias{calculate_enmo}
 \alias{calculate_mad}
 \alias{calculate_auc}
 \alias{calculate_fast_mims}
@@ -30,6 +31,8 @@ calculate_ai(df, unit = "1 min")
 calculate_flags(df, unit = "1 min")
 
 calculate_n_idle(df, unit = "1 min")
+
+calculate_enmo(...)
 
 calculate_mad(df, unit = "1 min")
 

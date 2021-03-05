@@ -173,8 +173,8 @@ calculate_flags = function(df, unit = "1 min") {
 #' @export
 #' @rdname calculate_measures
 calculate_n_idle = function(df, unit = "1 min") {
-  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  ENMO = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time", "ENMO"))
   df = ensure_header_timestamp(df)
 
   df = fix_zeros(df, fill_in = FALSE, trim = FALSE)
@@ -185,6 +185,8 @@ calculate_n_idle = function(df, unit = "1 min") {
   df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
+      ENMO = r - 1,
+      ENMO = dplyr::if_else(ENMO < 0, 0, ENMO),
       all_zero = X == 0 & Y == 0 & Z == 0,
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit)) %>%
@@ -197,14 +199,26 @@ calculate_n_idle = function(df, unit = "1 min") {
 
 #' @export
 #' @rdname calculate_measures
+calculate_enmo = function(...) {
+  ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  out = calculate_mad(...)
+  out %>%
+    dplyr::select(HEADER_TIME_STAMP, ENMO_t)
+}
+
+#' @export
+#' @rdname calculate_measures
 calculate_mad = function(df, unit = "1 min") {
-  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
 
   df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
+      ENMO_t = r - 1,
+      ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit)) %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
@@ -212,7 +226,8 @@ calculate_mad = function(df, unit = "1 min") {
       SD = sd(r, na.rm = TRUE),
       MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
-      mean_r = mean(r, na.rm = TRUE)
+      mean_r = mean(r, na.rm = TRUE),
+      ENMO_t = mean(ENMO_t, na.rm = TRUE)
     ) %>%
     dplyr::ungroup()
 }
