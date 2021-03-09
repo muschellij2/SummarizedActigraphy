@@ -4,11 +4,13 @@
 \alias{tidy_axes}
 \title{Tidy axes to a long format}
 \usage{
-tidy_axes(df)
+tidy_axes(df, only_xyz = TRUE)
 }
 \arguments{
 \item{df}{An object with columns a time column `X`, `Y`, and `Z` or an
 object of class `AccData`}
+
+\item{only_xyz}{should the data be subset for only X/Y/Z values (and time)?}
 }
 \value{
 A long data set with `time`, `axis`, and `value`

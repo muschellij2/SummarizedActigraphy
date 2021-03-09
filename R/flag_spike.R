@@ -337,6 +337,8 @@ flag_impossible = function(df, min_length = 6) {
 #' @param verbose print diagnostic messages
 #' @param dynamic_range dynamic range of the device, used to find the
 #' device limit.
+#' @param flags the flags to run for QC.  If you set this to \code{"all"},
+#' then all flags are run, as the default.
 #'
 #' @return A data set with a `flags` column (`flag_qc`) or a number of
 #' columns starting with `flag_*` (`flag_qc_all`)
@@ -347,8 +349,13 @@ flag_impossible = function(df, min_length = 6) {
 #' package = "SummarizedActigraphy")
 #' res = read_actigraphy(file)
 #' out = flag_qc(res)
-flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
-  df = flag_qc_all(df, dynamic_range, verbose)
+flag_qc = function(df, dynamic_range = NULL, verbose = TRUE,
+                   flags = c("all", "spike", "interval_jump",
+                             "spike_second",
+                             "same_value", "device_limit",
+                             "all_zero", "impossible")
+){
+  df = flag_qc_all(df, dynamic_range, verbose, flags = flags)
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -379,7 +386,11 @@ flag_qc = function(df, dynamic_range = NULL, verbose = TRUE) {
 
 #' @rdname flag_qc
 #' @export
-flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE) {
+flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE,
+                       flags = c("all", "spike", "interval_jump",
+                                 "spike_second",
+                                 "same_value", "device_limit",
+                                 "all_zero", "impossible")) {
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -393,34 +404,60 @@ flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE) {
       "Data has columns starting with flag - may affect results",
       " and column will be removed"))
   }
-  if (verbose) {
-    message("Flagging Spikes")
+  flags = match.arg(flags, several.ok = TRUE)
+  flag_names = c("spike", "interval_jump",
+                 "spike_second", "same_value", "device_limit",
+                 "all_zero", "impossible")
+  all_flags = flag_names %in% flags
+  names(all_flags) = flag_names
+  if ("all" %in% flags) {
+    all_flags[!all_flags] = TRUE
   }
-  df = flag_spike(df)
-  if (verbose) {
-    message("Flagging Interval Jumps")
+  if (!any(all_flags)) {
+    stop("No flags were identified, why are you running flag_qc_all?")
   }
-  df = flag_interval_jump(df)
-  if (verbose) {
-    message("Flagging Spikes at Second-level")
+  if (all_flags["spike"]) {
+    if (verbose) {
+      message("Flagging Spikes")
+    }
+    df = flag_spike(df)
   }
-  df = flag_spike_second(df)
-  if (verbose) {
-    message("Flagging Repeated Values")
+  if (all_flags["interval_jump"]) {
+    if (verbose) {
+      message("Flagging Interval Jumps")
+    }
+    df = flag_interval_jump(df)
   }
-  df = flag_same_value(df)
-  if (verbose) {
-    message("Flagging Device Limit Values")
+  if (all_flags["spike_second"]) {
+    if (verbose) {
+      message("Flagging Spikes at Second-level")
+    }
+    df = flag_spike_second(df)
   }
-  df = flag_device_limit(df, dynamic_range = dynamic_range)
-  if (verbose) {
-    message("Flagging Zero Values")
+  if (all_flags["same_value"]) {
+    if (verbose) {
+      message("Flagging Repeated Values")
+    }
+    df = flag_same_value(df)
   }
-  df = flag_all_zero(df)
-  if (verbose) {
-    message("Flagging 'Impossible' Values")
+  if (all_flags["device_limit"]) {
+    if (verbose) {
+      message("Flagging Device Limit Values")
+    }
+    df = flag_device_limit(df, dynamic_range = dynamic_range)
   }
-  df = flag_impossible(df)
+  if (all_flags["all_zero"]) {
+    if (verbose) {
+      message("Flagging Zero Values")
+    }
+    df = flag_all_zero(df)
+  }
+  if (all_flags["impossible"]) {
+    if (verbose) {
+      message("Flagging 'Impossible' Values")
+    }
+    df = flag_impossible(df)
+  }
   if (is_acc) {
     df = list(
       data = df,

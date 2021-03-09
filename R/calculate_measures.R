@@ -24,6 +24,8 @@
 #' @param flag_data Should [SummarizedActigraphy::flag_qc()] be run?
 #' It will be executed after \code{fix_zeros} before any measure
 #' calculation
+#' @param flags the flags to calculate,
+#' passed to [SummarizedActigraphy::flag_qc()]
 #' @param ... additional arguments to pass to [MIMSunit::mims_unit]
 #'
 #' @return A data set with the calculated features
@@ -48,6 +50,7 @@ calculate_measures = function(
   dynamic_range = NULL,
   calculate_mims = TRUE,
   flag_data = TRUE,
+  flags = NULL,
   verbose = TRUE,
   ...) {
 
@@ -71,7 +74,8 @@ calculate_measures = function(
     if (verbose) {
       message("Flagging data")
     }
-    df = flag_qc_all(df, dynamic_range = dynamic_range, verbose = verbose)
+    df = flag_qc_all(df, dynamic_range = dynamic_range, verbose = verbose,
+                     flags = flags)
     flags = calculate_flags(df, unit = unit)
   }
   if (verbose) {
@@ -163,8 +167,9 @@ calculate_flags = function(df, unit = "1 min") {
                                                 unit)) %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
-      dplyr::across(dplyr::starts_with("flag"), sum)
-      ) %>%
+      dplyr::across(dplyr::starts_with("flag"), sum),
+      n_samples_in_unit = dplyr::n()
+    ) %>%
     ungroup()
   df
 }

@@ -5,9 +5,21 @@
 \alias{flag_qc_all}
 \title{Flag Quality Control Values}
 \usage{
-flag_qc(df, dynamic_range = NULL, verbose = TRUE)
+flag_qc(
+  df,
+  dynamic_range = NULL,
+  verbose = TRUE,
+  flags = c("all", "spike", "interval_jump", "spike_second", "same_value",
+    "device_limit", "all_zero", "impossible")
+)
 
-flag_qc_all(df, dynamic_range = NULL, verbose = TRUE)
+flag_qc_all(
+  df,
+  dynamic_range = NULL,
+  verbose = TRUE,
+  flags = c("all", "spike", "interval_jump", "spike_second", "same_value",
+    "device_limit", "all_zero", "impossible")
+)
 }
 \arguments{
 \item{df}{A data set of actigraphy}
@@ -16,6 +28,9 @@ flag_qc_all(df, dynamic_range = NULL, verbose = TRUE)
 device limit.}
 
 \item{verbose}{print diagnostic messages}
+
+\item{flags}{the flags to run for QC.  If you set this to \code{"all"},
+then all flags are run, as the default.}
 }
 \value{
 A data set with a `flags` column (`flag_qc`) or a number of

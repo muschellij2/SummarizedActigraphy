@@ -22,6 +22,7 @@ calculate_measures(
   dynamic_range = NULL,
   calculate_mims = TRUE,
   flag_data = TRUE,
+  flags = NULL,
   verbose = TRUE,
   ...
 )
@@ -88,6 +89,9 @@ observation carried forward?}
 \item{flag_data}{Should [SummarizedActigraphy::flag_qc()] be run?
 It will be executed after \code{fix_zeros} before any measure
 calculation}
+
+\item{flags}{the flags to calculate,
+passed to [SummarizedActigraphy::flag_qc()]}
 
 \item{verbose}{print diagnostic messages}
 
