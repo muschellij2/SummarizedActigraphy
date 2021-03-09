@@ -482,8 +482,8 @@ get_dynamic_range = function(df, dynamic_range = NULL) {
   if (is.AccData(df)) {
     hdr = df$header
     if (is.null(dynamic_range)) {
-      dynamic_range = c(hdr$Value[hdr$Field== "Acceleration Min"],
-                        hdr$Value[hdr$Field== "Acceleration Max"])
+      dynamic_range = c(hdr$Value[hdr$Field == "Acceleration Min"],
+                        hdr$Value[hdr$Field == "Acceleration Max"])
       dynamic_range = as.numeric(dynamic_range)
       if (length(dynamic_range) == 0) {
         dynamic_range = NULL
