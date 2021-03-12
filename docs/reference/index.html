@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SummarizedActigraphy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -96,7 +96,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/SummarizedActigraphy/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -145,9 +145,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="calculate_measures.html">calculate_measures()</a></code> <code><a href="calculate_measures.html">calculate_ai()</a></code> <code><a href="calculate_measures.html">calculate_n_idle()</a></code> <code><a href="calculate_measures.html">calculate_mad()</a></code> <code><a href="calculate_measures.html">calculate_mims()</a></code> </p>
+          <p><code><a href="calculate_measures.html">calculate_measures()</a></code> <code><a href="calculate_measures.html">calculate_ai()</a></code> <code><a href="calculate_measures.html">calculate_flags()</a></code> <code><a href="calculate_measures.html">calculate_n_idle()</a></code> <code><a href="calculate_measures.html">calculate_enmo()</a></code> <code><a href="calculate_measures.html">calculate_mad()</a></code> <code><a href="calculate_measures.html">calculate_auc()</a></code> <code><a href="calculate_measures.html">calculate_fast_mims()</a></code> <code><a href="calculate_measures.html">calculate_mims()</a></code> </p>
         </td>
         <td><p>Calculate Summary Measures from Raw Accelerometer Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ensure_header_timestamp.html">ensure_header_timestamp()</a></code> </p>
+        </td>
+        <td><p>Ensure `HEADER_TIME_STAMP` is in</p></td>
       </tr><tr>
         
         <td>
@@ -157,7 +163,49 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="read_acc_csv.html">read_acc_csv()</a></code> </p>
+          <p><code><a href="flag_qc.html">flag_qc()</a></code> <code><a href="flag_qc.html">flag_qc_all()</a></code> </p>
+        </td>
+        <td><p>Flag Quality Control Values</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="flag_spike.html">flag_spike()</a></code> <code><a href="flag_spike.html">flag_interval_jump()</a></code> <code><a href="flag_spike.html">flag_spike_second()</a></code> <code><a href="flag_spike.html">flag_device_limit()</a></code> <code><a href="flag_spike.html">flag_same_value()</a></code> <code><a href="flag_spike.html">flag_all_zero()</a></code> <code><a href="flag_spike.html">flag_impossible()</a></code> </p>
+        </td>
+        <td><p>Flag Spikes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_dynamic_range.html">get_dynamic_range()</a></code> </p>
+        </td>
+        <td><p>Get Dynamic Range</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_transformations.html">get_transformations()</a></code> <code><a href="get_transformations.html">set_transformations()</a></code> </p>
+        </td>
+        <td><p>Get Transformations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mark_condition.html">mark_condition()</a></code> </p>
+        </td>
+        <td><p>Mark a Condition of a Specified Minimum Length</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mims_default_extrapolation.html">mims_default_extrapolation()</a></code> <code><a href="mims_default_extrapolation.html">mims_default_interpolation()</a></code> <code><a href="mims_default_extrapolation.html">mims_default_filtering()</a></code> </p>
+        </td>
+        <td><p>Default MIMS worker functions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mims_default_processing.html">mims_default_processing()</a></code> </p>
+        </td>
+        <td><p>Default MIMS Pre-processing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="read_acc_csv.html">read_acc_csv()</a></code> <code><a href="read_acc_csv.html">extract_acc_header()</a></code> </p>
         </td>
         <td><p>Read ActiGraph Accelerometer CSV</p></td>
       </tr><tr>
@@ -169,9 +217,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="summarize_actigraphy.html">summarize_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarize_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_actigraphy()</a></code> </p>
+          <p><code><a href="summarize_actigraphy.html">summarize_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarize_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">collapse_daily_actigraphy()</a></code> <code><a href="summarize_actigraphy.html">summarise_actigraphy()</a></code> </p>
         </td>
         <td><p>Summarize Actigraphy Data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tidy_axes.html">tidy_axes()</a></code> </p>
+        </td>
+        <td><p>Tidy axes to a long format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="xyz.html">xyz</a></code> <code><a href="xyz.html">xyzt</a></code> <code><a href="xyz.html">txyz</a></code> </p>
+        </td>
+        <td><p>Vector of X, Y, Z, and maybe time</p></td>
       </tr>
     </tbody>
     </table>
@@ -191,7 +251,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

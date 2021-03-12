@@ -2,13 +2,20 @@
 % Please edit documentation in R/transformations.R
 \name{get_transformations}
 \alias{get_transformations}
+\alias{set_transformations}
 \title{Get Transformations}
 \usage{
 get_transformations(df)
+
+set_transformations(df, transformations, add = TRUE)
 }
 \arguments{
 \item{df}{data set of data, usually time and X/Y/Z.  Usually from
 \code{\link{read_actigraphy}}}
+
+\item{transformations}{character string of transformations}
+
+\item{add}{Add the transformations to those already there in `df`}
 }
 \value{
 \code{\link{set_transformations}} returns the data, with the

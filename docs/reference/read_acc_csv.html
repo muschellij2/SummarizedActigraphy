@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SummarizedActigraphy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -97,7 +97,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/muschellij2/SummarizedActigraphy/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,7 +123,9 @@
     <p>Read ActiGraph Accelerometer CSV</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_acc_csv</span>(<span class='no'>file</span>, <span class='no'>...</span>, <span class='kw'>only_xyz</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>read_acc_csv</span><span class='op'>(</span><span class='va'>file</span>, <span class='va'>...</span>, only_xyz <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='fu'>extract_acc_header</span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,12 +149,13 @@
     <p>A list of the header and the data set</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"TAS1H30182785_2019-09-17.csv.gz"</span>,
-<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SummarizedActigraphy"</span>)
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='no'>file</span>)) {
-   <span class='no'>out</span> <span class='kw'>=</span> <span class='fu'>read_acc_csv</span>(<span class='no'>file</span>)
-   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>parse_acc_header</span>(<span class='no'>file</span>)
-}</div><div class='output co'>#&gt; $serial
+    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"TAS1H30182785_2019-09-17.csv.gz"</span>,
+package <span class='op'>=</span> <span class='st'>"SummarizedActigraphy"</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='va'>out</span> <span class='op'>=</span> <span class='fu'>read_acc_csv</span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span>
+   <span class='fu'>SummarizedActigraphy</span><span class='fu'>:::</span><span class='fu'>parse_acc_header</span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; $serial
 #&gt; [1] "TAS1H30182785"
 #&gt; 
 #&gt; $start_time
@@ -193,14 +196,15 @@
 #&gt; 
 #&gt; $sample_rate
 #&gt; [1] 100
-#&gt; </div><div class='input'><span class='no'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"example1sec.csv"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"AGread"</span>)
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='no'>file</span>)) {
-   <span class='no'>out</span> <span class='kw'>=</span> <span class='fu'>read_acc_csv</span>(<span class='no'>file</span>, <span class='kw'>only_xyz</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>quick_check</span>(<span class='no'>out</span>$<span class='no'>data</span>)
-   <span class='no'>acc</span> <span class='kw'>=</span> <span class='no'>out</span>
-   <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>acc</span>) <span class='kw'>=</span> <span class='st'>"AccData"</span>
-   <span class='kw pkg'>SummarizedActigraphy</span><span class='kw ns'>:::</span><span class='fu'>quick_check</span>(<span class='no'>acc</span>)
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div></pre>
+#&gt; </div><div class='input'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"example1sec.csv"</span>, package <span class='op'>=</span> <span class='st'>"AGread"</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='va'>out</span> <span class='op'>=</span> <span class='fu'>read_acc_csv</span><span class='op'>(</span><span class='va'>file</span>, only_xyz <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+   <span class='fu'>SummarizedActigraphy</span><span class='fu'>:::</span><span class='fu'>quick_check</span><span class='op'>(</span><span class='va'>out</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span>
+   <span class='va'>acc</span> <span class='op'>=</span> <span class='va'>out</span>
+   <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>acc</span><span class='op'>)</span> <span class='op'>=</span> <span class='st'>"AccData"</span>
+   <span class='fu'>SummarizedActigraphy</span><span class='fu'>:::</span><span class='fu'>quick_check</span><span class='op'>(</span><span class='va'>acc</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -216,7 +220,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

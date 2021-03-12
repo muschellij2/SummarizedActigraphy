@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate Summary Measures from Raw Accelerometer Data — calculate_measures • SummarizedActigraphy</title>
+<title>Tidy axes to a long format — tidy_axes • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Calculate Summary Measures from Raw Accelerometer Data — calculate_measures" />
-<meta property="og:description" content="Calculate Summary Measures from Raw Accelerometer Data" />
+<meta property="og:title" content="Tidy axes to a long format — tidy_axes" />
+<meta property="og:description" content="Tidy axes to a long format" />
 
 
 
@@ -114,139 +114,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate Summary Measures from Raw Accelerometer Data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/calculate_measures.R'><code>R/calculate_measures.R</code></a></small>
-    <div class="hidden name"><code>calculate_measures.Rd</code></div>
+    <h1>Tidy axes to a long format</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/tidy_axes.R'><code>R/tidy_axes.R</code></a></small>
+    <div class="hidden name"><code>tidy_axes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate Summary Measures from Raw Accelerometer Data</p>
+    <p>Tidy axes to a long format</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calculate_measures</span><span class='op'>(</span>
-  <span class='va'>df</span>,
-  unit <span class='op'>=</span> <span class='st'>"1 min"</span>,
-  fix_zeros <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fill_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  by_second <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  trim <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span>,
-  calculate_mims <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  flag_data <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  flags <span class='op'>=</span> <span class='cn'>NULL</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>calculate_ai</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span><span class='op'>)</span>
-
-<span class='fu'>calculate_flags</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span><span class='op'>)</span>
-
-<span class='fu'>calculate_n_idle</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span><span class='op'>)</span>
-
-<span class='fu'>calculate_enmo</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>calculate_mad</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span><span class='op'>)</span>
-
-<span class='fu'>calculate_auc</span><span class='op'>(</span>
-  <span class='va'>df</span>,
-  unit <span class='op'>=</span> <span class='st'>"1 min"</span>,
-  sample_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
-  allow_truncation <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
-
-<span class='fu'>calculate_fast_mims</span><span class='op'>(</span>
-  <span class='va'>df</span>,
-  unit <span class='op'>=</span> <span class='st'>"1 min"</span>,
-  dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sample_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
-  allow_truncation <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>calculate_mims</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span>, dynamic_range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>6</span>, <span class='fl'>6</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>tidy_axes</span><span class='op'>(</span><span class='va'>df</span>, only_xyz <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>df</th>
-      <td><p>An object with columns `X`, `Y`, and `Z` or an
+      <td><p>An object with columns a time column `X`, `Y`, and `Z` or an
 object of class `AccData`</p></td>
     </tr>
     <tr>
-      <th>unit</th>
-      <td><p>length of time to calculate measures over.  a character string
-specifying a time unit or a multiple of a unit to be rounded to.
-Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
-`bimonth`, `quarter`, `season`, `halfyear`, and `year`.
-Arbitrary unique English abbreviations as in the <code>period</code>
-constructor are allowed.</p></td>
-    </tr>
-    <tr>
-      <th>fix_zeros</th>
-      <td><p>Should <code><a href='fix_zeros.html'>fix_zeros</a></code> be run before calculating
-the measures?</p></td>
-    </tr>
-    <tr>
-      <th>fill_in</th>
-      <td><p>if <code>fix_zeros = TRUE</code>, should the zeros be
-filled in with the last</p></td>
-    </tr>
-    <tr>
-      <th>by_second</th>
-      <td><p>Should the last observation carried forward be done
-only within the same second?</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>if <code>fix_zeros = TRUE</code>,
-should the time course be trimmed for zero values at
-the beginning and the end of the time course?
-observation carried forward?</p></td>
-    </tr>
-    <tr>
-      <th>dynamic_range</th>
-      <td><p>Dynamic range of the device, in gravity units</p></td>
-    </tr>
-    <tr>
-      <th>calculate_mims</th>
-      <td><p>Should MIMS units be calculated?</p></td>
-    </tr>
-    <tr>
-      <th>flag_data</th>
-      <td><p>Should [SummarizedActigraphy::flag_qc()] be run?
-It will be executed after <code>fix_zeros</code> before any measure
-calculation</p></td>
-    </tr>
-    <tr>
-      <th>flags</th>
-      <td><p>the flags to calculate,
-passed to [SummarizedActigraphy::flag_qc()]</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>print diagnostic messages</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments to pass to [MIMSunit::mims_unit]</p></td>
-    </tr>
-    <tr>
-      <th>sample_rate</th>
-      <td><p>sample rate of data, if not specified in header of object</p></td>
-    </tr>
-    <tr>
-      <th>allow_truncation</th>
-      <td><p>truncate small values</p></td>
+      <th>only_xyz</th>
+      <td><p>should the data be subset for only X/Y/Z values (and time)?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data set with the calculated features</p>
+    <p>A long data set with `time`, `axis`, and `value`</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"TAS1H30182785_2019-09-17.gt3x"</span>,
@@ -339,14 +234,7 @@ package <span class='op'>=</span> <span class='st'>"SummarizedActigraphy"</span>
 #&gt; Total Records: 216000
 #&gt; Scaling...
 #&gt; Creating dimnames 
-#&gt; CPP returning </div><div class='output co'>#&gt; <span class='message'>Done (in 0.361090898513794 seconds)</span></div><div class='input'><span class='va'>measures</span> <span class='op'>=</span> <span class='fu'>calculate_measures</span><span class='op'>(</span><span class='va'>res</span>, dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span>,
-calculate_mims <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Fixing Zeros with fix_zeros</span></div><div class='output co'>#&gt; <span class='message'>Flagging data</span></div><div class='output co'>#&gt; <span class='message'>Flagging Spikes</span></div><div class='output co'>#&gt; <span class='message'>Flagging Interval Jumps</span></div><div class='output co'>#&gt; <span class='message'>Flagging Spikes at Second-level</span></div><div class='output co'>#&gt; <span class='message'>Flagging Repeated Values</span></div><div class='output co'>#&gt; <span class='message'>Flagging Device Limit Values</span></div><div class='output co'>#&gt; <span class='message'>Flagging Zero Values</span></div><div class='output co'>#&gt; <span class='message'>Flagging 'Impossible' Values</span></div><div class='output co'>#&gt; <span class='message'>Calculating ai0</span></div><div class='output co'>#&gt; <span class='message'>Calculating MAD</span></div><div class='output co'>#&gt; <span class='message'>Joining AI and MAD</span></div><div class='output co'>#&gt; <span class='message'>Joining, by = "HEADER_TIME_STAMP"</span></div><div class='output co'>#&gt; <span class='message'>Joining flags</span></div><div class='output co'>#&gt; <span class='message'>Joining, by = "HEADER_TIME_STAMP"</span></div><div class='input'><span class='va'>auc</span> <span class='op'>=</span> <span class='fu'>calculate_auc</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Absolute values</span></div><div class='output co'>#&gt; <span class='message'>Calculting trapezoids</span></div><div class='output co'>#&gt; <span class='message'>Replacing first value as NA</span></div><div class='output co'>#&gt; <span class='message'>Calculating AUCs</span></div><div class='input'><span class='co'># \donttest{</span>
-<span class='va'>mims</span> <span class='op'>=</span> <span class='fu'>calculate_mims</span><span class='op'>(</span><span class='va'>res</span>, dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; ================================</div><div class='output co'>#&gt; <span class='warning'>Warning: `tbl_df()` was deprecated in dplyr 1.0.0.</span>
-#&gt; <span class='warning'>Please use `tibble::as_tibble()` instead.</span></div><div class='output co'>#&gt; ================================================</div><div class='input'><span class='co'># }</span>
-
+#&gt; CPP returning </div><div class='output co'>#&gt; <span class='message'>Done (in 0.472480058670044 seconds)</span></div><div class='input'><span class='va'>long</span> <span class='op'>=</span> <span class='fu'>tidy_axes</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

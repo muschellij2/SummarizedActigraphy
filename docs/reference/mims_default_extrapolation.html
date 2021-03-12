@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • SummarizedActigraphy</title>
+<title>Default MIMS worker functions — mims_default_extrapolation • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Default MIMS worker functions — mims_default_extrapolation" />
+<meta property="og:description" content="Default MIMS worker functions" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,43 +114,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Default MIMS worker functions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/mims_helpers.R'><code>R/mims_helpers.R</code></a></small>
+    <div class="hidden name"><code>mims_default_extrapolation.Rd</code></div>
     </div>
 
-    <div id="summarizedactigraphy-031" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.1">
-<a href="#summarizedactigraphy-031" class="anchor"></a>SummarizedActigraphy 0.3.1</h1>
-<ul>
-<li>Added <code>by_second</code> option for <code>fix_zeros</code>.</li>
-</ul>
-</div>
-    <div id="summarizedactigraphy-030" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.0">
-<a href="#summarizedactigraphy-030" class="anchor"></a>SummarizedActigraphy 0.3.0</h1>
-<ul>
-<li>Slot is now <code>data</code> not <code>data.out</code> in <code>read_actigraphy</code>.</li>
-<li>All things <code>epoch</code> changed to <code>unit</code>.</li>
-<li>Added <code>collapse_daily_actigraphy</code> so that you can collapse daily data.</li>
-</ul>
-</div>
-    <div id="summarizedactigraphy-010" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.0">
-<a href="#summarizedactigraphy-010" class="anchor"></a>SummarizedActigraphy 0.1.0</h1>
-<ul>
-<li><p>Added <code>actigraph*</code>, where we currently have <code>eBayes</code> and <code>lmFit</code>.</p></li>
-<li><p>Added a <code>NEWS.md</code> file to track changes to the package.</p></li>
-<li><p>Added all the functions and the ability to download data.</p></li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>Default MIMS worker functions</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>mims_default_extrapolation</span><span class='op'>(</span><span class='va'>df</span>, dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+
+<span class='fu'>mims_default_interpolation</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+
+<span class='fu'>mims_default_filtering</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>data set of data, usually time and X/Y/Z.  Usually from
+<code><a href='read_actigraphy.html'>read_actigraphy</a></code></p></td>
+    </tr>
+    <tr>
+      <th>dynamic_range</th>
+      <td><p>dynamic range of the data.  Will be passed to
+<code><a href='get_dynamic_range.html'>get_dynamic_range</a></code></p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data set of data</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
 
 
