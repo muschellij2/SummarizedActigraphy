@@ -1,4 +1,6 @@
 tsibbler = function(x, transformations = NULL) {
+  time = enmo = mad = X = Y = Z = NULL
+  rm(list = c("X", "Y", "Z", "enmo", "mad", "time"))
   if (is.null(transformations)) {
     transformations = get_transformations(x)
   }
