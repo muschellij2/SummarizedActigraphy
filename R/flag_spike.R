@@ -356,6 +356,8 @@ flag_qc = function(df, dynamic_range = NULL, verbose = TRUE,
                              "all_zero", "impossible")
 ){
   df = flag_qc_all(df, dynamic_range, verbose, flags = flags)
+  transformations = get_transformations(df)
+  transforms = NULL
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -370,6 +372,10 @@ flag_qc = function(df, dynamic_range = NULL, verbose = TRUE,
   )
   df = df %>%
     dplyr::select(-dplyr::starts_with("flag_"))
+
+  transforms = "flags_aggregated"
+  transformations = c(transforms, transformations)
+  df = set_transformations(df, transformations = transformations, add = FALSE)
 
   if (is_acc) {
     df = list(
@@ -391,6 +397,8 @@ flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE,
                                  "spike_second",
                                  "same_value", "device_limit",
                                  "all_zero", "impossible")) {
+  transformations = get_transformations(df)
+  transforms = NULL
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -421,43 +429,55 @@ flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE,
       message("Flagging Spikes")
     }
     df = flag_spike(df)
+    transforms = c("flag_spike", transforms)
   }
   if (all_flags["interval_jump"]) {
     if (verbose) {
       message("Flagging Interval Jumps")
     }
     df = flag_interval_jump(df)
+    transforms = c("flag_interval_jump", transforms)
   }
   if (all_flags["spike_second"]) {
     if (verbose) {
       message("Flagging Spikes at Second-level")
     }
     df = flag_spike_second(df)
+    transforms = c("flag_spike_second", transforms)
   }
   if (all_flags["same_value"]) {
     if (verbose) {
       message("Flagging Repeated Values")
     }
     df = flag_same_value(df)
+    transforms = c("flag_same_value", transforms)
   }
   if (all_flags["device_limit"]) {
     if (verbose) {
       message("Flagging Device Limit Values")
     }
     df = flag_device_limit(df, dynamic_range = dynamic_range)
+    transforms = c("flag_device_limit", transforms)
   }
   if (all_flags["all_zero"]) {
     if (verbose) {
       message("Flagging Zero Values")
     }
     df = flag_all_zero(df)
+    transforms = c("flag_all_zero", transforms)
   }
   if (all_flags["impossible"]) {
     if (verbose) {
       message("Flagging 'Impossible' Values")
     }
     df = flag_impossible(df)
+    transforms = c("flag_impossible", transforms)
   }
+  transforms = paste(transforms, collapse = ", ")
+  transforms = paste0("flagging_data:", transforms)
+  transformations = c(transforms, transformations)
+  df = set_transformations(df, transformations = transformations, add = FALSE)
+
   if (is_acc) {
     df = list(
       data = df,

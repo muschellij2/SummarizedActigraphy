@@ -20,7 +20,7 @@ mims_default_extrapolation = function(df, dynamic_range = NULL) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_extrapolation")
   }
-  transforms = attr(df, "transformation")
+  transformations = get_transformations(df)
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -40,10 +40,12 @@ mims_default_extrapolation = function(df, dynamic_range = NULL) {
                               k, spar)
   colnames(df) = gsub("EXTRAPOLATED_", "", colnames(df))
   attr(df, "sample_rate") = 100
+  transformations = c("extrapolated", transformations)
+  transformations = set_transformations(df, transformations = transformations,
+                                        add = FALSE)
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(transforms, "extrapolated")
   df
 }
 
@@ -53,7 +55,7 @@ mims_default_interpolation = function(df) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_interpolation")
   }
-  transforms = attr(df, "transformation")
+  transformations = get_transformations(df)
 
   is_acc = is.AccData(df)
   if (is_acc) {
@@ -66,7 +68,9 @@ mims_default_interpolation = function(df) {
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(transforms, "interpolated")
+  transformations = c("interpolated", transformations)
+  transformations = set_transformations(df, transformations = transformations,
+                                        add = FALSE)
   df
 }
 
@@ -78,7 +82,7 @@ mims_default_filtering = function(df) {
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for mims_default_filtering")
   }
-  transforms = attr(df, "transformation")
+  transformations = get_transformations(df)
   is_acc = is.AccData(df)
   if (is_acc) {
     hdr = df$header
@@ -103,7 +107,9 @@ mims_default_filtering = function(df) {
   if (is_acc) {
     df = remake_acc(df, hdr)
   }
-  attr(df, "transformation") = c(transforms, "filtered")
+  transformations = c("filtered", transformations)
+  transformations = set_transformations(df, transformations = transformations,
+                                        add = FALSE)
   df
 }
 

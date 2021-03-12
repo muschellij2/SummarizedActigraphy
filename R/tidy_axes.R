@@ -18,6 +18,8 @@ tidy_axes = function(df, only_xyz = TRUE) {
   time = HEADER_TIME_STAMP = X = Y = Z = NULL
   rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "time"))
   df = ensure_header_timestamp(df, subset = FALSE)
+  transformations = get_transformations(df)
+
   cn = colnames(df)
   if (!"time" %in% cn && "HEADER_TIME_STAMP" %in% cn) {
     df = df %>%
@@ -29,4 +31,8 @@ tidy_axes = function(df, only_xyz = TRUE) {
   }
   df = df %>%
     tidyr::gather("axis", "value", -time)
+  transforms = "axes_reshaped"
+  transformations = c(transforms, transformations)
+  df = set_transformations(df, transformations = transformations, add = FALSE)
+  df
 }

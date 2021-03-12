@@ -33,6 +33,8 @@ fix_zeros = function(df,
                      fill_in = TRUE,
                      by_second = FALSE,
                      trim = FALSE) {
+  transformations = get_transformations(df)
+  transforms = NULL
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
@@ -40,6 +42,7 @@ fix_zeros = function(df,
   }
   df = sort_time_df(df)
   zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
+
   if (trim) {
     not_zero = rle(!zero)
     not_zero$values[2:(length(not_zero$values)-1)] = TRUE
@@ -47,15 +50,24 @@ fix_zeros = function(df,
     zero = zero[not_zero]
     df = df[ not_zero, ]
     zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
+    transforms = c("trimmed", transforms)
   }
 
   names(zero) = NULL
   df$X[zero] = NA
   df$Y[zero] = NA
   df$Z[zero] = NA
+  transforms = c("NA_zero_set", transforms)
+
   if (fill_in) {
     df =  idle_na_locf(df, by_second = by_second)
+    transforms = c("filled_in", transforms)
   }
+
+  transforms = paste(transforms, collapse = ", ")
+  transforms = paste0("fix_zeros:", transforms)
+  transformations = c(transforms, transformations)
+  df = set_transformations(df, transformations = transformations, add = FALSE)
   if (acc_data) {
     xdf$data = df
     df = xdf

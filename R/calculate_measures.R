@@ -78,6 +78,8 @@ calculate_measures = function(
                      flags = flags)
     flags = calculate_flags(df, unit = unit)
   }
+  transformations = get_transformations(df)
+
   if (verbose) {
     message("Calculating ai0")
   }
@@ -115,6 +117,9 @@ calculate_measures = function(
   }
   res = res %>%
     dplyr::rename(time = HEADER_TIME_STAMP)
+  transforms = paste("aggregated_at_", paste(unit, collapse = "_"))
+  transformations = c(transforms, transformations)
+  res = set_transformations(res, transformations = transformations, add = FALSE)
   res
 }
 
@@ -127,7 +132,7 @@ calculate_ai = function(df, unit = "1 min") {
 
   AI = NULL
   rm(list= c("AI"))
-  sec_df = df %>%
+  df = df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 "1 sec")) %>%
@@ -138,7 +143,7 @@ calculate_ai = function(df, unit = "1 min") {
           var(Y, na.rm = TRUE) +
           var(Z, na.rm = TRUE)) / 3)
     )
-  sec_df %>%
+  df %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -435,6 +440,7 @@ calculate_mims = function(
 #' res = read_actigraphy(file, verbose = FALSE)
 #' df = ensure_header_timestamp(res)
 ensure_header_timestamp = function(df, subset = TRUE) {
+  transformations = get_transformations(df)
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   sample_rate = NULL
@@ -471,6 +477,7 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   }
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range") = dynamic_range
+  df = set_transformations(df, transformations = transformations, add = FALSE)
   df
 }
 

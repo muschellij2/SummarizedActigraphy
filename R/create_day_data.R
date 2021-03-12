@@ -1,3 +1,12 @@
+tsibbler = function(x, transformations = NULL) {
+  if (is.null(transformations)) {
+    transformations = get_transformations(x)
+  }
+
+  x = tsibble::build_tsibble(x, index = time)
+  x = set_transformations(x, transformations, add = FALSE)
+  x
+}
 #' Summarize Actigraphy Data
 #'
 #' @param x an AccData object.  If `x` is a character, then
@@ -79,9 +88,8 @@ summarize_daily_actigraphy = function(
     calculate_mims = calculate_mims,
     verbose = verbose)
 
-  ts = tsibble::build_tsibble(x,
-                              index = time)
-  return(ts)
+  x = tsibbler(x)
+  return(x)
 }
 
 #' @export
@@ -110,9 +118,9 @@ summarize_actigraphy = function(
   x = summarize_daily_actigraphy(x, unit = unit,
                                  verbose = verbose > 1,
                                  ...)
-  ts = collapse_daily_actigraphy(x, .fns = .fns, verbose = verbose)
+  x = collapse_daily_actigraphy(x, .fns = .fns, verbose = verbose)
 
-  ts
+  x
 }
 
 #' @rdname summarize_actigraphy
@@ -121,6 +129,8 @@ collapse_daily_actigraphy = function(
   x,
   .fns = list(mean = mean, median = median),
   verbose = TRUE) {
+
+  transformations = get_transformations(x)
 
   first_day = NULL
   mean_r = time = ai = enmo = mad = NULL
@@ -142,19 +152,19 @@ collapse_daily_actigraphy = function(
   if (verbose) {
     message("Summarizing Data")
   }
-  average_day = x %>%
+  # average day data
+  x = x %>%
     dplyr::group_by(time) %>%
     dplyr::summarise(
       dplyr::across(
-        dplyr::any_of(c("AI", "SD", "MAD", "MEDAD",
+        dplyr::any_of(c("AI", "SD", "MAD", "MEDAD", "ENMO_t", "AUC",
                         "mean_r", "MIMS_UNIT")),
         .fns = .fns,
         na.rm = TRUE)
     )
 
-  average_day = tsibble::build_tsibble(average_day,
-                                       index = time)
-  average_day
+  x = tsibbler(x, transformations = transformations)
+  x
 }
 
 #' @export
