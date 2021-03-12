@@ -9,7 +9,8 @@ mims_default_processing(
   use_extrapolation = TRUE,
   use_filtering = TRUE,
   verbose = TRUE,
-  dynamic_range = NULL
+  dynamic_range = NULL,
+  round_after_processing = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ filtering to the input signal, otherwise it will skip the filtering.}
 \item{dynamic_range}{the dynamic ranges of the input signal.  Passed to
 \code{\link{mims_default_extrapolation}}.  Only needed if
 \code{use_extrapolation = TRUE}}
+
+\item{round_after_processing}{Should the result be rounded to 3
+decimal values after processing, to make similar to standard accelerometry?}
 }
 \value{
 A process data set

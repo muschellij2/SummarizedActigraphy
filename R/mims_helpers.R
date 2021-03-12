@@ -126,12 +126,17 @@ mims_default_filtering = function(df) {
 #' @param dynamic_range the dynamic ranges of the input signal.  Passed to
 #' \code{\link{mims_default_extrapolation}}.  Only needed if
 #' \code{use_extrapolation = TRUE}
+#' @param round_after_processing Should the result be rounded to 3
+#' decimal values after processing, to make similar to standard accelerometry?
 #'
 #' @return A process data set
 #' @export
 mims_default_processing = function(
   df, use_extrapolation = TRUE, use_filtering = TRUE,
-  verbose = TRUE, dynamic_range = NULL) {
+  verbose = TRUE, dynamic_range = NULL,
+  round_after_processing = FALSE) {
+  X = Y = Z = NULL
+  rm(list = c("X", "Y", "Z"))
   dynamic_range = get_dynamic_range(df, dynamic_range)
   if (use_extrapolation) {
     if (verbose) {
@@ -149,6 +154,13 @@ mims_default_processing = function(
       message("Running filtering")
     }
     df = mims_default_filtering(df)
+  }
+  if (round_after_processing) {
+    df = df %>%
+      dplyr::mutate(
+        X = round(X, 3),
+        Y = round(Y, 3),
+        Z = round(Z, 3))
   }
   df
 }
