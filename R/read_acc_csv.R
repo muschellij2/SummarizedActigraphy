@@ -80,11 +80,18 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
     dplyr::rename(time = HEADER_TIME_STAMP)
 
   df = tibble::as_tibble(df)
+  if (is.na(srate)) {
+    srate = get_sample_rate(df)
+  }
   L = list(
-    header = hdr,
-    parsed_header = L$parsed_header,
-    data = df
+    data = df,
+    freq = srate,
+    filename = file,
+    header = L$parsed_header,
+    original_header = hdr
   )
+  class(L) = "AccData"
+  L
 }
 
 #' @rdname read_acc_csv

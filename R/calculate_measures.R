@@ -21,6 +21,8 @@
 #' the beginning and the end of the time course?
 #' observation carried forward?
 #' @param calculate_mims Should MIMS units be calculated?
+#' @param calculate_ac Should Activity Counts from the \code{activityCounts}
+#' package be calculated?
 #' @param flag_data Should [SummarizedActigraphy::flag_qc()] be run?
 #' It will be executed after \code{fix_zeros} before any measure
 #' calculation
@@ -49,10 +51,20 @@ calculate_measures = function(
   trim = FALSE,
   dynamic_range = NULL,
   calculate_mims = TRUE,
+  calculate_ac = FALSE,
   flag_data = TRUE,
   flags = NULL,
   verbose = TRUE,
   ...) {
+
+
+  if (calculate_ac && !requireNamespace("activityCounts", quietly = TRUE)) {
+    stop("activityCounts package required for calculating AC")
+  }
+
+  if (calculate_mims && !requireNamespace("MIMSunit", quietly = TRUE)) {
+    stop("MIMSunit package required for calculating MIMS")
+  }
 
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
@@ -61,6 +73,9 @@ calculate_measures = function(
   }
   # keep flag here - so can calculate by epoch
   df = ensure_header_timestamp(df)
+  if (calculate_ac) {
+    sample_rate = get_sample_rate(df)
+  }
   # or do flag_qc(verbose) if flag-dat = TRUE
   if (fix_zeros) {
     if (verbose) {
@@ -103,6 +118,19 @@ calculate_measures = function(
 
   rm(df)
   res = dplyr::full_join(ai0, mad)
+  rm(ai0, mad)
+
+  if (calculate_ac) {
+    if (verbose) {
+      message("Calculating AC")
+    }
+    ac = calculate_ac(df, unit = unit, sample_rate = sample_rate)
+    if (verbose) {
+      message("Joining AC")
+    }
+    res = dplyr::full_join(res, ac)
+  }
+
   if (calculate_mims) {
     if (verbose) {
       message("Joining MIMS")
@@ -153,6 +181,9 @@ calculate_ai = function(df, unit = "1 min") {
       AI = sum(AI)
     )
 }
+#' @export
+#' @rdname calculate_measures
+calculate_activity_index = calculate_ai
 
 #' @export
 #' @rdname calculate_measures
@@ -195,8 +226,8 @@ calculate_n_idle = function(df, unit = "1 min") {
   df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
-      ENMO = r - 1,
-      ENMO = dplyr::if_else(ENMO < 0, 0, ENMO),
+      # ENMO = r - 1,
+      # ENMO = dplyr::if_else(ENMO < 0, 0, ENMO),
       all_zero = X == 0 & Y == 0 & Z == 0,
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit)) %>%
@@ -242,6 +273,33 @@ calculate_mad = function(df, unit = "1 min") {
     dplyr::ungroup()
 }
 
+#' @rdname calculate_measures
+#' @export
+get_sample_rate = function(df, sample_rate = NULL) {
+  if (!is.null(sample_rate)) {
+    return(sample_rate)
+  }
+  if (is.AccData(df)) {
+    sample_rate = df$freq
+  }
+  if (is.null(sample_rate) || is.na(sample_rate)) {
+    sample_rate = attr(df, "sample_rate")
+  }
+  if ((is.null(sample_rate) || is.na(sample_rate)) &&
+      any(c("time", "HEADER_TIME_STAMP") %in% colnames(df))) {
+    warning("Guessing sample_rate from the data")
+    time = df[["time"]]
+    if (is.null(time)) {
+      time = df[["HEADER_TIME_STAMP"]]
+    }
+    d = diff(time)
+    units(d) = "secs"
+    sample_rate = unique(round( 1 / as.numeric(d)))
+    stopifnot(length(sample_rate) == 1)
+  }
+  stopifnot(!is.null(sample_rate))
+  return(sample_rate)
+}
 
 #' @export
 #' @rdname calculate_measures
@@ -259,9 +317,7 @@ calculate_auc = function(df, unit = "1 min",
   AUC_X = AUC_Y = AUC_Z = NULL
   rm(list= c("AUC_X", "AUC_Z", "AUC_Y"))
   df = ensure_header_timestamp(df)
-  if (is.null(sample_rate)) {
-    sample_rate = attr(df, "sample_rate")
-  }
+  sample_rate = get_sample_rate(df, sample_rate)
 
   n_total = n_in_interval(unit, sample_rate)
   max_values <- 16 * n_total
@@ -475,6 +531,7 @@ ensure_header_timestamp = function(df, subset = TRUE) {
     df = df %>%
       dplyr::select(HEADER_TIME_STAMP, X, Y, Z)
   }
+  stopifnot("HEADER_TIME_STAMP" %in% colnames(df))
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range") = dynamic_range
   df = set_transformations(df, transformations = transformations, add = FALSE)

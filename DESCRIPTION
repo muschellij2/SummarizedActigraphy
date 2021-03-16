@@ -26,7 +26,8 @@ Suggests:
     ggplot2,
     MIMSunit,
     limma,
-    tidyr
+    tidyr,
+    activityCounts
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
