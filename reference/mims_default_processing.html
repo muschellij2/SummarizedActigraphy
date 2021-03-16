@@ -128,7 +128,8 @@
   use_extrapolation <span class='op'>=</span> <span class='cn'>TRUE</span>,
   use_filtering <span class='op'>=</span> <span class='cn'>TRUE</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span>
+  dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span>,
+  round_after_processing <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -159,6 +160,11 @@ filtering to the input signal, otherwise it will skip the filtering.</p></td>
       <td><p>the dynamic ranges of the input signal.  Passed to
 <code><a href='mims_default_extrapolation.html'>mims_default_extrapolation</a></code>.  Only needed if
 <code>use_extrapolation = TRUE</code></p></td>
+    </tr>
+    <tr>
+      <th>round_after_processing</th>
+      <td><p>Should the result be rounded to 3
+decimal values after processing, to make similar to standard accelerometry?</p></td>
     </tr>
     </table>
 
