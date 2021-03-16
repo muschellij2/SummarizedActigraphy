@@ -28,6 +28,8 @@ tsibbler = function(x, transformations = NULL) {
 #' observation carried forward?
 #' @param calculate_mims Should MIMS units be calculated?
 #' Passed to \code{\link{calculate_measures}}
+#' @param calculate_ac Should Activity Counts from the \code{activityCounts}
+#' package be calculated?
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
@@ -73,6 +75,7 @@ summarize_daily_actigraphy = function(
   trim = FALSE,
   verbose = TRUE,
   calculate_mims = FALSE,
+  calculate_ac = FALSE,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
   rm(list = c("X", "Y", "Z", "enmo", "mad", "time"))
@@ -88,6 +91,7 @@ summarize_daily_actigraphy = function(
     fill_in = fill_in,
     trim = trim,
     calculate_mims = calculate_mims,
+    calculate_ac = calculate_ac,
     verbose = verbose)
 
   x = tsibbler(x)

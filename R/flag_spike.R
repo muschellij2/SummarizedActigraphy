@@ -299,7 +299,7 @@ flag_all_zero = function(df, min_length = 3) {
 #' @rdname flag_spike
 flag_impossible = function(df, min_length = 6) {
   # from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm
-  # #5
+  # #4
   # Contiguous impossible gravity measures such as,
   # zero gravity measures on the x-, y-, or z-axis:
   # Data with less than 0.01 g change per axis (indicating the device

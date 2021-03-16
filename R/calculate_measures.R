@@ -129,6 +129,7 @@ calculate_measures = function(
       message("Joining AC")
     }
     res = dplyr::full_join(res, ac)
+    rm(ac)
   }
 
   if (calculate_mims) {
