@@ -46,7 +46,8 @@ Imports:
     tsibble,
     hms,
     zoo,
-    readr
+    readr,
+    methods
 Remotes:
     muschellij2/read.gt3x
 URL: https://github.com/muschellij2/SummarizedActigraphy

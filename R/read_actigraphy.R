@@ -191,7 +191,7 @@ test_unzip_file = function(file) {
         args[[iarg]] = default_args[[iarg]]
       }
     }
-    fargs = try({formalArgs(func)})
+    fargs = try({methods::formalArgs(func)})
     if (!inherits(fargs, "try-error")) {
       if (!"verbose" %in% fargs) {
         args$verbose = NULL
