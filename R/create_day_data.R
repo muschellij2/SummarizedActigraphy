@@ -30,6 +30,11 @@ tsibbler = function(x, transformations = NULL) {
 #' Passed to \code{\link{calculate_measures}}
 #' @param calculate_ac Should Activity Counts from the \code{activityCounts}
 #' package be calculated?
+#' @param flag_data Should [SummarizedActigraphy::flag_qc()] be run?
+#' It will be executed after \code{fix_zeros} before any measure
+#' calculation
+#' @param flags the flags to calculate,
+#' passed to [SummarizedActigraphy::flag_qc()]
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
@@ -76,12 +81,14 @@ summarize_daily_actigraphy = function(
   verbose = TRUE,
   calculate_mims = FALSE,
   calculate_ac = FALSE,
+  flag_data = TRUE,
+  flags = NULL,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
   rm(list = c("X", "Y", "Z", "enmo", "mad", "time"))
 
   if (is.character(x)) {
-    x = read_actigraphy(x, ...)
+    x = read_actigraphy(x, verbose = verbose, ...)
   }
 
   x = calculate_measures(
@@ -92,7 +99,11 @@ summarize_daily_actigraphy = function(
     trim = trim,
     calculate_mims = calculate_mims,
     calculate_ac = calculate_ac,
+    flag_data = flag_data,
+    flags = flags,
     verbose = verbose)
+  x$X = x$Y = x$Z = NULL
+  x$AUC_X = x$AUC_Y = x$AUC_Z = NULL
 
   x = tsibbler(x)
   return(x)
@@ -163,7 +174,8 @@ collapse_daily_actigraphy = function(
     dplyr::group_by(time) %>%
     dplyr::summarise(
       dplyr::across(
-        dplyr::any_of(c("AI", "SD", "MAD", "MEDAD", "ENMO_t", "AUC",
+        dplyr::any_of(c("AI", "SD", "MAD", "MEDAD",
+                        "ENMO_t", "AUC", "AC",
                         "mean_r", "MIMS_UNIT")),
         .fns = .fns,
         na.rm = TRUE)

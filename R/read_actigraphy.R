@@ -191,6 +191,12 @@ test_unzip_file = function(file) {
         args[[iarg]] = default_args[[iarg]]
       }
     }
+    fargs = try({formalArgs(func)})
+    if (!inherits(fargs, "try-error")) {
+      if (!"verbose" %in% fargs) {
+        args$verbose = NULL
+      }
+    }
     res = do.call(func, args = args)
     hdr = c(hdr, res$header)
     check_data = function(x) "data" %in% names(x)

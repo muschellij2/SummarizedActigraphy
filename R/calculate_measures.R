@@ -51,7 +51,7 @@ calculate_measures = function(
   trim = FALSE,
   dynamic_range = NULL,
   calculate_mims = TRUE,
-  calculate_ac = FALSE,
+  calculate_ac = TRUE,
   flag_data = TRUE,
   flags = NULL,
   verbose = TRUE,
@@ -98,7 +98,7 @@ calculate_measures = function(
   if (verbose) {
     message("Calculating ai0")
   }
-  ai0 = calculate_ai(df, unit = unit)
+  res = calculate_ai(df, unit = unit)
   if (verbose) {
     message("Calculating MAD")
   }
@@ -116,33 +116,35 @@ calculate_measures = function(
     message("Joining AI and MAD")
   }
 
-  rm(df)
-  res = dplyr::full_join(ai0, mad)
-  rm(ai0, mad)
+  # ai0 is res
+  res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
+  rm(mad)
 
   if (calculate_ac) {
     if (verbose) {
       message("Calculating AC")
     }
-    ac = calculate_ac(df, unit = unit, sample_rate = sample_rate)
+    ac = calculate_ac(df, unit = unit, sample_rate = sample_rate,
+                      verbose = verbose)
     if (verbose) {
       message("Joining AC")
     }
-    res = dplyr::full_join(res, ac)
+    res = dplyr::full_join(res, ac, by = "HEADER_TIME_STAMP")
     rm(ac)
   }
+  rm(df)
 
   if (calculate_mims) {
     if (verbose) {
       message("Joining MIMS")
     }
-    res = dplyr::full_join(res, mims)
+    res = dplyr::full_join(res, mims, by = "HEADER_TIME_STAMP")
   }
   if (flag_data) {
     if (verbose) {
       message("Joining flags")
     }
-    res = dplyr::full_join(res, flags)
+    res = dplyr::full_join(res, flags, by = "HEADER_TIME_STAMP")
   }
   res = res %>%
     dplyr::rename(time = HEADER_TIME_STAMP)

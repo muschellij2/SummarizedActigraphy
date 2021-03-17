@@ -29,7 +29,7 @@ calculate_activity_counts = function(
     message("Calculating Axis-Specific Activity Counts")
   }
   df = activityCounts::counts(
-    data = df,
+    data = as.data.frame(df),
     hertz = sample_rate,
     x_axis = which(colnames(df) == "X"),
     y_axis = which(colnames(df) == "Y"),

@@ -11,7 +11,8 @@ actigraphy_df_to_SummarizedExperiment(
   assay_name = measure,
   rowData = NULL,
   ...,
-  verbose = TRUE
+  verbose = TRUE,
+  metadata = list()
 )
 }
 \arguments{
@@ -29,9 +30,11 @@ then every measure that is not the column \code{time}}
 
 \item{rowData}{row data to pass to \code{\link{SummarizedExperiment}}}
 
-\item{...}{additional arguments to pass to \code{\link{SummarizedExperiment}}}
+\item{...}{additional arguments to pass to \code{\link{summarize_actigraphy}}}
 
 \item{verbose}{print diagnostic messages}
+
+\item{metadata}{metadata passed to \code{\link{SummarizedExperiment}}}
 }
 \value{
 A \code{SummarizedExperiment} output

@@ -10,7 +10,8 @@
 #' \code{\link{SummarizedExperiment}}
 #' @param verbose print diagnostic messages
 #' @param rowData row data to pass to \code{\link{SummarizedExperiment}}
-#' @param ... additional arguments to pass to \code{\link{SummarizedExperiment}}
+#' @param metadata metadata passed to \code{\link{SummarizedExperiment}}
+#' @param ... additional arguments to pass to \code{\link{summarize_actigraphy}}
 #'
 #' @return A \code{SummarizedExperiment} output
 #' @export
@@ -36,7 +37,8 @@ actigraphy_df_to_SummarizedExperiment = function(
   assay_name = measure,
   rowData = NULL,
   ...,
-  verbose = TRUE) {
+  verbose = TRUE,
+  metadata = list()) {
 
   files = x[[path_column]]
   if (is.factor(files)) {
@@ -77,6 +79,6 @@ actigraphy_df_to_SummarizedExperiment = function(
     assays = mat,
     rowData = rowData,
     colData = x,
-    ...)
+    metadata = metadata)
 }
 

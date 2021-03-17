@@ -16,6 +16,9 @@ summarize_daily_actigraphy(
   trim = FALSE,
   verbose = TRUE,
   calculate_mims = FALSE,
+  calculate_ac = FALSE,
+  flag_data = TRUE,
+  flags = NULL,
   ...
 )
 
@@ -27,6 +30,9 @@ summarise_daily_actigraphy(
   trim = FALSE,
   verbose = TRUE,
   calculate_mims = FALSE,
+  calculate_ac = FALSE,
+  flag_data = TRUE,
+  flags = NULL,
   ...
 )
 
@@ -74,6 +80,16 @@ observation carried forward?}
 
 \item{calculate_mims}{Should MIMS units be calculated?
 Passed to \code{\link{calculate_measures}}}
+
+\item{calculate_ac}{Should Activity Counts from the \code{activityCounts}
+package be calculated?}
+
+\item{flag_data}{Should [SummarizedActigraphy::flag_qc()] be run?
+It will be executed after \code{fix_zeros} before any measure
+calculation}
+
+\item{flags}{the flags to calculate,
+passed to [SummarizedActigraphy::flag_qc()]}
 
 \item{...}{Additional arguments to pass to
 \code{\link{read_actigraphy}}}

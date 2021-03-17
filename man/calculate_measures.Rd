@@ -35,7 +35,7 @@ calculate_measures(
   trim = FALSE,
   dynamic_range = NULL,
   calculate_mims = TRUE,
-  calculate_ac = FALSE,
+  calculate_ac = TRUE,
   flag_data = TRUE,
   flags = NULL,
   verbose = TRUE,
