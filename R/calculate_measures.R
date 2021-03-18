@@ -198,8 +198,6 @@ calculate_flags = function(df, unit = "1 min") {
     stop("flag is not in the data, please run flag_qc")
   }
 
-  AI = NULL
-  rm(list= c("AI"))
   df = df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -565,6 +563,23 @@ get_dynamic_range = function(df, dynamic_range = NULL) {
     if (!is.null(drange)) {
       dynamic_range = drange
     }
+    if (is.null(dynamic_range)) {
+      if (length(hdr$accrange) > 0) {
+        arange = try({
+          unique(abs(as.numeric(hdr$accrange)))
+          }, silent = TRUE)
+        if (!inherits(arange, "try-error")) {
+          dynamic_range = c(-arange, arange)
+        }
+      }
+    }
+
+    # allows for actilife headers to extract it correctly
+    if (is.null(dynamic_range) &&
+        is.null(attr(df$data, "dynamic_range"))) {
+      hdr = df$original_header
+      dynamic_range = get_dynamic_range_actilife_header(hdr)
+    }
     df = df$data
   }
   drange = attr(df, "dynamic_range")
@@ -579,6 +594,39 @@ get_dynamic_range = function(df, dynamic_range = NULL) {
     dynamic_range = c(-r, r)
   }
   return(dynamic_range)
+}
+
+get_dynamic_range_actilife_header = function(header) {
+  if (is.null(header)) {
+    return(NULL)
+  }
+  if (length(header) > 0) {
+    header = paste(header, collapse = " ")
+  }
+  hdr = strsplit(header, "---")[[1]]
+  hdr = trimws(hdr)
+  hdr = gsub("-", "", hdr)
+  hdr = hdr[ !hdr %in% ""]
+  hdr = trimws(hdr)
+  hdr = hdr[ grepl("Serial", hdr)]
+  ACTIGRAPH_SERIALNUM_PATTERN <- ".*Serial\\s*Number:\\s*([A-Za-z0-9]+)\\s*Start\\s*Time.*"
+  sn = sub(ACTIGRAPH_SERIALNUM_PATTERN, "\\1", hdr)
+  sn = trimws(sn)
+  if (nchar(sn) > 20) {
+    warning("Serial number does not seem to be parsed correctly, ",
+            "dynamic range may be wrong")
+  }
+  at <- substr(sn, 1, 3)
+  gr <- switch(at, MAT = "3", CLE = "6", MOS = "8", TAS = "8", NULL)
+  if (grepl("IMU", hdr[[1]])) {
+    gr <- "16"
+  }
+  gr = as.numeric(gr)
+  gr = c(-gr, gr)
+  if (length(gr) == 0) {
+    gr = NULL
+  }
+  gr
 }
 
 check_dynamic_range = function(df, dynamic_range = c(-6, 6)) {
