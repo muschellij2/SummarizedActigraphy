@@ -38,21 +38,22 @@ calculate_measures(
   calculate_ac = TRUE,
   flag_data = TRUE,
   flags = NULL,
+  ensure_all_time = TRUE,
   verbose = TRUE,
   ...
 )
 
-calculate_ai(df, unit = "1 min")
+calculate_ai(df, unit = "1 min", ensure_all_time = TRUE)
 
-calculate_activity_index(df, unit = "1 min")
+calculate_activity_index(df, unit = "1 min", ensure_all_time = TRUE)
 
-calculate_flags(df, unit = "1 min")
+calculate_flags(df, unit = "1 min", ensure_all_time = TRUE)
 
-calculate_n_idle(df, unit = "1 min")
+calculate_n_idle(df, unit = "1 min", ensure_all_time = TRUE)
 
 calculate_enmo(...)
 
-calculate_mad(df, unit = "1 min")
+calculate_mad(df, unit = "1 min", ensure_all_time = TRUE)
 
 get_sample_rate(df, sample_rate = NULL)
 
@@ -61,6 +62,7 @@ calculate_auc(
   unit = "1 min",
   sample_rate = NULL,
   allow_truncation = FALSE,
+  ensure_all_time = TRUE,
   verbose = TRUE
 )
 
@@ -70,11 +72,18 @@ calculate_fast_mims(
   dynamic_range = NULL,
   sample_rate = NULL,
   allow_truncation = TRUE,
+  ensure_all_time = TRUE,
   verbose = TRUE,
   ...
 )
 
-calculate_mims(df, unit = "1 min", dynamic_range = c(-6, 6), ...)
+calculate_mims(
+  df,
+  unit = "1 min",
+  dynamic_range = c(-6, 6),
+  ensure_all_time = TRUE,
+  ...
+)
 }
 \arguments{
 \item{df}{An object with columns `X`, `Y`, and `Z` or an
@@ -120,6 +129,10 @@ calculation}
 
 \item{flags}{the flags to calculate,
 passed to [SummarizedActigraphy::flag_qc()]}
+
+\item{ensure_all_time}{if \code{TRUE}, then all times from the first to
+last times will be in the output, even if data during that time was not
+in the input}
 
 \item{allow_truncation}{truncate small values}
 }

@@ -18,6 +18,7 @@ summarize_daily_actigraphy(
   calculate_mims = FALSE,
   calculate_ac = FALSE,
   flag_data = TRUE,
+  ensure_all_time = TRUE,
   flags = NULL,
   ...
 )
@@ -32,6 +33,7 @@ summarise_daily_actigraphy(
   calculate_mims = FALSE,
   calculate_ac = FALSE,
   flag_data = TRUE,
+  ensure_all_time = TRUE,
   flags = NULL,
   ...
 )
@@ -87,6 +89,10 @@ package be calculated?}
 \item{flag_data}{Should [SummarizedActigraphy::flag_qc()] be run?
 It will be executed after \code{fix_zeros} before any measure
 calculation}
+
+\item{ensure_all_time}{if \code{TRUE}, then all times from the first to
+last times will be in the output, even if data during that time was not
+in the input}
 
 \item{flags}{the flags to calculate,
 passed to [SummarizedActigraphy::flag_qc()]}

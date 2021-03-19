@@ -35,6 +35,9 @@ tsibbler = function(x, transformations = NULL) {
 #' calculation
 #' @param flags the flags to calculate,
 #' passed to [SummarizedActigraphy::flag_qc()]
+#' @param ensure_all_time if \code{TRUE}, then all times from the first to
+#' last times will be in the output, even if data during that time was not
+#' in the input
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
 #' with one row for each secon d of the day `24*60*60`.
@@ -82,6 +85,7 @@ summarize_daily_actigraphy = function(
   calculate_mims = FALSE,
   calculate_ac = FALSE,
   flag_data = TRUE,
+  ensure_all_time = TRUE,
   flags = NULL,
   ...) {
   time = enmo = mad = X = Y = Z = NULL
@@ -101,6 +105,7 @@ summarize_daily_actigraphy = function(
     calculate_ac = calculate_ac,
     flag_data = flag_data,
     flags = flags,
+    ensure_all_time = ensure_all_time,
     verbose = verbose)
   x$X = x$Y = x$Z = NULL
   x$AUC_X = x$AUC_Y = x$AUC_Z = NULL

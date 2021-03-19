@@ -1,3 +1,9 @@
+# SummarizedActigraphy 0.4.2
+
+* Added `flag_*` functions from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm#Quality_Assurance_&_Quality_Control.
+* Added `ensure_all_time` flag for `calculate_measures`.
+* 
+
 # SummarizedActigraphy 0.3.1
 
 * Added `by_second` option for `fix_zeros`.

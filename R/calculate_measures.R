@@ -28,6 +28,9 @@
 #' calculation
 #' @param flags the flags to calculate,
 #' passed to [SummarizedActigraphy::flag_qc()]
+#' @param ensure_all_time if \code{TRUE}, then all times from the first to
+#' last times will be in the output, even if data during that time was not
+#' in the input
 #' @param ... additional arguments to pass to [MIMSunit::mims_unit]
 #'
 #' @return A data set with the calculated features
@@ -54,6 +57,7 @@ calculate_measures = function(
   calculate_ac = TRUE,
   flag_data = TRUE,
   flags = NULL,
+  ensure_all_time = TRUE,
   verbose = TRUE,
   ...) {
 
@@ -146,6 +150,7 @@ calculate_measures = function(
     }
     res = dplyr::full_join(res, flags, by = "HEADER_TIME_STAMP")
   }
+  res = join_all_time(res, unit, ensure_all_time)
   res = res %>%
     dplyr::rename(time = HEADER_TIME_STAMP)
   transforms = paste("aggregated_at_", paste(unit, collapse = "_"))
@@ -156,7 +161,7 @@ calculate_measures = function(
 
 #' @export
 #' @rdname calculate_measures
-calculate_ai = function(df, unit = "1 min") {
+calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
@@ -174,7 +179,7 @@ calculate_ai = function(df, unit = "1 min") {
           var(Y, na.rm = TRUE) +
           var(Z, na.rm = TRUE)) / 3)
     )
-  df %>%
+  df = df %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -183,6 +188,18 @@ calculate_ai = function(df, unit = "1 min") {
     dplyr::summarise(
       AI = sum(AI)
     )
+  df = join_all_time(df, unit, ensure_all_time)
+  df
+}
+
+join_all_time = function(df, unit = "1 min", ensure_all_time) {
+  if (ensure_all_time) {
+    rtime = range(df$HEADER_TIME_STAMP)
+    time_df = tibble::tibble(HEADER_TIME_STAMP = seq(rtime[1], rtime[2],
+                                                     by = unit))
+    df = dplyr::left_join(time_df, df, by = "HEADER_TIME_STAMP")
+  }
+  df
 }
 #' @export
 #' @rdname calculate_measures
@@ -190,7 +207,7 @@ calculate_activity_index = calculate_ai
 
 #' @export
 #' @rdname calculate_measures
-calculate_flags = function(df, unit = "1 min") {
+calculate_flags = function(df, unit = "1 min", ensure_all_time = TRUE) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df, subset = FALSE)
@@ -208,13 +225,14 @@ calculate_flags = function(df, unit = "1 min") {
       n_samples_in_unit = dplyr::n()
     ) %>%
     ungroup()
+  df = join_all_time(df, unit, ensure_all_time)
   df
 }
 
 
 #' @export
 #' @rdname calculate_measures
-calculate_n_idle = function(df, unit = "1 min") {
+calculate_n_idle = function(df, unit = "1 min", ensure_all_time = TRUE) {
   ENMO = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time", "ENMO"))
   df = ensure_header_timestamp(df)
@@ -224,7 +242,7 @@ calculate_n_idle = function(df, unit = "1 min") {
 
   n_idle = r = all_zero = NULL
   rm(list= c("n_idle", "r", "all_zero"))
-  df %>%
+  df = df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
       # ENMO = r - 1,
@@ -237,6 +255,8 @@ calculate_n_idle = function(df, unit = "1 min") {
       n_idle = sum(is.na(r) | all_zero)
     ) %>%
     dplyr::ungroup()
+  df = join_all_time(df, unit, ensure_all_time)
+  df
 }
 
 #' @export
@@ -251,12 +271,12 @@ calculate_enmo = function(...) {
 
 #' @export
 #' @rdname calculate_measures
-calculate_mad = function(df, unit = "1 min") {
+calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
   ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
 
-  df %>%
+  df = df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
       ENMO_t = r - 1,
@@ -272,6 +292,8 @@ calculate_mad = function(df, unit = "1 min") {
       ENMO_t = mean(ENMO_t, na.rm = TRUE)
     ) %>%
     dplyr::ungroup()
+  df = join_all_time(df, unit, ensure_all_time)
+  df
 }
 
 #' @rdname calculate_measures
@@ -309,6 +331,7 @@ get_sample_rate = function(df, sample_rate = NULL) {
 calculate_auc = function(df, unit = "1 min",
                          sample_rate = NULL,
                          allow_truncation = FALSE,
+                         ensure_all_time = TRUE,
                          verbose = TRUE
 ) {
   dtime = good = NULL
@@ -413,6 +436,7 @@ calculate_auc = function(df, unit = "1 min",
       AUC = AUC_X + AUC_Y + AUC_Z
     ) %>%
     dplyr::select(-good)
+  df = join_all_time(df, unit, ensure_all_time)
   df
 }
 
@@ -424,6 +448,7 @@ calculate_fast_mims = function(
   dynamic_range = NULL,
   sample_rate = NULL,
   allow_truncation = TRUE,
+  ensure_all_time = TRUE,
   verbose = TRUE,
   ...) {
   args = list(df,
@@ -440,6 +465,7 @@ calculate_fast_mims = function(
     df, unit = unit,
     sample_rate = sample_rate,
     allow_truncation = allow_truncation,
+    ensure_all_time = ensure_all_time,
     verbose = verbose
   )
   colnames(df) = sub("AUC", "MIMS_UNIT", colnames(df))
@@ -456,6 +482,7 @@ calculate_mims = function(
   df,
   unit = "1 min",
   dynamic_range = c(-6, 6),
+  ensure_all_time = TRUE,
   ...) {
   HEADER_TIME_STAMP = NULL
   rm(list= "HEADER_TIME_STAMP")
@@ -470,15 +497,17 @@ calculate_mims = function(
   if (!requireNamespace("MIMSunit", quietly = TRUE)) {
     stop("MIMSunit package required for calculating MIMS")
   }
-  out = MIMSunit::mims_unit(
+  df = MIMSunit::mims_unit(
     df,
     epoch = unit,
     dynamic_range = dynamic_range,
     ...)
-  out = out %>% dplyr::mutate(
+  df = df %>% dplyr::mutate(
     HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                               unit = unit))
-  out
+  df = join_all_time(df, unit, ensure_all_time)
+
+  df
 
 }
 
@@ -567,7 +596,7 @@ get_dynamic_range = function(df, dynamic_range = NULL) {
       if (length(hdr$accrange) > 0) {
         arange = try({
           unique(abs(as.numeric(hdr$accrange)))
-          }, silent = TRUE)
+        }, silent = TRUE)
         if (!inherits(arange, "try-error")) {
           dynamic_range = c(-arange, arange)
         }
