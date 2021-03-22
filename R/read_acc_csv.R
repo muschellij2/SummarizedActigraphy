@@ -76,6 +76,11 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
   stopifnot(!anyNA(df$HEADER_TIME_STAMP))
   colnames(df) = trimws(sub("Accelerometer", "", colnames(df)))
 
+  if (only_xyz && !any(SummarizedActigraphy::xyz %in% colnames(df))) {
+    warning("X/Y/Z not in the data, but only_xyz = TRUE, ",
+            "setting only_xyz = FALSE")
+    only_xyz = FALSE
+  }
   if (only_xyz) {
     df = df[, c("HEADER_TIME_STAMP", "X", "Y", "Z")]
   } else {
