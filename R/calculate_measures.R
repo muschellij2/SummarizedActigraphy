@@ -318,7 +318,12 @@ get_sample_rate = function(df, sample_rate = NULL) {
     }
     d = diff(time)
     units(d) = "secs"
-    sample_rate = unique(round( 1 / as.numeric(d)))
+    if (all(d > 1)) {
+      # minute level data
+      sample_rate = unique(1 / as.numeric(d))
+    } else {
+      sample_rate = unique(round(1 / as.numeric(d)))
+    }
     stopifnot(length(sample_rate) == 1)
   }
   stopifnot(!is.null(sample_rate))
