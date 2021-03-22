@@ -45,6 +45,8 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
       col_types = readr::cols(
         .default = readr::col_double(),
         Date = readr::col_character(),
+        timestamp = readr::col_datetime(),
+        Timestamp = readr::col_datetime(),
         Time = readr::col_time(format = "")
       ), ...)
   })
@@ -62,6 +64,10 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
         HEADER_TIME_STAMP = paste(Date, Time),
         HEADER_TIME_STAMP = do.call(lubridate_func , args = list(HEADER_TIME_STAMP))
       )
+  } else if ("timestamp" %in% colnames(df)) {
+    df$HEADER_TIME_STAMP = df$timestamp
+  } else if ("Timestamp" %in% colnames(df)) {
+    df$HEADER_TIME_STAMP = df$Timestamp
   } else {
     df$HEADER_TIME_STAMP = seq(0, nrow(df) - 1)/srate
     df$HEADER_TIME_STAMP = start_date + df$HEADER_TIME_STAMP

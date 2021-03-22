@@ -51,7 +51,7 @@ df = data.frame(file = files,
 age = stats::rpois(length(files), 50),
 stringsAsFactors = FALSE)
 se = actigraphy_df_to_SummarizedExperiment(df, "file")
-\donttest{
+\dontrun{
 df$file = factor(df$file)
 se = actigraphy_df_to_SummarizedExperiment(df, "file", measure = "AI_mean")
 }

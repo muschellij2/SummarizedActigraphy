@@ -130,6 +130,7 @@ calculate_measures = function(
     }
     ac = calculate_ac(df, unit = unit, sample_rate = sample_rate,
                       verbose = verbose)
+    ac$X = ac$Y = ac$Z = NULL
     if (verbose) {
       message("Joining AC")
     }
