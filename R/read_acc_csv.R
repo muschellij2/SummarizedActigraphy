@@ -31,6 +31,8 @@ sub_thing = function(hdr, string) {
 #' }
 
 read_acc_csv = function(file, ..., only_xyz = TRUE) {
+  Timestamp = timestamp = NULL
+  rm(list = c("Timestamp", "timestamp"))
   L = extract_acc_header(file)
   hdr = L$header
   srate = L$sample_rate
@@ -65,9 +67,11 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
         HEADER_TIME_STAMP = do.call(lubridate_func , args = list(HEADER_TIME_STAMP))
       )
   } else if ("timestamp" %in% colnames(df)) {
-    df$HEADER_TIME_STAMP = df$timestamp
+    df = df %>%
+      dplyr::rename(HEADER_TIME_STAMP = timestamp)
   } else if ("Timestamp" %in% colnames(df)) {
-    df$HEADER_TIME_STAMP = df$Timestamp
+    df = df %>%
+      dplyr::rename(HEADER_TIME_STAMP = Timestamp)
   } else {
     df$HEADER_TIME_STAMP = seq(0, nrow(df) - 1)/srate
     df$HEADER_TIME_STAMP = start_date + df$HEADER_TIME_STAMP
@@ -92,7 +96,10 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
 
   df = tibble::as_tibble(df)
   if (is.na(srate)) {
-    srate = get_sample_rate(df)
+    srate = try({get_sample_rate(df)})
+    if (inherits(srate, "try-error")) {
+      srate = NA
+    }
   }
   L = list(
     data = df,
