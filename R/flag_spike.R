@@ -40,6 +40,7 @@ flag_spike = function(df, spike_size = 11) {
   df
 }
 
+
 #' @export
 #' @rdname flag_spike
 flag_interval_jump = function(df) {
@@ -81,12 +82,13 @@ flag_interval_jump = function(df) {
     # floating point
     dplyr::group_by(time, axis) %>%
     dplyr::count(value) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(value = value / 1000)
+    dplyr::ungroup()
 
   # need values at least 10 times each in a second
   df = df %>%
     dplyr::filter(n >= 10)
+  df = df %>%
+    dplyr::mutate(value = value / 1000)
   df = df %>%
     dplyr::arrange(time, axis, dplyr::desc(n), value)
   # There are at least 3 g values that are occurring
@@ -95,8 +97,9 @@ flag_interval_jump = function(df) {
     dplyr::group_by(time, axis) %>%
     # keeping first 3 records
     # because docs say those 3 *most* occurring g values
-    dplyr::filter(dplyr::n() >= 3,
-                  seq(dplyr::n()) <= 3)
+    dplyr::filter(dplyr::n() >= 3) %>%
+    # 2 filter as it was doing seq before
+    dplyr::filter(dplyr::row_number() <= 3)
 
   dvalue = NULL
   rm(list = "dvalue")
@@ -137,8 +140,8 @@ flag_interval_jump = function(df) {
         HEADER_TIME_STAMP, "1 sec")) %>%
     dplyr::left_join(df, by = "time") %>%
     dplyr::mutate(
-      flag_interval_jump = ifelse(is.na(flag_interval_jump), FALSE,
-                                  flag_interval_jump)
+      flag_interval_jump = dplyr::if_else(is.na(flag_interval_jump), FALSE,
+                                          flag_interval_jump)
     ) %>%
     dplyr::select(-time)
   rm(df)
@@ -229,6 +232,33 @@ flag_device_limit = function(df, dynamic_range = NULL, epsilon = 0.05) {
     )
   df
 }
+
+#' @rdname flag_spike
+#' @export
+flag_contiguous_device_limit = function(df, ...) {
+  # from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm
+  # #1
+  # Acceleration spikes recorded for the x-, y-, or z-axis at 80 Hz level:
+  # A spike is recorded whenever the change between two adjacent samples of
+  # raw accelerometer data in the same axis is greater than or equal to 11 g;
+  X = Y = Z = NULL
+  rm(list = c("X", "Y", "Z"))
+
+  if (!"flag_device_limit" %in% colnames(df)) {
+    df = flag_device_limit(df, ...)
+  } else {
+    df = ensure_header_timestamp(df, subset = FALSE)
+  }
+  df = df %>%
+    dplyr::mutate(
+      flag_contiguous_device_limit = flag_device_limit &
+        (dplyr::lag(flag_device_limit, default = FALSE) |
+           dplyr::lead(flag_device_limit, default = FALSE)
+        )
+    )
+  df
+}
+
 
 
 #' @export

@@ -5,6 +5,7 @@
 \alias{flag_interval_jump}
 \alias{flag_spike_second}
 \alias{flag_device_limit}
+\alias{flag_contiguous_device_limit}
 \alias{flag_same_value}
 \alias{flag_all_zero}
 \alias{flag_impossible}
@@ -20,6 +21,8 @@ flag_interval_jump(df)
 flag_spike_second(df, spike_size = 11)
 
 flag_device_limit(df, dynamic_range = NULL, epsilon = 0.05)
+
+flag_contiguous_device_limit(df, ...)
 
 flag_same_value(df, min_length = 1)
 

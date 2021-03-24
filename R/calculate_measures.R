@@ -95,7 +95,13 @@ calculate_measures = function(
     }
     df = flag_qc_all(df, dynamic_range = dynamic_range, verbose = verbose,
                      flags = flags)
+    df$flags = rowSums(
+      df %>%
+        dplyr::select(dplyr::starts_with("flag_")) > 0
+    )
     flags = calculate_flags(df, unit = unit)
+    df = df %>%
+      dplyr::select(-dplyr::starts_with("flag"))
   }
   transformations = get_transformations(df)
 
