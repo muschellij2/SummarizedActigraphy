@@ -235,7 +235,7 @@ flag_device_limit = function(df, dynamic_range = NULL, epsilon = 0.05) {
 
 #' @rdname flag_spike
 #' @export
-flag_contiguous_device_limit = function(df, ...) {
+flag_contiguous_device_limit = function(df, dynamic_range = NULL, epsilon = 0.05) {
   # from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm
   # #1
   # Acceleration spikes recorded for the x-, y-, or z-axis at 80 Hz level:
@@ -245,7 +245,7 @@ flag_contiguous_device_limit = function(df, ...) {
   rm(list = c("X", "Y", "Z"))
 
   if (!"flag_device_limit" %in% colnames(df)) {
-    df = flag_device_limit(df, ...)
+    df = flag_device_limit(df, dynamic_range = dynamic_range, epsilon = epsilon)
   } else {
     df = ensure_header_timestamp(df, subset = FALSE)
   }

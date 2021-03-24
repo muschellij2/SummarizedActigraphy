@@ -22,7 +22,7 @@ flag_spike_second(df, spike_size = 11)
 
 flag_device_limit(df, dynamic_range = NULL, epsilon = 0.05)
 
-flag_contiguous_device_limit(df, ...)
+flag_contiguous_device_limit(df, dynamic_range = NULL, epsilon = 0.05)
 
 flag_same_value(df, min_length = 1)
 
