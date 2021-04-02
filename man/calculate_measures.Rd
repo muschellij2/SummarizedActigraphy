@@ -9,6 +9,7 @@
 \alias{calculate_flags}
 \alias{calculate_n_idle}
 \alias{calculate_enmo}
+\alias{calculate_ai_defined}
 \alias{calculate_mad}
 \alias{get_sample_rate}
 \alias{calculate_auc}
@@ -52,6 +53,8 @@ calculate_flags(df, unit = "1 min", ensure_all_time = TRUE)
 calculate_n_idle(df, unit = "1 min", ensure_all_time = TRUE)
 
 calculate_enmo(...)
+
+calculate_ai_defined(...)
 
 calculate_mad(df, unit = "1 min", ensure_all_time = TRUE)
 
