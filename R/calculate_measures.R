@@ -293,6 +293,10 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       SD = sd(r, na.rm = TRUE),
+      AVG_SD = sqrt((
+        var(X, na.rm = TRUE) +
+          var(Y, na.rm = TRUE) +
+          var(Z, na.rm = TRUE)) / 3),
       MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       mean_r = mean(r, na.rm = TRUE),
