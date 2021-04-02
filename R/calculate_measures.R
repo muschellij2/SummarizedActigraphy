@@ -278,6 +278,17 @@ calculate_enmo = function(...) {
 
 #' @export
 #' @rdname calculate_measures
+calculate_ai_defined = function(...) {
+  AI_DEFINED = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time", "AI_DEFINED"))
+  out = calculate_mad(...)
+  out %>%
+    dplyr::select(HEADER_TIME_STAMP, AI_DEFINED)
+}
+
+
+#' @export
+#' @rdname calculate_measures
 calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
   ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
@@ -293,7 +304,7 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       SD = sd(r, na.rm = TRUE),
-      AVG_SD = sqrt((
+      AI_DEFINED = sqrt((
         var(X, na.rm = TRUE) +
           var(Y, na.rm = TRUE) +
           var(Z, na.rm = TRUE)) / 3),
