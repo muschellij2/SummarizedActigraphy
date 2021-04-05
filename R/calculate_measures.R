@@ -556,7 +556,7 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   transformations = get_transformations(df)
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  sample_rate = NULL
+  serial_prefix = sample_rate = NULL
   dynamic_range = NULL
   if (is.AccData(df)) {
     hdr = df$header
@@ -565,6 +565,10 @@ ensure_header_timestamp = function(df, subset = TRUE) {
         hdr$Value[hdr$Field == "Acceleration Min"],
         hdr$Value[hdr$Field == "Acceleration Max"])
       dynamic_range = as.numeric(dynamic_range)
+      serial_prefix = substr(hdr$Value[hdr$Field == "Serial Number"], 1, 3)
+      if (length(serial_prefix) == 0) {
+        serial_prefix = NULL
+      }
     }
     if (length(dynamic_range) == 0) {
       dynamic_range = NULL
@@ -573,7 +577,12 @@ ensure_header_timestamp = function(df, subset = TRUE) {
     sample_rate = df$freq
     df = df$data
     attr(df, "dynamic_range") = dynamic_range
+    if (is.null(attr(df, "serial_prefix"))) {
+      attr(df, "serial_prefix") = serial_prefix
+    }
+
   }
+  serial_prefix = attr(df, "serial_prefix")
   dynamic_range = attr(df, "dynamic_range")
 
   if (is.null(sample_rate)) {
@@ -591,6 +600,7 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   stopifnot("HEADER_TIME_STAMP" %in% colnames(df))
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range") = dynamic_range
+  attr(df, "serial_prefix") = serial_prefix
   df = set_transformations(df, transformations = transformations, add = FALSE)
   df
 }
