@@ -24,5 +24,6 @@ if (file.exists(file)) {
    x = read_acc_csv(file)
    outfile = write_acc_csv(x)
    out2 = read_acc_csv(outfile)
+   all.equal(x$data, out2$data)
 }
 }
