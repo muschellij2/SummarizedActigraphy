@@ -78,7 +78,7 @@ write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz")) {
   }
 
 
-  sa_version = as.character(packageVersion("SummarizedActigraphy"))
+  sa_version = as.character(utils::packageVersion("SummarizedActigraphy"))
 
   csv_hdr = c(
     paste0(
