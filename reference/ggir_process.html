@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calibrate Accelerometer Data using GGIR — estimate_calibration_values • SummarizedActigraphy</title>
+<title>Run GGIR Processing — ggir_process • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Calibrate Accelerometer Data using GGIR — estimate_calibration_values" />
-<meta property="og:description" content="Calibrate Accelerometer Data using GGIR" />
+<meta property="og:title" content="Run GGIR Processing — ggir_process" />
+<meta property="og:description" content="Run GGIR Processing" />
 
 
 
@@ -114,87 +114,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calibrate Accelerometer Data using GGIR</h1>
-    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/calibrate.R'><code>R/calibrate.R</code></a></small>
-    <div class="hidden name"><code>calibrate.Rd</code></div>
+    <h1>Run GGIR Processing</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/ggir_process.R'><code>R/ggir_process.R</code></a></small>
+    <div class="hidden name"><code>ggir_process.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calibrate Accelerometer Data using GGIR</p>
+    <p>Run GGIR Processing</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_calibration_values</span><span class='op'>(</span>
-  <span class='va'>file</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fix_zeros <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fill_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  by_second <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  trim <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='fu'>calibrate</span><span class='op'>(</span>
-  <span class='va'>file</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fix_zeros <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  fill_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  by_second <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  trim <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  round_after_calibration <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ggir_process</span><span class='op'>(</span><span class='va'>df</span>, unit <span class='op'>=</span> <span class='st'>"1 min"</span>, calibrate <span class='op'>=</span> <span class='cn'>TRUE</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file</th>
-      <td><p>Either a GT3X file, `AccData` object, or `data.frame` with
-`X/Y/Z` and `time`</p></td>
+      <th>df</th>
+      <td><p>An object with columns `X`, `Y`, and `Z` or an
+object of class `AccData`</p></td>
+    </tr>
+    <tr>
+      <th>unit</th>
+      <td><p>length of time to calculate measures over.  a character string
+specifying a time unit or a multiple of a unit to be rounded to.
+Valid base units are `second`, `minute`, `hour`, `day`, `week`, `month`,
+`bimonth`, `quarter`, `season`, `halfyear`, and `year`.
+Arbitrary unique English abbreviations as in the <code>period</code>
+constructor are allowed.</p></td>
+    </tr>
+    <tr>
+      <th>calibrate</th>
+      <td><p>Run calibration, passed to <code>do.calibrate</code> in <code>GGIR</code></p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>print diagnostic messages, higher number result in higher verbosity</p></td>
-    </tr>
-    <tr>
-      <th>fix_zeros</th>
-      <td><p>Should <code><a href='fix_zeros.html'>fix_zeros</a></code> be run before calculating
-the measures?</p></td>
-    </tr>
-    <tr>
-      <th>fill_in</th>
-      <td><p>if <code>fix_zeros = TRUE</code>, should the zeros be
-filled in with the last</p></td>
-    </tr>
-    <tr>
-      <th>by_second</th>
-      <td><p>Should the last observation carried forward be done
-only within the same second?</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>if <code>fix_zeros = TRUE</code>,
-should the time course be trimmed for zero values at
-the beginning and the end of the time course?
-observation carried forward?</p></td>
+      <td><p>print diagnostic messages</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments to pass to <code>g.calibrate</code></p></td>
-    </tr>
-    <tr>
-      <th>round_after_calibration</th>
-      <td><p>Should the data be rounded after calibration?
-Will round to 3 digits</p></td>
+      <td><p>additional arguments to pass to <code>g.shell.GGIR</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A set of calibration coefficients</p>
+    <p>A list with all the output elements</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='va'>url</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://github.com/THLfi/read.gt3x/files/"</span>,
 <span class='st'>"3522749/GT3X%2B.01.day.gt3x.zip"</span><span class='op'>)</span>
 <span class='va'>destfile</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span>fileext <span class='op'>=</span> <span class='st'>".zip"</span><span class='op'>)</span>
@@ -203,53 +170,9 @@ Will round to 3 digits</p></td>
 <span class='va'>gt3x_file</span> <span class='op'>=</span> <span class='va'>gt3x_file</span><span class='op'>[</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"__MACOSX"</span>, <span class='va'>gt3x_file</span><span class='op'>)</span><span class='op'>]</span>
 <span class='va'>path</span> <span class='op'>=</span> <span class='va'>gt3x_file</span>
 <span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='read_actigraphy.html'>read_actigraphy</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Input is a .gt3x file, unzipping to a temporary location first...</span></div><div class='output co'>#&gt; <span class='message'>Unzipping gt3x data to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpFwfus0</span></div><div class='output co'>#&gt; <span class='message'>1/1 </span></div><div class='output co'>#&gt; <span class='message'>Unzipping /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpFwfus0/GT3X+ (01 day).gt3x</span></div><div class='output co'>#&gt; <span class='message'> === info.txt, activity.bin, lux.bin extracted to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpFwfus0/GT3X+(01day)</span></div><div class='output co'>#&gt; GT3X information
-#&gt;  $ Serial Number     :"NEO1DXXXXXXXX"
-#&gt;  $ Device Type       :"GT3XPlus"
-#&gt;  $ Firmware          :"2.5.0"
-#&gt;  $ Battery Voltage   :"4.22"
-#&gt;  $ Sample Rate       :30
-#&gt;  $ Start Date        : POSIXct, format: "2012-06-27 10:54:00"
-#&gt;  $ Stop Date         : POSIXct, format: "2012-06-28 11:54:00"
-#&gt;  $ Download Date     : POSIXct, format: "2012-06-28 16:25:52"
-#&gt;  $ Board Revision    :"4"
-#&gt;  $ Unexpected Resets :"0"
-#&gt;  $ Sex               :"Male"
-#&gt;  $ Height            :"172.72"
-#&gt;  $ Mass              :"69.8532249799612"
-#&gt;  $ Age               :"43"
-#&gt;  $ Race              :"White / Caucasian"
-#&gt;  $ Limb              :"Ankle"
-#&gt;  $ Side              :"Left"
-#&gt;  $ Dominance         :"Non-Dominant"
-#&gt;  $ DateOfBirth       :"621132192000000000"
-#&gt;  $ Subject Name      :"GT3XPlus"
-#&gt;  $ Serial Prefix     :"NEO"
-#&gt;  $ Last Sample Time  : 'POSIXct' num(0) 
-#&gt;  - attr(*, "tzone")= chr "GMT"
-#&gt;  $ Acceleration Scale:341
-#&gt;  $ Acceleration Min  :"-6.0"
-#&gt;  $ Acceleration Max  :"6.0"</div><div class='output co'>#&gt; <span class='message'>Parsing GT3X data via CPP.. expected sample size: 2700000</span></div><div class='output co'>#&gt; <span class='message'>Using NHANES-GT3X format - older format</span></div><div class='output co'>#&gt; Sample size: 2700000
-#&gt; Scaling...</div><div class='output co'>#&gt; <span class='message'>Done (in 2.56356596946716 seconds)</span></div><div class='input'><span class='va'>cab</span> <span class='op'>=</span> <span class='fu'>calibrate</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Fixing Zeros</span></div><div class='output co'>#&gt; <span class='message'>Writing out file for GGIR</span></div><div class='output co'>#&gt; <span class='message'>Running g.inspectfile</span></div><div class='output co'>#&gt; <span class='message'>Running g.calibrate</span></div><div class='output co'>#&gt; 
-#&gt; Loading chunk: 1 2 3 4
-#&gt; Summary of autocalibration procedure:
-#&gt; 
-#&gt; Status: recalibration not done because not enough points on all sides of the sphere
-#&gt; Calibration error (g) before: 0.01462
-#&gt; Callibration error (g) after: 
-#&gt; Offset correction x: 0 
-#&gt; Offset correction y: 0 
-#&gt; Offset correction z: 0
-#&gt; Scale correction x: 1 
-#&gt; Scale correction y: 1 
-#&gt; Scale correction z: 1
-#&gt; Number of hours used: 24
-#&gt; Number of 10 second windows around the sphere: 5836
-#&gt; Temperature used (if available): FALSE
-#&gt; Temperature offset (if temperature is available) x:  
-#&gt; Temperature offset (if temperature is available) y:  
-#&gt; Temperature offset (if temperature is available) z: </div><div class='input'><span class='co'># }</span>
+<span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='fix_zeros.html'>fix_zeros</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>=</span> <span class='fu'>ggir_process</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
