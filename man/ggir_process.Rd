@@ -31,15 +31,17 @@ Run GGIR Processing
 }
 \examples{
 \dontrun{
-url = paste0("https://github.com/THLfi/read.gt3x/files/",
-"3522749/GT3X\%2B.01.day.gt3x.zip")
-destfile = tempfile(fileext = ".zip")
-dl = utils::download.file(url, destfile = destfile, mode = "wb")
-gt3x_file = utils::unzip(destfile, exdir = tempdir())
-gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
-path = gt3x_file
+files = read.gt3x::gt3x_datapath(2)
+path = files[1]
 res = read_actigraphy(path)
 res = fix_zeros(res)
-out = ggir_process(res)
+out = ggir_process(res, desiredtz = "UTC")
+sum_data = out$part2$IMP$metashort
+m = calculate_mad(res)
+m[-(1:10), c("HEADER_TIME_STAMP", "ENMO_t")]
+head(sum_data, 20)
+sum_data$HEADER_TIME_STAMP = lubridate::as_datetime(sum_data$timestamp)
+sum_data = dplyr::left_join(sum_data, m)
+cor(sum_data$ENMO, sum_data$ENMO_t)
 }
 }
