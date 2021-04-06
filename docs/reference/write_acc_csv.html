@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Default MIMS worker functions — mims_default_extrapolation • SummarizedActigraphy</title>
+<title>Write ActiGraph-like Accelerometer CSV — write_acc_csv • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Default MIMS worker functions — mims_default_extrapolation" />
-<meta property="og:description" content="Default MIMS worker functions" />
+<meta property="og:title" content="Write ActiGraph-like Accelerometer CSV — write_acc_csv" />
+<meta property="og:description" content="Write ActiGraph-like Accelerometer CSV" />
 
 
 
@@ -114,40 +114,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Default MIMS worker functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/mims_helpers.R'><code>R/mims_helpers.R</code></a></small>
-    <div class="hidden name"><code>mims_default_extrapolation.Rd</code></div>
+    <h1>Write ActiGraph-like Accelerometer CSV</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/write_acc_csv.R'><code>R/write_acc_csv.R</code></a></small>
+    <div class="hidden name"><code>write_acc_csv.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Default MIMS worker functions</p>
+    <p>Write ActiGraph-like Accelerometer CSV</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mims_default_extrapolation</span><span class='op'>(</span><span class='va'>df</span>, dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='fu'>mims_default_interpolation</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
-
-<span class='fu'>mims_default_filtering</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>write_acc_csv</span><span class='op'>(</span><span class='va'>x</span>, file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span>fileext <span class='op'>=</span> <span class='st'>".csv.gz"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>df</th>
-      <td><p>data set of data, usually time and X/Y/Z.  Usually from
-<code><a href='read_actigraphy.html'>read_actigraphy</a></code></p></td>
+      <th>x</th>
+      <td><p>either an <code>AccData</code> or a <code>data.frame</code> of time and values.</p></td>
     </tr>
     <tr>
-      <th>dynamic_range</th>
-      <td><p>dynamic range of the data.  Will be passed to
-<code><a href='get_dynamic_range.html'>get_dynamic_range</a></code></p></td>
+      <th>file</th>
+      <td><p>CSV file to write out</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data set of data</p>
+    <p>The character path of the output file.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"TAS1H30182785_2019-09-17.csv.gz"</span>,
+package <span class='op'>=</span> <span class='st'>"SummarizedActigraphy"</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='va'>x</span> <span class='op'>=</span> <span class='fu'><a href='read_acc_csv.html'>read_acc_csv</a></span><span class='op'>(</span><span class='va'>file</span><span class='op'>)</span>
+   <span class='va'>outfile</span> <span class='op'>=</span> <span class='fu'>write_acc_csv</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+   <span class='va'>out2</span> <span class='op'>=</span> <span class='fu'><a href='read_acc_csv.html'>read_acc_csv</a></span><span class='op'>(</span><span class='va'>outfile</span><span class='op'>)</span>
+   <span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>$</span><span class='va'>data</span>, <span class='va'>out2</span><span class='op'>$</span><span class='va'>data</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -1,8 +1,13 @@
+# SummarizedActigraphy 0.5.0
+
+* Added `calibrate` and `estimate_calibration_values` to work for `GGIR`.
+* Added `ggir_process` so that we can actually use some `GGIR` functionality.
+
 # SummarizedActigraphy 0.4.2
 
 * Added `flag_*` functions from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm#Quality_Assurance_&_Quality_Control.
 * Added `ensure_all_time` flag for `calculate_measures`.
-* 
+
 
 # SummarizedActigraphy 0.3.1
 

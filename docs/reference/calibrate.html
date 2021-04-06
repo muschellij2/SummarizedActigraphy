@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Default MIMS worker functions — mims_default_extrapolation • SummarizedActigraphy</title>
+<title>Calibrate Accelerometer Data using GGIR — estimate_calibration_values • SummarizedActigraphy</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Default MIMS worker functions — mims_default_extrapolation" />
-<meta property="og:description" content="Default MIMS worker functions" />
+<meta property="og:title" content="Calibrate Accelerometer Data using GGIR — estimate_calibration_values" />
+<meta property="og:description" content="Calibrate Accelerometer Data using GGIR" />
 
 
 
@@ -114,40 +114,93 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Default MIMS worker functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/mims_helpers.R'><code>R/mims_helpers.R</code></a></small>
-    <div class="hidden name"><code>mims_default_extrapolation.Rd</code></div>
+    <h1>Calibrate Accelerometer Data using GGIR</h1>
+    <small class="dont-index">Source: <a href='https://github.com/muschellij2/SummarizedActigraphy/blob/master/R/calibrate.R'><code>R/calibrate.R</code></a></small>
+    <div class="hidden name"><code>calibrate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Default MIMS worker functions</p>
+    <p>Calibrate Accelerometer Data using GGIR</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mims_default_extrapolation</span><span class='op'>(</span><span class='va'>df</span>, dynamic_range <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>estimate_calibration_values</span><span class='op'>(</span>
+  <span class='va'>file</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  fix_zeros <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  fill_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  by_second <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  trim <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>mims_default_interpolation</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
-
-<span class='fu'>mims_default_filtering</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></pre>
+<span class='fu'>calibrate</span><span class='op'>(</span>
+  <span class='va'>file</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  fix_zeros <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  fill_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  by_second <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  trim <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  round_after_calibration <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>df</th>
-      <td><p>data set of data, usually time and X/Y/Z.  Usually from
-<code><a href='read_actigraphy.html'>read_actigraphy</a></code></p></td>
+      <th>file</th>
+      <td><p>Either a GT3X file, `AccData` object, or `data.frame` with
+`X/Y/Z` and `time`</p></td>
     </tr>
     <tr>
-      <th>dynamic_range</th>
-      <td><p>dynamic range of the data.  Will be passed to
-<code><a href='get_dynamic_range.html'>get_dynamic_range</a></code></p></td>
+      <th>verbose</th>
+      <td><p>print diagnostic messages, higher number result in higher verbosity</p></td>
+    </tr>
+    <tr>
+      <th>fix_zeros</th>
+      <td><p>Should <code><a href='fix_zeros.html'>fix_zeros</a></code> be run before calculating
+the measures?</p></td>
+    </tr>
+    <tr>
+      <th>fill_in</th>
+      <td><p>if <code>fix_zeros = TRUE</code>, should the zeros be
+filled in with the last</p></td>
+    </tr>
+    <tr>
+      <th>by_second</th>
+      <td><p>Should the last observation carried forward be done
+only within the same second?</p></td>
+    </tr>
+    <tr>
+      <th>trim</th>
+      <td><p>if <code>fix_zeros = TRUE</code>,
+should the time course be trimmed for zero values at
+the beginning and the end of the time course?
+observation carried forward?</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments to pass to <code>g.calibrate</code></p></td>
+    </tr>
+    <tr>
+      <th>round_after_calibration</th>
+      <td><p>Should the data be rounded after calibration?
+Will round to 3 digits</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data set of data</p>
+    <p>A set of calibration coefficients</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='va'>files</span> <span class='op'>=</span> <span class='fu'>read.gt3x</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/read.gt3x/man/gt3x_datapath.html'>gt3x_datapath</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Downloading gt3x sample data from https://github.com/THLfi/read.gt3x/releases/download/v1.0/EE_left_29.5.2017-05-30.gt3x.zip</span></div><div class='input'><span class='va'>path</span> <span class='op'>=</span> <span class='va'>files</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
+<span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='read_actigraphy.html'>read_actigraphy</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") {    dformat = 2    testcsv = read.csv(datafile, nrow = 10, skip = 10)    testcsvtopline = read.csv(datafile, nrow = 2, skip = 1)    if (ncol(testcsv) == 2 &amp; ncol(testcsvtopline) &lt; 4) {        mon = 2    }    else if (ncol(testcsv) &gt;= 3 &amp; ncol(testcsvtopline) &lt; 4) {        mon = 3    }    else if (ncol(testcsv) &gt;= 4 &amp; ncol(testcsvtopline) &gt;= 4) {        mon = 4    }} else if (tmp2[length(tmp2)] == "in") {    dformat = 1} else if (tmp3[length(tmp3)] == "av") {    dformat = 3    mon = 4} else if (tmp5[length(tmp5)] == "a") {    dformat = 4    mon = 4}: missing value where TRUE/FALSE needed</span></div><div class='input'><span class='va'>cab</span> <span class='op'>=</span> <span class='fu'>calibrate</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in calibrate(res): object 'res' not found</span></div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
