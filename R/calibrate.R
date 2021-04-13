@@ -29,6 +29,7 @@
 #' }
 #' path = files[1]
 #' res = read_actigraphy(path)
+#' res = fix_zeros(res)
 #' cab = calibrate(res)
 #' }
 estimate_calibration_values = function(file, verbose = TRUE,
@@ -136,6 +137,8 @@ calibrate = function(file, verbose = TRUE,
       file[[i]] = round(file[[i]], 3)
     }
   }
+  # these are the same size of number of minutes in the data - too big
+  vals$spheredata = NULL
   attr(file, "calibration_values") = vals
 
   if (acc_data) {

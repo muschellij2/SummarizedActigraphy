@@ -67,6 +67,7 @@ if (all(is.na(files))) {
 }
 path = files[1]
 res = read_actigraphy(path)
+res = fix_zeros(res)
 cab = calibrate(res)
 }
 }
