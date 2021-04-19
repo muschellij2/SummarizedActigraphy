@@ -195,11 +195,103 @@ Will round to 3 digits</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='va'>files</span> <span class='op'>=</span> <span class='fu'>read.gt3x</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/read.gt3x/man/gt3x_datapath.html'>gt3x_datapath</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Downloading gt3x sample data from https://github.com/THLfi/read.gt3x/releases/download/v1.0/EE_left_29.5.2017-05-30.gt3x.zip</span></div><div class='input'><span class='va'>path</span> <span class='op'>=</span> <span class='va'>files</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
+<span class='va'>index</span> <span class='op'>=</span> <span class='fl'>2</span>
+<span class='va'>files</span> <span class='op'>=</span> <span class='fu'>read.gt3x</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/read.gt3x/man/gt3x_datapath.html'>gt3x_datapath</a></span><span class='op'>(</span><span class='va'>index</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Downloading gt3x sample data from https://github.com/THLfi/read.gt3x/releases/download/v1.0/SS_left_19.5.2017-05-22.gt3x.zip</span></div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/all.html'>all</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>files</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+   <span class='va'>files</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>".read.gt3x-data"</span>,
+   <span class='fu'>read.gt3x</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/read.gt3x/man/gt3x_datapath.html'>gt3x_filename</a></span><span class='op'>(</span><span class='va'>index</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='va'>path</span> <span class='op'>=</span> <span class='va'>files</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>
 <span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='read_actigraphy.html'>read_actigraphy</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in if (tmp1[length(tmp1)] == "v" | tmp1[length(tmp1)] == "v.gz") {    dformat = 2    testcsv = read.csv(datafile, nrow = 10, skip = 10)    testcsvtopline = read.csv(datafile, nrow = 2, skip = 1)    if (ncol(testcsv) == 2 &amp; ncol(testcsvtopline) &lt; 4) {        mon = 2    }    else if (ncol(testcsv) &gt;= 3 &amp; ncol(testcsvtopline) &lt; 4) {        mon = 3    }    else if (ncol(testcsv) &gt;= 4 &amp; ncol(testcsvtopline) &gt;= 4) {        mon = 4    }} else if (tmp2[length(tmp2)] == "in") {    dformat = 1} else if (tmp3[length(tmp3)] == "av") {    dformat = 3    mon = 4} else if (tmp5[length(tmp5)] == "a") {    dformat = 4    mon = 4}: missing value where TRUE/FALSE needed</span></div><div class='input'><span class='va'>cab</span> <span class='op'>=</span> <span class='fu'>calibrate</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in calibrate(res): object 'res' not found</span></div><div class='input'><span class='co'># }</span>
+</div><div class='output co'>#&gt; <span class='message'>Input is a .gt3x file, unzipping to a temporary location first...</span></div><div class='output co'>#&gt; <span class='message'>Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpXbsbIg</span></div><div class='output co'>#&gt; <span class='message'>1/1 </span></div><div class='output co'>#&gt; <span class='message'>Unzipping /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpXbsbIg/.read.gt3x-data/SS_left_19.5.2017-05-22.gt3x</span></div><div class='output co'>#&gt; <span class='message'> === info.txt, log.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpXbsbIg/SS_left_19.5.2017-05-22</span></div><div class='output co'>#&gt; GT3X information
+#&gt;  $ Serial Number     :"TAS1F28160235"
+#&gt;  $ Device Type       :"Link"
+#&gt;  $ Firmware          :"1.7.0"
+#&gt;  $ Battery Voltage   :"3,93"
+#&gt;  $ Sample Rate       :100
+#&gt;  $ Start Date        : POSIXct, format: "2017-05-19 10:50:00"
+#&gt;  $ Stop Date         : POSIXct, format: "0001-01-01"
+#&gt;  $ Last Sample Time  : POSIXct, format: "2017-05-22 15:12:34"
+#&gt;  $ TimeZone          :"03:00:00"
+#&gt;  $ Download Date     : POSIXct, format: "2017-05-22 15:12:34"
+#&gt;  $ Board Revision    :"6"
+#&gt;  $ Unexpected Resets :"0"
+#&gt;  $ Acceleration Scale:256
+#&gt;  $ Acceleration Min  :"-8.0"
+#&gt;  $ Acceleration Max  :"8.0"
+#&gt;  $ Limb              :"Wrist"
+#&gt;  $ Dominance         :"Non-Dominant"
+#&gt;  $ Subject Name      :"SS_left_19.5."
+#&gt;  $ Serial Prefix     :"TAS"</div><div class='output co'>#&gt; <span class='message'>Parsing GT3X data via CPP.. expected sample size: 27495400</span></div><div class='output co'>#&gt; ---GT3X PARAMETERS
+#&gt; address: 0 key: 6 value: 0
+#&gt; address: 0 key: 7 value: 54686384
+#&gt; address: 0 key: 8 value: 6
+#&gt; address: 0 key: 9 value: 1469522671
+#&gt; address: 0 key: 13 value: 17235968
+#&gt; address: 0 key: 16 value: 3833593856
+#&gt; address: 0 key: 20 value: 0
+#&gt; address: 0 key: 21 value: 0
+#&gt; address: 0 key: 22 value: 0
+#&gt; address: 0 key: 23 value: 0
+#&gt; address: 0 key: 26 value: 2
+#&gt; address: 0 key: 28 value: 262013
+#&gt; address: 0 key: 29 value: 255
+#&gt; address: 0 key: 32 value: 16908288
+#&gt; address: 0 key: 37 value: 1024
+#&gt; address: 0 key: 38 value: 0
+#&gt; address: 0 key: 49 value: 2048
+#&gt; address: 0 key: 50 value: 88181047
+#&gt; address: 0 key: 51 value: 6.82667
+#&gt; address: 0 key: 55 value: 256
+#&gt; address: 0 key: 57 value: 333.87
+#&gt; address: 0 key: 58 value: 21
+#&gt; address: 0 key: 61 value: 2
+#&gt; address: 1 key: 0 value: 0
+#&gt; address: 1 key: 1 value: 3501572829
+#&gt; address: 1 key: 2 (features)  value: 384
+#&gt; address: 1 key: 3 value: 3
+#&gt; address: 1 key: 4 value: 4294967132
+#&gt; address: 1 key: 5 value: 4294967086
+#&gt; address: 1 key: 6 value: 4294967139
+#&gt; address: 1 key: 7 value: 286
+#&gt; address: 1 key: 8 value: 304
+#&gt; address: 1 key: 9 value: 326
+#&gt; address: 1 key: 10 value: 100
+#&gt; address: 1 key: 12 (start time)  value: 1495191000
+#&gt; address: 1 key: 13 value: 0
+#&gt; address: 1 key: 14 value: 1495190807
+#&gt; address: 1 key: 15 value: 65
+#&gt; address: 1 key: 16 value: 47
+#&gt; address: 1 key: 17 value: 81
+#&gt; address: 1 key: 20 value: 0
+#&gt; address: 1 key: 21 value: 0
+#&gt; address: 1 key: 33 value: 60000
+#&gt; address: 1 key: 34 value: 4294965227
+#&gt; address: 1 key: 35 value: 4294965203
+#&gt; address: 1 key: 36 value: 4294965245
+#&gt; address: 1 key: 37 value: 2030
+#&gt; address: 1 key: 38 value: 2003
+#&gt; address: 1 key: 39 value: 2048
+#&gt; address: 1 key: 40 value: 0
+#&gt; address: 1 key: 41 value: 0
+#&gt; address: 1 key: 42 value: 0
+#&gt; address: 1 key: 43 value: 4294967271
+#&gt; address: 1 key: 44 value: 0
+#&gt; address: 1 key: 45 value: 0
+#&gt; address: 1 key: 46 value: 0
+#&gt; ---END PARAMETERS
+#&gt; 
+#&gt; Activity with Sample Size of 0
+#&gt; payload start: 1495465893
+#&gt; total_records: 27489300
+#&gt; max_samples: 27495400
+#&gt; Total Records: 27489400
+#&gt; Scaling...
+#&gt; Creating dimnames 
+#&gt; CPP returning </div><div class='output co'>#&gt; <span class='message'>Done (in 12.3920857906342 seconds)</span></div><div class='input'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='fix_zeros.html'>fix_zeros</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+<span class='va'>cab</span> <span class='op'>=</span> <span class='fu'>calibrate</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Fixing Zeros</span></div><div class='output co'>#&gt; <span class='message'>Writing out file for GGIR</span></div><div class='output co'>#&gt; <span class='message'>Running g.inspectfile</span></div><div class='output co'>#&gt; <span class='message'>Running g.calibrate</span></div><div class='output co'>#&gt; 
+#&gt; Loading chunk: 1 2</div><div class='output co'>#&gt; <span class='error'>Error in nrow(meta): object 'meta' not found</span></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

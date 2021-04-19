@@ -251,7 +251,7 @@ See <code>across</code></p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code>tsibble</code> object, with 86400 rows,
-with one row for each secon d of the day `24*60*60`.</p>
+with one row for each second of the day `24*60*60`.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>path</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>,
@@ -259,7 +259,7 @@ with one row for each secon d of the day `24*60*60`.</p>
 package <span class='op'>=</span> <span class='st'>"SummarizedActigraphy"</span><span class='op'>)</span>
 
 <span class='va'>x</span> <span class='op'>=</span> <span class='fu'><a href='read_actigraphy.html'>read_actigraphy</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Input is a .gt3x file, unzipping to a temporary location first...</span></div><div class='output co'>#&gt; <span class='message'>Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpD9CKYg</span></div><div class='output co'>#&gt; <span class='message'>1/1 </span></div><div class='output co'>#&gt; <span class='message'>Unzipping /private/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T/RtmpE1mXIV/temp_libpath112d02c704abd/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span></div><div class='output co'>#&gt; <span class='message'> === info.txt, log.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpD9CKYg/TAS1H30182785_2019-09-17</span></div><div class='output co'>#&gt; GT3X information
+</div><div class='output co'>#&gt; <span class='message'>Input is a .gt3x file, unzipping to a temporary location first...</span></div><div class='output co'>#&gt; <span class='message'>Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpXbsbIg</span></div><div class='output co'>#&gt; <span class='message'>1/1 </span></div><div class='output co'>#&gt; <span class='message'>Unzipping /private/var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T/RtmpOySkW6/temp_libpathb30e1be75deb/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span></div><div class='output co'>#&gt; <span class='message'> === info.txt, log.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpXbsbIg/TAS1H30182785_2019-09-17</span></div><div class='output co'>#&gt; GT3X information
 #&gt;  $ Serial Number     :"TAS1H30182785"
 #&gt;  $ Device Type       :"Link"
 #&gt;  $ Firmware          :"1.7.2"
@@ -346,7 +346,7 @@ package <span class='op'>=</span> <span class='st'>"SummarizedActigraphy"</span>
 #&gt; Total Records: 216000
 #&gt; Scaling...
 #&gt; Creating dimnames 
-#&gt; CPP returning </div><div class='output co'>#&gt; <span class='message'>Done (in 0.390459060668945 seconds)</span></div><div class='input'>
+#&gt; CPP returning </div><div class='output co'>#&gt; <span class='message'>Done (in 0.431270837783813 seconds)</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span>digit.secs <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 
 <span class='va'>fixed</span> <span class='op'>=</span> <span class='fu'><a href='fix_zeros.html'>fix_zeros</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
