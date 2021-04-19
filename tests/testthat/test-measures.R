@@ -97,6 +97,7 @@ testthat::test_that("Calculating Summaries Works", {
   if (requireNamespace("MIMSunit", quietly = TRUE)) {
     output = calculate_measures(res, calculate_mims = TRUE, fix_zeros = TRUE)
 
+    print(dput(output$MIMS_UNIT))
     testthat::expect_equal(
       output$MIMS_UNIT,
       c(63.242524442506, 54.5102327000229, 31.1747913899169, 25.2219789460452,
