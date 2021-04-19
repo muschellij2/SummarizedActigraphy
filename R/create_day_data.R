@@ -60,18 +60,19 @@ tsibbler = function(x, transformations = NULL) {
 #'
 #' fixed = fix_zeros(x)
 #' daily = summarize_daily_actigraphy(fixed, fix_zeros = FALSE)
-#' average_day = summarize_actigraphy(fixed, fix_zeros = FALSE)
+#' average_day = collapse_daily_actigraphy(daily)
 #' \dontrun{
-#' if (requireNamespace("ggplot2", quietly = TRUE)) {
-#' library(magrittr)
-#' average_day %>%
-#'   ggplot(aes(x = time, y = ai_mean)) +
-#'   geom_line()
+#'   average_day = summarize_actigraphy(fixed, fix_zeros = FALSE)
+#'   if (requireNamespace("ggplot2", quietly = TRUE)) {
+#'     library(magrittr)
+#'     average_day %>%
+#'       ggplot(aes(x = time, y = ai_mean)) +
+#'       geom_line()
 #'
-#' average_day %>%
-#'   ggplot(aes(x = time, y = ai_median)) +
-#'   geom_line()
-#' }
+#'     average_day %>%
+#'       ggplot(aes(x = time, y = ai_median)) +
+#'       geom_line()
+#'   }
 #' }
 #' @rdname summarize_actigraphy
 #' @export

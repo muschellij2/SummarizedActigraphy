@@ -58,16 +58,16 @@ A set of calibration coefficients
 Calibrate Accelerometer Data using GGIR
 }
 \examples{
-\donttest{
-index = 2
-files = read.gt3x::gt3x_datapath(index)
-if (all(is.na(files))) {
-   files = file.path(tempdir(), ".read.gt3x-data",
-   read.gt3x::gt3x_filename(index))
-}
-path = files[1]
-res = read_actigraphy(path)
-res = fix_zeros(res)
-cab = calibrate(res)
+\dontrun{
+  index = 2
+  files = read.gt3x::gt3x_datapath(index)
+  if (all(is.na(files))) {
+    files = file.path(tempdir(), ".read.gt3x-data",
+                      read.gt3x::gt3x_filename(index))
+  }
+  path = files[1]
+  res = read_actigraphy(path)
+  res = fix_zeros(res)
+  cab = calibrate(res)
 }
 }

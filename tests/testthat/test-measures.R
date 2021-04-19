@@ -109,7 +109,8 @@ testthat::test_that("Calculating Summaries Works", {
       round(output$MIMS_UNIT, 3),
       c(63.243, 54.51, 31.175, 25.222, 8.575, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 13.877, 10.557, 0, 0, 0, 0, -0.01)
+        0, 13.877, 10.557, 0, 0, 0, 0, -0.01),
+      tolerance = 0.001
     )
     cm = colMeans(output[c("AI", "SD", "MAD", "MIMS_UNIT")])
     testthat::expect_equal(
