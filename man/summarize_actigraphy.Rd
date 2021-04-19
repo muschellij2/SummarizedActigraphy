@@ -105,7 +105,7 @@ See \code{\link{across}}}
 }
 \value{
 A \code{tsibble} object, with 86400 rows,
-with one row for each secon d of the day `24*60*60`.
+with one row for each second of the day `24*60*60`.
 }
 \description{
 Summarize Actigraphy Data

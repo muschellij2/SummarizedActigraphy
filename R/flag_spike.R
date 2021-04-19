@@ -206,7 +206,7 @@ flag_spike_second = function(df, spike_size = 11) {
 #' @param dynamic_range dynamic range of the device, used to find the
 #' device limit.
 #' @param epsilon A small adjustment so that if values are within the
-#' device limit, but minus epsiolon, still flagged as hitting the limit.
+#' device limit, but minus epsilon, still flagged as hitting the limit.
 #' For example, if `dynamic_range = c(-6, 6)` and `epsilon = 0.05`, then any
 #' value <= `-5.95` or `>= 5.95` gravity units will be flagged
 flag_device_limit = function(df, dynamic_range = NULL, epsilon = 0.05) {

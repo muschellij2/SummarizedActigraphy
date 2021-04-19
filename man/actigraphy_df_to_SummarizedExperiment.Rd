@@ -43,17 +43,18 @@ A \code{SummarizedExperiment} output
 Convert Actigraphy data.frame to a SummarizedExperiment
 }
 \examples{
-file = system.file("extdata",
-"TAS1H30182785_2019-09-17.gt3x",
-package = "SummarizedActigraphy")
-files = rep(file, 2)
-df = data.frame(file = files,
-age = stats::rpois(length(files), 50),
-stringsAsFactors = FALSE)
-se = actigraphy_df_to_SummarizedExperiment(df, "file")
-\dontrun{
-df$file = factor(df$file)
-se = actigraphy_df_to_SummarizedExperiment(df, "file", measure = "AI_mean")
+\donttest{
+  file = system.file("extdata",
+                     "TAS1H30182785_2019-09-17.gt3x",
+                     package = "SummarizedActigraphy")
+  files = rep(file, 2)
+  df = data.frame(file = files,
+                  age = stats::rpois(length(files), 50),
+                  stringsAsFactors = FALSE)
+  se = actigraphy_df_to_SummarizedExperiment(df, "file")
 }
-
+\dontrun{
+  df$file = factor(df$file)
+  se = actigraphy_df_to_SummarizedExperiment(df, "file", measure = "AI_mean")
+}
 }

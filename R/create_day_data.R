@@ -40,7 +40,7 @@ tsibbler = function(x, transformations = NULL) {
 #' in the input
 #'
 #' @return A \code{tsibble} object, with 86400 rows,
-#' with one row for each secon d of the day `24*60*60`.
+#' with one row for each second of the day `24*60*60`.
 #' @importFrom stats mad sd median var
 #' @importFrom dplyr summarize vars
 #' @importFrom dplyr ungroup summarise group_by mutate summarize_at

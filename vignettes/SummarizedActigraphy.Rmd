@@ -110,7 +110,7 @@ One of the statistics calculated are ENMO, the Euclidean Norm Minus One, which i
 $$
 ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(\sqrt{X_{i}^2 + Y_{i}^2 + Z_{i}^2} - 1\right)
 $$
-where $t$ is the time point, rounded to one second.  In this case, $i$ represents each sample, so there are `r x$freq` ENMO measures per second, which means the number of samples for that time point, $n_{t}$, is `r x[["freq"]]`.  In most cases, however, ENMO and the other statstics are calculated at the 1-second level.  So the $ENMO_{t}$ from `summarize_daily_actigraphy` calculates $ENMO$ for each sample, then takes the mean $ENMO_{t}$ for 1-second intervals.  We will use $ENMO_{t}$ to represent this second-level data, leaving off any bar or hat, but in truth it is an average.  The subtraction of $1$ is to subtract $1$ gravity unit (g), from the data so it represents acceleration not due to gravity.
+where $t$ is the time point, rounded to one second.  In this case, $i$ represents each sample, so there are `r x$freq` ENMO measures per second, which means the number of samples for that time point, $n_{t}$, is `r x[["freq"]]`.  In most cases, however, ENMO and the other statistics are calculated at the 1-second level.  So the $ENMO_{t}$ from `summarize_daily_actigraphy` calculates $ENMO$ for each sample, then takes the mean $ENMO_{t}$ for 1-second intervals.  We will use $ENMO_{t}$ to represent this second-level data, leaving off any bar or hat, but in truth it is an average.  The subtraction of $1$ is to subtract $1$ gravity unit (g), from the data so it represents acceleration not due to gravity.
 
 
 ## Activity Index (AI)

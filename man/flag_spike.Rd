@@ -40,7 +40,7 @@ in contiguous observations on a single axis}
 device limit.}
 
 \item{epsilon}{A small adjustment so that if values are within the
-device limit, but minus epsiolon, still flagged as hitting the limit.
+device limit, but minus epsilon, still flagged as hitting the limit.
 For example, if `dynamic_range = c(-6, 6)` and `epsilon = 0.05`, then any
 value <= `-5.95` or `>= 5.95` gravity units will be flagged}
 
