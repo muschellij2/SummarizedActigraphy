@@ -3,3 +3,4 @@ inst/doc
 .Rproj.user
 .RData
 README_cache/
+vignettes/.build.timestamp
