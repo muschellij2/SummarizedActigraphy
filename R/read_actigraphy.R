@@ -108,6 +108,7 @@ test_unzip_file = function(file) {
       # bin = GGIR::g.binread,
       gt3x = read.gt3x::read.gt3x,
       cwa = GGIR::g.cwaread,
+      csv = read_acc_csv,
       GGIR::g.readaccfile
     )
   } else {
@@ -159,6 +160,15 @@ test_unzip_file = function(file) {
       header = hdr,
       missingness = attr(res, "missingness"))
     class(res) = "AccData"
+  } else if (ext %in% "csv") {
+    args = list(...)
+    if ("only_xyz" %in% names(args)) {
+      only_xyz = args$only_xyz
+    } else {
+      only_xyz = FALSE
+    }
+    args$file = file
+    res = do.call(func, args = args)
   } else {
     args = list(...)
     if ("desiredtz" %in% names(args)) {
