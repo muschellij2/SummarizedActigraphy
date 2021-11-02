@@ -2,6 +2,7 @@
 #'
 #' @param file CSV file to write out
 #' @param x either an \code{AccData} or a \code{data.frame} of time and values.
+#' @param sample_rate integer stating number of observations per second in the CSV
 #'
 #' @return The character path of the output file.
 #' @export
@@ -14,14 +15,14 @@
 #'    out2 = read_acc_csv(outfile)
 #'    all.equal(x$data, out2$data)
 #' }
-write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz")) {
+write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz"), sample_rate = NULL) {
   download_date = start_date = battery_voltage = firmware = NA
   # format_date =
   acc_data = is.AccData(x)
   if (acc_data) {
     header = x$header
   }
-  sample_rate = get_sample_rate(x)
+  if (is.null(sample_rate)) sample_rate = get_sample_rate(x)
 
   null_na = function(x) {
     if (is.null(x)) x = NA

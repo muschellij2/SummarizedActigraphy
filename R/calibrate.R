@@ -14,6 +14,7 @@
 #' should the time course be trimmed for zero values at
 #' the beginning and the end of the time course?
 #' observation carried forward?
+#' @param sample_rate integer stating number of observations per second in the CSV file
 #'
 #'
 #' @return A set of calibration coefficients
@@ -37,6 +38,7 @@ estimate_calibration_values = function(file, verbose = TRUE,
                                        fill_in = TRUE,
                                        by_second = FALSE,
                                        trim = FALSE,
+                                       sample_rate = NULL,
                                        ...) {
 
   if (is.character(file) && grepl("[.]gt3x(|[.]gz)$", file)) {
@@ -63,7 +65,7 @@ estimate_calibration_values = function(file, verbose = TRUE,
     if (verbose) {
       message("Writing out file for GGIR")
     }
-    file = write_acc_csv(file)
+    file = write_acc_csv(file, sample_rate)
   }
   if (verbose) {
     message("Running g.inspectfile")
@@ -89,6 +91,7 @@ calibrate = function(file, verbose = TRUE,
                      fill_in = TRUE,
                      by_second = FALSE,
                      trim = FALSE,
+                     sample_rate = NULL,
                      round_after_calibration = TRUE,
                      ...) {
   if (is.character(file) && grepl("[.]gt3x(|[.]gz)$", file)) {
@@ -118,6 +121,7 @@ calibrate = function(file, verbose = TRUE,
     fill_in = fill_in,
     by_second = by_second,
     trim = trim,
+    sample_rate = sample_rate,
     ...)
 
   acc_data = is.AccData(file)
