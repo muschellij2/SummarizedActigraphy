@@ -10,6 +10,7 @@
 #' constructor are allowed.
 #' @param verbose print diagnostic messages
 #' @param calibrate Run calibration, passed to \code{do.calibrate} in \code{GGIR}
+#' @param sample_rate integer stating number of observations per second in the CSV file
 #' @param ... additional arguments to pass to \code{\link{g.shell.GGIR}}
 #'
 #' @return A list with all the output elements
@@ -30,7 +31,8 @@
 #' sum_data = dplyr::left_join(sum_data, m)
 #' cor(sum_data$ENMO, sum_data$ENMO_t)
 #' }
-ggir_process = function(df, unit = "1 min", calibrate = TRUE, verbose = TRUE, ...) {
+ggir_process = function(df, unit = "1 min", calibrate = TRUE, verbose = TRUE,
+                        sample_rate = NULL, ...) {
   tdir = tempfile()
   dir.create(tdir, recursive = TRUE)
 
@@ -43,7 +45,7 @@ ggir_process = function(df, unit = "1 min", calibrate = TRUE, verbose = TRUE, ..
   if (verbose) {
     message("Writing out file ", file)
   }
-  file = write_acc_csv(df, file = file)
+  file = write_acc_csv(df, file = file, sample_rate)
   rm(df)
 
   if (verbose) {
