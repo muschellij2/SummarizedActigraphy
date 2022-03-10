@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">SummarizedActigraphy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/SummarizedActigraphy.html">Get started</a>
 </li>
@@ -58,7 +54,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/muschellij2/SummarizedActigraphy/">
+  <a href="https://github.com/muschellij2/SummarizedActigraphy/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -78,31 +74,31 @@
 
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<div id="summarizedactigraphy-package" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#summarizedactigraphy-package" class="anchor"></a>SummarizedActigraphy Package:</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="summarizedactigraphy-package">SummarizedActigraphy Package:<a class="anchor" aria-label="anchor" href="#summarizedactigraphy-package"></a>
+</h1></div>
 <p>The goal of <code>SummarizedActigraphy</code> is to provide functions for reading Actigraphy data and turn it into <code>SummarizedExperiment</code>s.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>You can install <code>SummarizedActigraphy</code> from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"muschellij2/SummarizedActigraphy"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"muschellij2/SummarizedActigraphy"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="reading-in-some-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reading-in-some-data" class="anchor"></a>Reading in some data</h2>
+<div class="section level2">
+<h2 id="reading-in-some-data">Reading in some data<a class="anchor" aria-label="anchor" href="#reading-in-some-data"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/muschellij2/SummarizedActigraphy">SummarizedActigraphy</a></span><span class="op">)</span>
-<span class="va">url</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://github.com/THLfi/read.gt3x/files/"</span>,
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/muschellij2/SummarizedActigraphy" class="external-link">SummarizedActigraphy</a></span><span class="op">)</span>
+<span class="va">url</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://github.com/THLfi/read.gt3x/files/"</span>,
              <span class="st">"3522749/GT3X%2B.01.day.gt3x.zip"</span><span class="op">)</span>
-<span class="va">destfile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span>
-<span class="va">dl</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="va">url</span>, destfile <span class="op">=</span> <span class="va">destfile</span><span class="op">)</span>
-<span class="va">gt3x_file</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="va">destfile</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">gt3x_file</span> <span class="op">=</span> <span class="va">gt3x_file</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"__MACOSX"</span>, <span class="va">gt3x_file</span><span class="op">)</span><span class="op">]</span>
+<span class="va">destfile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span>
+<span class="va">dl</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">url</span>, destfile <span class="op">=</span> <span class="va">destfile</span><span class="op">)</span>
+<span class="va">gt3x_file</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">destfile</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">gt3x_file</span> <span class="op">=</span> <span class="va">gt3x_file</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"__MACOSX"</span>, <span class="va">gt3x_file</span><span class="op">)</span><span class="op">]</span>
 <span class="va">path</span> <span class="op">=</span> <span class="va">gt3x_file</span>
-<span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="reference/summarize_daily_actigraphy.html">summarize_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
+<span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="reference/summarize_actigraphy.html">summarize_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
 <span class="co">#&gt; Running Daily Actigraphy</span>
 <span class="co">#&gt; Input is a .gt3x file, unzipping to a temporary location first...</span>
 <span class="co">#&gt; Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY</span>
@@ -159,20 +155,20 @@
 <span class="co">#&gt; # … with 1,430 more rows, and 3 more variables: MEDAD_median &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   mean_r_mean &lt;dbl&gt;, mean_r_median &lt;dbl&gt;</span></code></pre></div>
 </div>
-<div id="converting-to-wide-1440-format" class="section level2">
-<h2 class="hasAnchor">
-<a href="#converting-to-wide-1440-format" class="anchor"></a>Converting to wide 1440 format</h2>
+<div class="section level2">
+<h2 id="converting-to-wide-1440-format">Converting to wide 1440 format<a class="anchor" aria-label="anchor" href="#converting-to-wide-1440-format"></a>
+</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hms_times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">86340</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hms"</span>, <span class="st">"difftime"</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">hms_times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">86340</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hms"</span>, <span class="st">"difftime"</span><span class="op">)</span>,
                       units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span>
-<span class="va">hms_times</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hms_times</span><span class="op">)</span>
+<span class="va">hms_times</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hms_times</span><span class="op">)</span>
 <span class="va">measure</span> <span class="op">=</span> <span class="st">"AI_mean"</span>
-<span class="va">tmeasure</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="va">measure</span><span class="op">)</span>
+<span class="va">tmeasure</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="va">measure</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">=</span> <span class="va">result</span><span class="op">[</span>, <span class="va">tmeasure</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">x</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">hms_times</span>, <span class="va">x</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">hms_times</span>, <span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; Joining, by = "time"</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 6 x 2</span>
 <span class="co">#&gt;   time   AI_mean</span>
 <span class="co">#&gt;   &lt;time&gt;   &lt;dbl&gt;</span>
@@ -182,7 +178,7 @@
 <span class="co">#&gt; 4 03'00"   0.947</span>
 <span class="co">#&gt; 5 04'00"   1.11 </span>
 <span class="co">#&gt; 6 05'00"   0.536</span>
-<span class="va">x1440</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">time</span>, value <span class="op">=</span> <span class="va">measure</span><span class="op">)</span>
+<span class="va">x1440</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html" class="external-link">spread</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">time</span>, value <span class="op">=</span> <span class="va">measure</span><span class="op">)</span>
 <span class="va">x1440</span>
 <span class="co">#&gt; # A tibble: 1 x 1,440</span>
 <span class="co">#&gt;   `00:00:00` `00:01:00` `00:02:00` `00:03:00` `00:04:00` `00:05:00` `00:06:00`</span>
@@ -221,47 +217,58 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/muschellij2/SummarizedActigraphy/">https://​github.com/​muschellij2/​SummarizedActigraphy/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/muschellij2/SummarizedActigraphy/issues">https://​github.com/​muschellij2/​SummarizedActigraphy/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></small></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>John Muschelli <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6469-1750" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="https://github.com/muschellij2/SummarizedActigraphy/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/muschellij2/SummarizedActigraphy/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.com/muschellij2/SummarizedActigraphy"><img src="https://travis-ci.com/muschellij2/SummarizedActigraphy.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://ci.appveyor.com/project/muschellij2/SummarizedActigraphy"><img src="https://ci.appveyor.com/api/projects/status/github/muschellij2/SummarizedActigraphy?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
-<li><a href="https://github.com/muschellij2/SummarizedActigraphy/actions"><img src="https://github.com/muschellij2/SummarizedActigraphy/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://codecov.io/gh/muschellij2/SummarizedActigraphy?branch=master"><img src="https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing SummarizedActigraphy</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>John Muschelli <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6469-1750" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://travis-ci.com/muschellij2/SummarizedActigraphy" class="external-link"><img src="https://travis-ci.com/muschellij2/SummarizedActigraphy.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://ci.appveyor.com/project/muschellij2/SummarizedActigraphy" class="external-link"><img src="https://ci.appveyor.com/api/projects/status/github/muschellij2/SummarizedActigraphy?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
+<li><a href="https://github.com/muschellij2/SummarizedActigraphy/actions" class="external-link"><img src="https://github.com/muschellij2/SummarizedActigraphy/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/gh/muschellij2/SummarizedActigraphy?branch=master" class="external-link"><img src="https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by John Muschelli.</p>
+  <p></p>
+<p>Developed by John Muschelli.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -269,6 +276,8 @@
 
   
 
+
+  
 
   </body>
 </html>
