@@ -322,7 +322,8 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
       ENMO_t = r - 1,
       ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                unit)) %>%
+                                                unit))
+  df = df %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       SD = sd(r, na.rm = TRUE),
