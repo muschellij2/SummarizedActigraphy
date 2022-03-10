@@ -166,6 +166,17 @@ calculate_measures = function(
   res
 }
 
+floor_sec = function(x) {
+  if (lubridate::is.POSIXct(x)) {
+    tz = lubridate::tz(x)
+    x = as.numeric(x)
+    x = floor(x)
+    as.POSIXct(x, tz = tz, origin = lubridate::origin)
+  } else {
+    lubridate::floor_date(x, "1 sec")
+  }
+}
+
 #' @export
 #' @rdname calculate_measures
 calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
@@ -174,20 +185,31 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
   df = ensure_header_timestamp(df)
 
   AI = NULL
-  rm(list= c("AI"))
+  rm(list = c("AI"))
   df = df %>%
-    dplyr::mutate(
-      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                "1 sec")) %>%
+    dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
+  df = df %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
-      AI = sqrt((
-        var(X, na.rm = TRUE) +
-          var(Y, na.rm = TRUE) +
-          var(Z, na.rm = TRUE)) / 3)
+      AI = var(X, na.rm = TRUE) +
+        var(Y, na.rm = TRUE) +
+        var(Z, na.rm = TRUE)
     )
+  # removed this because running sqrt and / 3 in grouped setting
+  # is inefficient - ungrouping below and mutate
+  # dplyr::summarise(
+  #   AI = sqrt(
+  #     (
+  #       var(X, na.rm = TRUE) +
+  #         var(Y, na.rm = TRUE) +
+  #         var(Z, na.rm = TRUE)
+  #     ) / 3)
+  # )
+
   df = df %>%
     dplyr::ungroup() %>%
+    dplyr::mutate(AI = sqrt(AI/3))
+  df = df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit)) %>%
@@ -332,14 +354,18 @@ get_sample_rate = function(df, sample_rate = NULL) {
     sample_rate = attr(df, "sample_rate")
   }
   if ((is.null(sample_rate) || is.na(sample_rate)) &&
-      any(c("time", "HEADER_TIME_STAMP") %in% colnames(df))) {
+      any(c("time", "HEADER_TIME_STAMP", "HEADER_TIMESTAMP") %in% colnames(df))) {
     warning("Guessing sample_rate from the data")
     time = df[["time"]]
     if (is.null(time)) {
       time = df[["HEADER_TIME_STAMP"]]
     }
+    if (is.null(time)) {
+      time = df[["HEADER_TIMESTAMP"]]
+    }
     d = diff(time)
     units(d) = "secs"
+    rm(list = "time")
     if (all(d > 1)) {
       # minute level data
       sample_rate = unique(1 / as.numeric(d))
@@ -555,8 +581,8 @@ calculate_mims = function(
 #' df = ensure_header_timestamp(res)
 ensure_header_timestamp = function(df, subset = TRUE) {
   transformations = get_transformations(df)
-  time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list = c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  HEADER_TIMESTAMP = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
+  rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   serial_prefix = sample_rate = NULL
   dynamic_range = NULL
   if (is.AccData(df)) {
@@ -593,6 +619,10 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
     df = df %>%
       dplyr::rename(HEADER_TIME_STAMP = time)
+  }
+  if ("HEADER_TIMESTAMP" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
+    df = df %>%
+      dplyr::rename(HEADER_TIME_STAMP = HEADER_TIMESTAMP)
   }
   if (subset) {
     df = df %>%
