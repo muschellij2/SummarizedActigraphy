@@ -90,8 +90,7 @@ idle_na_locf = function(df, by_second = FALSE) {
   if (by_second) {
     df = ensure_header_timestamp(df)
     df = df %>%
-      dplyr::mutate(second = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                   unit = "1 second")) %>%
+      dplyr::mutate(second = floor_sec(HEADER_TIME_STAMP)) %>%
       dplyr::group_by(second)
   }
 

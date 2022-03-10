@@ -51,7 +51,7 @@ write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz")) {
     }
     battery_voltage = null_header_field(header, "Battery Voltage")
   } else {
-    start_date = lubridate::floor_date(x$HEADER_TIME_STAMP[[1]], unit = "1 second")
+    start_date = floor_sec(x$HEADER_TIME_STAMP[[1]])
     download_date = NA
     battery_voltage = NA
     serial_number = attr(x, "serial_number")

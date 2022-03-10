@@ -64,9 +64,7 @@ flag_interval_jump = function(df) {
 
   # group by second
   df = df %>%
-    dplyr::mutate(
-      HEADER_TIME_STAMP = lubridate::floor_date(
-        HEADER_TIME_STAMP, "1 sec"))
+    dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
 
   # data is now long by axis
   df = tidy_axes(df)
@@ -135,9 +133,7 @@ flag_interval_jump = function(df) {
   dynamic_range = attr(xdf, "dynamic_range")
   # merge with time - need original data
   xdf = xdf %>%
-    dplyr::mutate(
-      time = lubridate::floor_date(
-        HEADER_TIME_STAMP, "1 sec")) %>%
+    dplyr::mutate(time = floor_sec(HEADER_TIME_STAMP)) %>%
     dplyr::left_join(df, by = "time") %>%
     dplyr::mutate(
       flag_interval_jump = dplyr::if_else(is.na(flag_interval_jump), FALSE,
@@ -182,9 +178,7 @@ flag_spike_second = function(df, spike_size = 11) {
   rm(list= c("floor_HEADER_TIME_STAMP", "HEADER_TIME_STAMP"))
   # check within 1 second window
   df = df %>%
-    dplyr::mutate(
-      floor_HEADER_TIME_STAMP = lubridate::floor_date(
-        HEADER_TIME_STAMP, "1 sec")) %>%
+    dplyr::mutate(floor_HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP)) %>%
     dplyr::group_by(floor_HEADER_TIME_STAMP) %>%
     # "spike" is really the range is greater than spike_size
     # don't need abs because range is always ordered
