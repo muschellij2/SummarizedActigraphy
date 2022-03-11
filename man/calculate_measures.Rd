@@ -41,6 +41,7 @@ calculate_measures(
   flags = NULL,
   ensure_all_time = TRUE,
   verbose = TRUE,
+  sample_rate = NULL,
   ...
 )
 

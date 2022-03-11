@@ -31,6 +31,8 @@
 #' @param ensure_all_time if \code{TRUE}, then all times from the first to
 #' last times will be in the output, even if data during that time was not
 #' in the input
+#' @param sample_rate Sample rate of the data, only used if
+#' `calculcate_ac = TRUE`
 #' @param ... additional arguments to pass to [MIMSunit::mims_unit]
 #'
 #' @return A data set with the calculated features
@@ -59,6 +61,7 @@ calculate_measures = function(
   flags = NULL,
   ensure_all_time = TRUE,
   verbose = TRUE,
+  sample_rate = NULL,
   ...) {
 
 
