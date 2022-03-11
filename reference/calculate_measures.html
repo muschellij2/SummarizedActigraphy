@@ -192,10 +192,10 @@ in the input</p></dd>
 <span class="r-in">package <span class="op">=</span> <span class="st">"SummarizedActigraphy"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="read_actigraphy.html">read_actigraphy</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpZh95NB</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpYmLtvb</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1/1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /Users/runner/work/_temp/Library/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpZh95NB/TAS1H30182785_2019-09-17</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpYmLtvb/TAS1H30182785_2019-09-17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GT3X information</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Number     :"TAS1H30182785"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Device Type       :"Link"</span>
@@ -286,26 +286,10 @@ in the input</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scaling...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Creating dimnames </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CPP returning </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.745216131210327 seconds)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.957210779190063 seconds)</span>
 <span class="r-in"><span class="va">measures</span> <span class="op">=</span> <span class="fu">calculate_measures</span><span class="op">(</span><span class="va">res</span>, dynamic_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span class="r-in">calculate_mims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Fixing Zeros with fix_zeros</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Spikes</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Interval Jumps</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Spikes at Second-level</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Repeated Values</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Device Limit Values</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging Zero Values</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Flagging 'Impossible' Values</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating ai0</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating MAD</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining AI and MAD</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating AC</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating Axis-Specific Activity Counts</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Summing up Axes</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining AC</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining flags</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_sample_rate(df, sample_rate = sample_rate):</span> object 'sample_rate' not found</span>
 <span class="r-in"><span class="va">auc</span> <span class="op">=</span> <span class="fu">calculate_auc</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Absolute values</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculting trapezoids</span>
