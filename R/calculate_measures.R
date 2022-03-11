@@ -78,7 +78,7 @@ calculate_measures = function(
   # keep flag here - so can calculate by epoch
   df = ensure_header_timestamp(df)
   if (calculate_ac) {
-    sample_rate = get_sample_rate(df)
+    sample_rate = get_sample_rate(df, sample_rate = sample_rate)
   }
   # or do flag_qc(verbose) if flag-dat = TRUE
   if (fix_zeros) {
@@ -134,7 +134,8 @@ calculate_measures = function(
     if (verbose) {
       message("Calculating AC")
     }
-    ac = calculate_ac(df, unit = unit, sample_rate = sample_rate,
+    ac = calculate_ac(df, unit = unit,
+                      sample_rate = sample_rate,
                       verbose = verbose)
     ac$X = ac$Y = ac$Z = NULL
     if (verbose) {
