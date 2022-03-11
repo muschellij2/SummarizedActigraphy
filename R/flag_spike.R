@@ -43,7 +43,7 @@ flag_spike = function(df, spike_size = 11) {
 
 #' @export
 #' @rdname flag_spike
-flag_interval_jump = function(df) {
+flag_interval_jump = function(df, verbose = FALSE) {
   # from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm
   # #8.
   # Interval jumps in the data on the x-, y-, or z-axis: There are at least
@@ -65,9 +65,15 @@ flag_interval_jump = function(df) {
   # group by second
   df = df %>%
     dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
+  if (verbose) {
+    message("interval_jump: Data is floored")
+  }
 
   # data is now long by axis
   df = tidy_axes(df)
+  if (verbose) {
+    message("interval_jump: Axes are long")
+  }
   # sort it - not needed
   # df = df %>%
   #   dplyr::arrange(time, axis, value)
@@ -75,6 +81,9 @@ flag_interval_jump = function(df) {
   # needed because count() is using unique values
   df = df %>%
     dplyr::mutate(value = round(value, 3) * 1000)
+  if (verbose) {
+    message("interval_jump: Rounded axes")
+  }
   df = df %>%
     # just feel more comfortable counting integers rather than
     # floating point
@@ -98,6 +107,13 @@ flag_interval_jump = function(df) {
     dplyr::filter(dplyr::n() >= 3) %>%
     # 2 filter as it was doing seq before
     dplyr::filter(dplyr::row_number() <= 3)
+  if (verbose) {
+    message("interval_jump: Filtered on 3")
+  }
+  # if (nrow(df) == 0) {
+  #   xdf$flag_interval_jump = FALSE
+  #   return(xdf)
+  # }
 
   dvalue = NULL
   rm(list = "dvalue")
@@ -107,7 +123,9 @@ flag_interval_jump = function(df) {
     dplyr::group_by(time, axis) %>%
     dplyr::mutate(dvalue = abs(c(1, diff(value)))) %>%
     dplyr::ungroup()
-
+  if (verbose) {
+    message("interval_jump: diff value run")
+  }
   # those 3 most occurring g values are at least 0.5 g apart from one another
   df = df %>%
     dplyr::mutate(dvalue = dvalue >= 0.5)
@@ -123,7 +141,9 @@ flag_interval_jump = function(df) {
     dplyr::group_by(time) %>%
     dplyr::summarise(flag_interval_jump = any(flag_interval_jump)) %>%
     ungroup()
-
+  if (verbose) {
+    message("interval_jump: any interval flagged")
+  }
   # only need these values
   df = df %>%
     dplyr::ungroup() %>%
@@ -133,6 +153,7 @@ flag_interval_jump = function(df) {
   dynamic_range = attr(xdf, "dynamic_range")
   # merge with time - need original data
   xdf = xdf %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(time = floor_sec(HEADER_TIME_STAMP)) %>%
     dplyr::left_join(df, by = "time") %>%
     dplyr::mutate(
@@ -141,11 +162,9 @@ flag_interval_jump = function(df) {
     ) %>%
     dplyr::select(-time)
   rm(df)
-  df = xdf
-  rm(xdf)
-  attr(df, "sample_rate") = sample_rate
-  attr(df, "dynamic_range") = dynamic_range
-  df
+  attr(xdf, "sample_rate") = sample_rate
+  attr(xdf, "dynamic_range") = dynamic_range
+  xdf
 }
 
 #' @export
@@ -459,7 +478,7 @@ flag_qc_all = function(df, dynamic_range = NULL, verbose = TRUE,
     if (verbose) {
       message("Flagging Interval Jumps")
     }
-    df = flag_interval_jump(df)
+    df = flag_interval_jump(df, verbose = verbose > 1)
     transforms = c("flag_interval_jump", transforms)
   }
   if (all_flags["spike_second"]) {

@@ -16,7 +16,7 @@
 \usage{
 flag_spike(df, spike_size = 11)
 
-flag_interval_jump(df)
+flag_interval_jump(df, verbose = FALSE)
 
 flag_spike_second(df, spike_size = 11)
 
