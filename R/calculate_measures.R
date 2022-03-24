@@ -111,11 +111,18 @@ calculate_measures = function(
   if (verbose) {
     message("Calculating ai0")
   }
-  res = calculate_ai(df, unit = unit)
+  res = calculate_ai(df, unit = unit, verbose = verbose > 1)
   if (verbose) {
     message("Calculating MAD")
   }
-  mad = calculate_mad(df, unit = unit)
+  mad = calculate_mad(df, unit = unit, verbose = verbose > 1)
+  if (verbose) {
+    message("Joining AI and MAD")
+  }
+
+  # ai0 is res
+  res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
+  rm(mad)
   if (calculate_mims) {
     if (verbose) {
       message("Calculating MIMS")
@@ -124,14 +131,6 @@ calculate_measures = function(
                           dynamic_range = dynamic_range,
                           ...)
   }
-
-  if (verbose) {
-    message("Joining AI and MAD")
-  }
-
-  # ai0 is res
-  res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
-  rm(mad)
 
   if (calculate_ac) {
     if (verbose) {
@@ -183,15 +182,22 @@ floor_sec = function(x) {
 
 #' @export
 #' @rdname calculate_measures
-calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
+calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
+                        verbose = FALSE) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
 
   AI = NULL
   rm(list = c("AI"))
+  if (verbose) {
+    message("Running floor_sec on time")
+  }
   df = df %>%
     dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
+  if (verbose) {
+    message("Summarizing the variance")
+  }
   df = df %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
@@ -209,7 +215,9 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
   #         var(Z, na.rm = TRUE)
   #     ) / 3)
   # )
-
+  if (verbose) {
+    message("Calculating AI")
+  }
   df = df %>%
     dplyr::ungroup() %>%
     dplyr::mutate(AI = sqrt(AI/3))
@@ -315,11 +323,15 @@ calculate_ai_defined = function(...) {
 
 #' @export
 #' @rdname calculate_measures
-calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
+calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
+                         verbose = FALSE) {
   ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
   df = ensure_header_timestamp(df)
 
+  if (verbose) {
+    message("Calculating r, ENMO, and flooring time")
+  }
   df = df %>%
     dplyr::mutate(
       r = sqrt(X^2+Y^2+Z^2),
@@ -327,6 +339,9 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
       ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
                                                 unit))
+  if (verbose) {
+    message("Calculating all MAD measures")
+  }
   df = df %>%
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(

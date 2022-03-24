@@ -45,9 +45,14 @@ calculate_measures(
   ...
 )
 
-calculate_ai(df, unit = "1 min", ensure_all_time = TRUE)
+calculate_ai(df, unit = "1 min", ensure_all_time = TRUE, verbose = FALSE)
 
-calculate_activity_index(df, unit = "1 min", ensure_all_time = TRUE)
+calculate_activity_index(
+  df,
+  unit = "1 min",
+  ensure_all_time = TRUE,
+  verbose = FALSE
+)
 
 calculate_flags(df, unit = "1 min", ensure_all_time = TRUE)
 
@@ -57,7 +62,7 @@ calculate_enmo(...)
 
 calculate_ai_defined(...)
 
-calculate_mad(df, unit = "1 min", ensure_all_time = TRUE)
+calculate_mad(df, unit = "1 min", ensure_all_time = TRUE, verbose = FALSE)
 
 get_sample_rate(df, sample_rate = NULL)
 
