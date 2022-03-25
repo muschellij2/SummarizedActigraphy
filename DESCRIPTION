@@ -27,7 +27,8 @@ Suggests:
     MIMSunit,
     limma,
     tidyr,
-    activityCounts
+    activityCounts,
+    data.table
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr

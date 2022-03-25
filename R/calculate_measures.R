@@ -180,12 +180,26 @@ floor_sec = function(x) {
   }
 }
 
+remake_dt = function(df, is_data_table = FALSE) {
+  if (requireNamespace("data.table", quietly = TRUE) &&
+      is_data_table) {
+    df = data.table::as.data.table(df)
+  }
+  df
+}
+is_dt = function(x) {
+  inherits(x, "data.table")
+}
+is_data_table = is_dt(df)
+
+
 #' @export
 #' @rdname calculate_measures
 calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
                         verbose = FALSE) {
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  is_data_table = is_dt(df)
   df = ensure_header_timestamp(df)
 
   AI = NULL
@@ -205,6 +219,7 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
         var(Y, na.rm = TRUE) +
         var(Z, na.rm = TRUE)
     )
+  df = remake_dt(df, is_data_table = is_data_table)
   # removed this because running sqrt and / 3 in grouped setting
   # is inefficient - ungrouping below and mutate
   # dplyr::summarise(
@@ -221,6 +236,7 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
   df = df %>%
     dplyr::ungroup() %>%
     dplyr::mutate(AI = sqrt(AI/3))
+  df = remake_dt(df, is_data_table = is_data_table)
   df = df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -229,7 +245,9 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
     dplyr::summarise(
       AI = sum(AI)
     )
+  df = remake_dt(df, is_data_table = is_data_table)
   df = join_all_time(df, unit, ensure_all_time)
+  df = remake_dt(df, is_data_table = is_data_table)
   df
 }
 
@@ -726,7 +744,9 @@ get_dynamic_range_actilife_header = function(header) {
   hdr = hdr[ !hdr %in% ""]
   hdr = trimws(hdr)
   hdr = hdr[ grepl("Serial", hdr)]
-  ACTIGRAPH_SERIALNUM_PATTERN <- ".*Serial\\s*Number:\\s*([A-Za-z0-9]+)\\s*Start\\s*Time.*"
+  ACTIGRAPH_SERIALNUM_PATTERN <- paste0(
+    ".*Serial\\s*Number:",
+    "\\s*([A-Za-z0-9]+)\\s*Start\\s*Time.*")
   sn = sub(ACTIGRAPH_SERIALNUM_PATTERN, "\\1", hdr)
   sn = trimws(sn)
   if (nchar(sn) > 20) {

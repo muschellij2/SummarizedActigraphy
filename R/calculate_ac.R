@@ -14,7 +14,6 @@ calculate_activity_counts = function(
   X = Y = Z = TIME = HEADER_TIME_STAMP = NULL
   rm(list = c("HEADER_TIME_STAMP", SummarizedActigraphy::xyz, "TIME"))
 
-
   df = ensure_header_timestamp(df, subset = TRUE)
 
   check = any(
