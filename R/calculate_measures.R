@@ -79,6 +79,7 @@ calculate_measures = function(
     dynamic_range = get_dynamic_range(df, dynamic_range)
   }
   # keep flag here - so can calculate by epoch
+  is_data_table = is_dt(df)
   df = ensure_header_timestamp(df)
   if (calculate_ac) {
     sample_rate = get_sample_rate(df, sample_rate = sample_rate)
@@ -191,6 +192,7 @@ is_dt = function(x) {
   inherits(x, "data.table")
 }
 
+.datatable.aware=TRUE
 
 #' @export
 #' @rdname calculate_measures
@@ -204,42 +206,57 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
 
   is_data_table = is_dt(df)
   df = ensure_header_timestamp(df)
+  if (is_data_table &&
+      requireNamespace("data.table", quietly = TRUE)) {
+    df = remake_dt(df, is_data_table = is_data_table)
+    df = df[, HEADER_TIME_STAMP := floor_sec(HEADER_TIME_STAMP)]
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df[, .(X = var(X, na.rm = TRUE),
+                Y = var(Y, na.rm = TRUE),
+                Z = var(Z, na.rm = TRUE)),
+            by = .(HEADER_TIME_STAMP)]
+    df$AI = sqrt(1/3 * (df$X + df$Y + df$Z))
+    df = as.data.frame(df)[c("HEADER_TIME_STAMP", "AI")]
+  } else {
+    if (verbose) {
+      message("Running floor_sec on time")
+    }
+    # need tz because converting to integer for speed
+    df = df %>%
+      dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
 
-  if (verbose) {
-    message("Running floor_sec on time")
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df %>%
+      dplyr::group_by(HEADER_TIME_STAMP) %>%
+      dplyr::summarise(
+        AI = var(X, na.rm = TRUE) +
+          var(Y, na.rm = TRUE) +
+          var(Z, na.rm = TRUE)
+      )
+    # removed this because running sqrt and / 3 in grouped setting
+    # is inefficient - ungrouping below and mutate
+    # dplyr::summarise(
+    #   AI = sqrt(
+    #     (
+    #       var(X, na.rm = TRUE) +
+    #         var(Y, na.rm = TRUE) +
+    #         var(Z, na.rm = TRUE)
+    #     ) / 3)
+    # )
+    if (verbose) {
+      message("Calculating AI")
+    }
+    if (!is_data_table) {
+      df = df %>%
+        dplyr::ungroup()
+    }
+    df = df %>%
+      dplyr::mutate(AI = sqrt(AI/3))
   }
-  df = df %>%
-    dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP)) %>%
-    remake_dt(is_data_table = is_data_table)
-
-  if (verbose) {
-    message("Summarizing the variance")
-  }
-  df = df %>%
-    dplyr::group_by(HEADER_TIME_STAMP) %>%
-    dplyr::summarise(
-      AI = var(X, na.rm = TRUE) +
-        var(Y, na.rm = TRUE) +
-        var(Z, na.rm = TRUE)
-    ) %>%
-    remake_dt(is_data_table = is_data_table)
-  # removed this because running sqrt and / 3 in grouped setting
-  # is inefficient - ungrouping below and mutate
-  # dplyr::summarise(
-  #   AI = sqrt(
-  #     (
-  #       var(X, na.rm = TRUE) +
-  #         var(Y, na.rm = TRUE) +
-  #         var(Z, na.rm = TRUE)
-  #     ) / 3)
-  # )
-  if (verbose) {
-    message("Calculating AI")
-  }
-  df = df %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(AI = sqrt(AI/3)) %>%
-    remake_dt(is_data_table = is_data_table)
 
   df = df %>%
     dplyr::mutate(
@@ -248,8 +265,10 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
     dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       AI = sum(AI)
-    ) %>%
-    remake_dt(is_data_table = is_data_table)
+    )
+  df = df %>%
+    tibble::as_tibble()%>%
+    dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
   df = remake_dt(df, is_data_table = is_data_table)
   df
@@ -355,21 +374,23 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
   if (verbose) {
     message("Calculating r, ENMO, and flooring time")
   }
-  df = df %>%
-    dplyr::mutate(
-      r = sqrt(X^2+Y^2+Z^2),
-      ENMO_t = r - 1,
-      ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
-      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                unit))
-  df = remake_dt(df, is_data_table = is_data_table)
+  if (is_data_table &&
+      requireNamespace("data.table", quietly = TRUE)) {
+    df = remake_dt(df, is_data_table = is_data_table)
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df[, r := X^2 + Y^2 + Z^2]
+    df = df[, HEADER_TIME_STAMP := lubridate::floor_date(
+      HEADER_TIME_STAMP, unit)]
 
-  if (verbose) {
-    message("Calculating all MAD measures")
-  }
-  df = df %>%
-    dplyr::group_by(HEADER_TIME_STAMP) %>%
-    dplyr::summarise(
+    df = df[, ENMO_t := r - 1]
+    df = df[, ENMO_t := dplyr::if_else(ENMO_t < 0, 0, ENMO_t)]
+
+    if (verbose) {
+      message("Calculating all MAD measures")
+    }
+    df = df[, .(
       SD = sd(r, na.rm = TRUE),
       SD_t = sd(ENMO_t, na.rm = TRUE),
       AI_DEFINED = sqrt((
@@ -380,9 +401,40 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
       MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       mean_r = mean(r, na.rm = TRUE),
       ENMO_t = mean(ENMO_t, na.rm = TRUE)
-    ) %>%
+    ), by = .(HEADER_TIME_STAMP)]
+  } else {
+    df = df %>%
+      dplyr::mutate(
+        r = sqrt(X^2+Y^2+Z^2),
+        ENMO_t = r - 1,
+        ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
+        HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                  unit))
+
+    if (verbose) {
+      message("Calculating all MAD measures")
+    }
+    df = df %>%
+      dplyr::group_by(HEADER_TIME_STAMP) %>%
+      dplyr::summarise(
+        SD = sd(r, na.rm = TRUE),
+        SD_t = sd(ENMO_t, na.rm = TRUE),
+        AI_DEFINED = sqrt((
+          var(X, na.rm = TRUE) +
+            var(Y, na.rm = TRUE) +
+            var(Z, na.rm = TRUE)) / 3),
+        MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+        MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+        mean_r = mean(r, na.rm = TRUE),
+        ENMO_t = mean(ENMO_t, na.rm = TRUE)
+      ) %>%
+      dplyr::ungroup()
+  }
+  df = df %>%
+    tibble::as_tibble()%>%
     dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
+  df = remake_dt(df, is_data_table = is_data_table)
   df
 }
 
