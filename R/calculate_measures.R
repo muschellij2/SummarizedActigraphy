@@ -380,7 +380,7 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
     if (verbose) {
       message("Summarizing the variance")
     }
-    df = df[, r := X^2 + Y^2 + Z^2]
+    df = df[, r := sqrt(X^2 + Y^2 + Z^2)]
     df = df[, HEADER_TIME_STAMP := lubridate::floor_date(
       HEADER_TIME_STAMP, unit)]
 
