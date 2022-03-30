@@ -297,7 +297,7 @@ flag_same_value = function(df, min_length = 1) {
   dynamic_range = attr(df, "dynamic_range")
   df = df %>%
     dplyr::mutate(
-      flag_same_value  =
+      flag_same_value =
         c(1, diff(X)) == 0 &
         c(1, diff(Y)) == 0 &
         c(1, diff(Z)) == 0

@@ -166,7 +166,8 @@ calculate_measures = function(
     dplyr::rename(time = HEADER_TIME_STAMP)
   transforms = paste("aggregated_at_", paste(unit, collapse = "_"))
   transformations = c(transforms, transformations)
-  res = set_transformations(res, transformations = transformations, add = FALSE)
+  res = set_transformations(res, transformations = transformations,
+                            add = FALSE)
   res
 }
 
@@ -450,8 +451,12 @@ get_sample_rate = function(df, sample_rate = NULL) {
   if (is.null(sample_rate) || is.na(sample_rate)) {
     sample_rate = attr(df, "sample_rate")
   }
-  if ((is.null(sample_rate) || is.na(sample_rate)) &&
-      any(c("time", "HEADER_TIME_STAMP", "HEADER_TIMESTAMP") %in% colnames(df))) {
+  if (
+    (is.null(sample_rate) || is.na(sample_rate)) &&
+    any(
+      c("time", "HEADER_TIME_STAMP", "HEADER_TIMESTAMP") %in% colnames(df)
+    )
+  ) {
     warning("Guessing sample_rate from the data")
     time = df[["time"]]
     if (is.null(time)) {
@@ -511,7 +516,8 @@ calculate_auc = function(df, unit = "1 min",
   df = df %>%
     # trapezoidal
     dplyr::mutate(
-      dtime = difftime(HEADER_TIME_STAMP, dplyr::lag(HEADER_TIME_STAMP, n = 1),
+      dtime = difftime(HEADER_TIME_STAMP,
+                       dplyr::lag(HEADER_TIME_STAMP, n = 1),
                        units = "secs"),
       dtime = as.numeric(dtime),
       X = (X + dplyr::lag(X, n = 1)) / 2 * dtime,
@@ -543,13 +549,13 @@ calculate_auc = function(df, unit = "1 min",
     dplyr::ungroup() %>%
     dplyr::mutate(
       good = !(is.na(X) | is.na(Y) | is.na(Z))
-    ) %>%
-    dplyr::group_by(HEADER_TIME_STAMP)
+    )
 
   if (verbose) {
     message("Calculating AUCs")
   }
   df = df %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       good = sum(good),
       AUC_X = sum(X, na.rm = TRUE),
@@ -641,7 +647,8 @@ calculate_mims = function(
   dynamic_range = get_dynamic_range(df, dynamic_range = dynamic_range)
   check = check_dynamic_range(df, dynamic_range = dynamic_range)
   if (!check) {
-    msg = "Dynamic range does not cover all the data in df, please check data"
+    msg = paste0("Dynamic range does not cover all the data in df",
+                 ", please check data")
     warning(msg)
   }
   df = ensure_header_timestamp(df)
@@ -679,7 +686,8 @@ calculate_mims = function(
 ensure_header_timestamp = function(df, subset = TRUE) {
   transformations = get_transformations(df)
   HEADER_TIMESTAMP = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X",
+              "Y", "Z", "r", "time"))
   serial_prefix = sample_rate = NULL
   dynamic_range = NULL
   if (is.AccData(df)) {
@@ -730,7 +738,8 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range") = dynamic_range
   attr(df, "serial_prefix") = serial_prefix
-  df = set_transformations(df, transformations = transformations, add = FALSE)
+  df = set_transformations(df, transformations = transformations,
+                           add = FALSE)
   df
 }
 
