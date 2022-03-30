@@ -129,7 +129,7 @@ mims_default_filtering = function(df) {
 #' @param round_after_processing Should the result be rounded to 3
 #' decimal values after processing, to make similar to standard accelerometry?
 #'
-#' @return A process data set
+#' @return A processed data set
 #' @export
 mims_default_processing = function(
   df, use_extrapolation = TRUE, use_filtering = TRUE,

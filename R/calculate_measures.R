@@ -47,6 +47,11 @@
 #' \donttest{
 #' mims = calculate_mims(res, dynamic_range = NULL)
 #' }
+#' if (requireNamespace("data.table", quietly = TRUE)) {
+#'    dr
+#'    dt = data.table::as.data.table(res$data)
+#'    out = calculate_measures(dt, calculate_mims = FALSE, flag_data = FALSE)
+#' }
 #'
 calculate_measures = function(
   df, unit = "1 min",
@@ -109,6 +114,8 @@ calculate_measures = function(
   }
   transformations = get_transformations(df)
 
+  df = remake_dt(df, is_data_table = is_data_table)
+
   if (verbose) {
     message("Calculating ai0")
   }
@@ -121,6 +128,7 @@ calculate_measures = function(
     message("Joining AI and MAD")
   }
 
+  df = as.data.frame(df)
   # ai0 is res
   res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
   rm(mad)

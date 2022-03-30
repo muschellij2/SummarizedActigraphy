@@ -161,5 +161,10 @@ auc = calculate_auc(res)
 \donttest{
 mims = calculate_mims(res, dynamic_range = NULL)
 }
+if (requireNamespace("data.table", quietly = TRUE)) {
+   dr
+   dt = data.table::as.data.table(res$data)
+   out = calculate_measures(dt, calculate_mims = FALSE, flag_data = FALSE)
+}
 
 }
