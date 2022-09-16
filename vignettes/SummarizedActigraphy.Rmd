@@ -103,15 +103,22 @@ This assumes that all non-NA values are valid, no wear-time estimation is done. 
 
 This daily-level data is good for thresholding activity, such as into categories like vigorous activity.  Also, this data is used for estimating sedentary and active bouts, and transition probability between them.   
 
+## Euclidean Norm (r)
+
+Many of the following statistics are based on the Euclidean Norm of the three axes:
+
+$$
+r_i = \sqrt{X_{i}^2 + Y_{i}^2 + Z_{i}^2}
+$$
+
 ## ENMO 
 
 One of the statistics calculated are ENMO, the Euclidean Norm Minus One, which is:
 
 $$
-ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(\sqrt{X_{i}^2 + Y_{i}^2 + Z_{i}^2} - 1\right)
+ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(r_i - 1\right) \cdot\left(r_i > 1\right)
 $$
 where $t$ is the time point, rounded to one second.  In this case, $i$ represents each sample, so there are `r x$freq` ENMO measures per second, which means the number of samples for that time point, $n_{t}$, is `r x[["freq"]]`.  In most cases, however, ENMO and the other statistics are calculated at the 1-second level.  So the $ENMO_{t}$ from `summarize_daily_actigraphy` calculates $ENMO$ for each sample, then takes the mean $ENMO_{t}$ for 1-second intervals.  We will use $ENMO_{t}$ to represent this second-level data, leaving off any bar or hat, but in truth it is an average.  The subtraction of $1$ is to subtract $1$ gravity unit (g), from the data so it represents acceleration not due to gravity.
-
 
 ## Activity Index (AI)
 
@@ -128,21 +135,16 @@ $$
 
 where $\bar{X_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} X_{i}$.  
 
-## Median Absolute Deviation (MAD)
+## Mean, Median Absolute Deviation (MAD, MEDAD)
 
-The Median Absolute Deviation (MAD) was introduced by XX.   It is calculated by:
-
-$$
-MAD_{t} = \frac{MAD(X_{t}) + MAD(Y_{t}) + MAD(Z_{t})}{3}
-$$
-
-where 
 
 $$
-MAD(X_{t}) = \text{median}_{t} \left|X_{i} - \text{median}(X_{t})\right|
+MAD_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left|r_i - \sum_{i=1}^{n_t}\frac{r_i}{n_{t}} \right|
 $$
-where $\text{median}_{t}$ is the median over all values $i = 1, \dots, n_{t}$, and $\text{median}(X_{t}) = \text{median}_{t} (X_{i})$. 
 
+$$
+MEDAD_{t} = \text{median}\Bigg\{ \left|r_i - \sum_{i=1}^{n_t}\frac{r_i}{n_{t}} \right|\Bigg\}_{i=1}^{n_t}
+$$
 
 # Summarizing the data: Second Level
 
