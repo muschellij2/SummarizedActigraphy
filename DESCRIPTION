@@ -32,7 +32,6 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
 Imports: 
     GGIR,
     read.gt3x (>= 0.2.0),
@@ -54,3 +53,4 @@ Remotes:
 URL: https://github.com/muschellij2/SummarizedActigraphy, http://johnmuschelli.com/SummarizedActigraphy/
 BugReports: https://github.com/muschellij2/SummarizedActigraphy/issues
 biocViews: Infrastructure
+RoxygenNote: 7.2.3
