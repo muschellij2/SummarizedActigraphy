@@ -28,8 +28,7 @@ Suggests:
     limma,
     tidyr,
     activityCounts,
-    data.table,
-    GGIRread
+    data.table
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
@@ -48,7 +47,8 @@ Imports:
     hms,
     zoo,
     readr,
-    methods
+    methods,
+    GGIRread
 Remotes:
   walkabillylab/activityCounts
 URL: https://github.com/muschellij2/SummarizedActigraphy, http://johnmuschelli.com/SummarizedActigraphy/

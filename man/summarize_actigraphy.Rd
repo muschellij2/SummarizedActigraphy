@@ -48,7 +48,8 @@ summarize_actigraphy(
 
 collapse_daily_actigraphy(
   x,
-  .fns = list(mean = mean, median = median),
+  .fns = list(mean = function(x) mean(x, na.rm = TRUE), median = function(x) median(x,
+    na.rm = TRUE)),
   verbose = TRUE
 )
 

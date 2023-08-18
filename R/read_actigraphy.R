@@ -107,7 +107,8 @@ test_unzip_file = function(file) {
       ext,
       # bin = GGIR::g.binread,
       gt3x = read.gt3x::read.gt3x,
-      cwa = GGIR::g.cwaread,
+      # cwa = GGIR::g.cwaread,
+      cwa = GGIRread::readAxivity,
       csv = read_acc_csv,
       GGIR::g.readaccfile
     )
