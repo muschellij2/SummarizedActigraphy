@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/articles/SummarizedActigraphy.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/SummarizedActigraphy.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/index.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/actigraphy_df_to_SummarizedExperiment.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/actigraphy_df_to_SummarizedExperiment.html</loc>
   </url>
   <url>
-    <loc>/reference/calculate_measures.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calculate_measures.html</loc>
   </url>
   <url>
-    <loc>/reference/calibrate.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calibrate.html</loc>
   </url>
   <url>
-    <loc>/reference/ensure_header_timestamp.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ensure_header_timestamp.html</loc>
   </url>
   <url>
-    <loc>/reference/fix_zeros.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/fix_zeros.html</loc>
   </url>
   <url>
-    <loc>/reference/flag_qc.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_qc.html</loc>
   </url>
   <url>
-    <loc>/reference/flag_spike.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_spike.html</loc>
   </url>
   <url>
-    <loc>/reference/get_dynamic_range.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_dynamic_range.html</loc>
   </url>
   <url>
-    <loc>/reference/get_transformations.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_transformations.html</loc>
   </url>
   <url>
-    <loc>/reference/ggir_process.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ggir_process.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/mark_condition.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mark_condition.html</loc>
   </url>
   <url>
-    <loc>/reference/mims_default_extrapolation.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_extrapolation.html</loc>
   </url>
   <url>
-    <loc>/reference/mims_default_processing.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_processing.html</loc>
   </url>
   <url>
-    <loc>/reference/pipe.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>/reference/read_acc_csv.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_acc_csv.html</loc>
   </url>
   <url>
-    <loc>/reference/read_actigraphy.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_actigraphy.html</loc>
   </url>
   <url>
-    <loc>/reference/summarize_actigraphy.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/summarize_actigraphy.html</loc>
   </url>
   <url>
-    <loc>/reference/tidy_axes.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/tidy_axes.html</loc>
   </url>
   <url>
-    <loc>/reference/write_acc_csv.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/write_acc_csv.html</loc>
   </url>
   <url>
-    <loc>/reference/xyz.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/xyz.html</loc>
   </url>
 </urlset>

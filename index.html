@@ -4,14 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Provides functions for coercing actigraphy data into
+    SummarizedExperiment objects used for genomic analysis.  This
+    conversion enables the use of functions that work on the 
+    SummarizedExperiment class.">
 <title>Coerce Actigraphy to Summarized Experiments • SummarizedActigraphy</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Coerce Actigraphy to Summarized Experiments">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Coerce Actigraphy to Summarized Experiments">
 <meta property="og:description" content="Provides functions for coercing actigraphy data into
     SummarizedExperiment objects used for genomic analysis.  This
     conversion enables the use of functions that work on the 
@@ -21,58 +24,52 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">SummarizedActigraphy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">SummarizedActigraphy</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="articles/SummarizedActigraphy.html">Get started</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="articles/SummarizedActigraphy.html">Get started</a>
 </li>
-<li>
-  <a href="reference/index.html">Reference</a>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/muschellij2/SummarizedActigraphy/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/muschellij2/SummarizedActigraphy/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-
-
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <div class="section level1">
 <div class="page-header"><h1 id="summarizedactigraphy-package">SummarizedActigraphy Package:<a class="anchor" aria-label="anchor" href="#summarizedactigraphy-package"></a>
@@ -83,140 +80,137 @@
 </h2>
 <p>You can install <code>SummarizedActigraphy</code> from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"muschellij2/SummarizedActigraphy"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"muschellij2/SummarizedActigraphy"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-in-some-data">Reading in some data<a class="anchor" aria-label="anchor" href="#reading-in-some-data"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/muschellij2/SummarizedActigraphy" class="external-link">SummarizedActigraphy</a></span><span class="op">)</span>
-<span class="va">url</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://github.com/THLfi/read.gt3x/files/"</span>,
-             <span class="st">"3522749/GT3X%2B.01.day.gt3x.zip"</span><span class="op">)</span>
-<span class="va">destfile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span>
-<span class="va">dl</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">url</span>, destfile <span class="op">=</span> <span class="va">destfile</span><span class="op">)</span>
-<span class="va">gt3x_file</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">destfile</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="va">gt3x_file</span> <span class="op">=</span> <span class="va">gt3x_file</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"__MACOSX"</span>, <span class="va">gt3x_file</span><span class="op">)</span><span class="op">]</span>
-<span class="va">path</span> <span class="op">=</span> <span class="va">gt3x_file</span>
-<span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="reference/summarize_actigraphy.html">summarize_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
-<span class="co">#&gt; Running Daily Actigraphy</span>
-<span class="co">#&gt; Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span class="co">#&gt; Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY</span>
-<span class="co">#&gt; 1/1</span>
-<span class="co">#&gt; Unzipping /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+ (01 day).gt3x</span>
-<span class="co">#&gt;  === info.txt, activity.bin, lux.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+(01day)</span>
-<span class="co">#&gt; GT3X information</span>
-<span class="co">#&gt;  $ Serial Number     :"NEO1DXXXXXXXX"</span>
-<span class="co">#&gt;  $ Device Type       :"GT3XPlus"</span>
-<span class="co">#&gt;  $ Firmware          :"2.5.0"</span>
-<span class="co">#&gt;  $ Battery Voltage   :"4.22"</span>
-<span class="co">#&gt;  $ Sample Rate       :30</span>
-<span class="co">#&gt;  $ Start Date        : POSIXct, format: "2012-06-27 10:54:00"</span>
-<span class="co">#&gt;  $ Stop Date         : POSIXct, format: "2012-06-28 11:54:00"</span>
-<span class="co">#&gt;  $ Download Date     : POSIXct, format: "2012-06-28 16:25:52"</span>
-<span class="co">#&gt;  $ Board Revision    :"4"</span>
-<span class="co">#&gt;  $ Unexpected Resets :"0"</span>
-<span class="co">#&gt;  $ Sex               :"Male"</span>
-<span class="co">#&gt;  $ Height            :"172.72"</span>
-<span class="co">#&gt;  $ Mass              :"69.8532249799612"</span>
-<span class="co">#&gt;  $ Age               :"43"</span>
-<span class="co">#&gt;  $ Race              :"White / Caucasian"</span>
-<span class="co">#&gt;  $ Limb              :"Ankle"</span>
-<span class="co">#&gt;  $ Side              :"Left"</span>
-<span class="co">#&gt;  $ Dominance         :"Non-Dominant"</span>
-<span class="co">#&gt;  $ DateOfBirth       :"621132192000000000"</span>
-<span class="co">#&gt;  $ Subject Name      :"GT3XPlus"</span>
-<span class="co">#&gt;  $ Serial Prefix     :"NEO"</span>
-<span class="co">#&gt;  $ Last Sample Time  : 'POSIXct' num(0) </span>
-<span class="co">#&gt;  - attr(*, "tzone")= chr "GMT"</span>
-<span class="co">#&gt;  $ Acceleration Scale:341</span>
-<span class="co">#&gt; Parsing GT3X data via CPP.. expected sample size: 2700000</span>
-<span class="co">#&gt; Using NHANES-GT3X format - older format</span>
-<span class="co">#&gt; Sample size: 2700000</span>
-<span class="co">#&gt; Scaling...</span>
-<span class="co">#&gt; Done (in 0.588511943817139 seconds)</span>
-<span class="co">#&gt; Joining, by = "HEADER_TIME_STAMP"</span>
-<span class="co">#&gt; Getting the First Day</span>
-<span class="co">#&gt; Summarizing Data</span>
-<span class="va">result</span>
-<span class="co">#&gt; # A tsibble: 1,440 x 11 [1m]</span>
-<span class="co">#&gt;    time   AI_mean AI_median SD_mean SD_median MAD_mean MAD_median MEDAD_mean</span>
-<span class="co">#&gt;    &lt;time&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 00'00"  0.266      0.177 0.00646   0.00507  0.00373    0.00317    0.00221</span>
-<span class="co">#&gt;  2 01'00"  0.323      0.230 0.0150    0.00644  0.00578    0.00448    0.00271</span>
-<span class="co">#&gt;  3 02'00"  0.144      0.142 0.00402   0.00447  0.00252    0.00276    0.00132</span>
-<span class="co">#&gt;  4 03'00"  0.947      0.643 0.0310    0.0145   0.0108     0.00640    0.00516</span>
-<span class="co">#&gt;  5 04'00"  1.11       1.48  0.0324    0.0224   0.0130     0.0120     0.00428</span>
-<span class="co">#&gt;  6 05'00"  0.536      0.214 0.00836   0.00615  0.00498    0.00294    0.00274</span>
-<span class="co">#&gt;  7 06'00"  0.0921     0.122 0.00511   0.00641  0.00441    0.00460    0.00372</span>
-<span class="co">#&gt;  8 07'00"  0.179      0.130 0.00979   0.00834  0.00587    0.00566    0.00380</span>
-<span class="co">#&gt;  9 08'00"  0.572      0.139 0.0289    0.00503  0.00769    0.00301    0.00240</span>
-<span class="co">#&gt; 10 09'00"  0.387      0.427 0.0167    0.0208   0.00580    0.00593    0.00254</span>
-<span class="co">#&gt; # … with 1,430 more rows, and 3 more variables: MEDAD_median &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   mean_r_mean &lt;dbl&gt;, mean_r_median &lt;dbl&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/muschellij2/SummarizedActigraphy" class="external-link">SummarizedActigraphy</a></span><span class="op">)</span></span>
+<span><span class="va">url</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://github.com/THLfi/read.gt3x/files/"</span>,</span>
+<span>             <span class="st">"3522749/GT3X%2B.01.day.gt3x.zip"</span><span class="op">)</span></span>
+<span><span class="va">destfile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zip"</span><span class="op">)</span></span>
+<span><span class="va">dl</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">url</span>, destfile <span class="op">=</span> <span class="va">destfile</span><span class="op">)</span></span>
+<span><span class="va">gt3x_file</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">destfile</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gt3x_file</span> <span class="op">=</span> <span class="va">gt3x_file</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"__MACOSX"</span>, <span class="va">gt3x_file</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">path</span> <span class="op">=</span> <span class="va">gt3x_file</span></span>
+<span><span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="reference/summarize_actigraphy.html">summarize_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running Daily Actigraphy</span></span>
+<span><span class="co">#&gt; Input is a .gt3x file, unzipping to a temporary location first...</span></span>
+<span><span class="co">#&gt; Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY</span></span>
+<span><span class="co">#&gt; 1/1</span></span>
+<span><span class="co">#&gt; Unzipping /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+ (01 day).gt3x</span></span>
+<span><span class="co">#&gt;  === info.txt, activity.bin, lux.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+(01day)</span></span>
+<span><span class="co">#&gt; GT3X information</span></span>
+<span><span class="co">#&gt;  $ Serial Number     :"NEO1DXXXXXXXX"</span></span>
+<span><span class="co">#&gt;  $ Device Type       :"GT3XPlus"</span></span>
+<span><span class="co">#&gt;  $ Firmware          :"2.5.0"</span></span>
+<span><span class="co">#&gt;  $ Battery Voltage   :"4.22"</span></span>
+<span><span class="co">#&gt;  $ Sample Rate       :30</span></span>
+<span><span class="co">#&gt;  $ Start Date        : POSIXct, format: "2012-06-27 10:54:00"</span></span>
+<span><span class="co">#&gt;  $ Stop Date         : POSIXct, format: "2012-06-28 11:54:00"</span></span>
+<span><span class="co">#&gt;  $ Download Date     : POSIXct, format: "2012-06-28 16:25:52"</span></span>
+<span><span class="co">#&gt;  $ Board Revision    :"4"</span></span>
+<span><span class="co">#&gt;  $ Unexpected Resets :"0"</span></span>
+<span><span class="co">#&gt;  $ Sex               :"Male"</span></span>
+<span><span class="co">#&gt;  $ Height            :"172.72"</span></span>
+<span><span class="co">#&gt;  $ Mass              :"69.8532249799612"</span></span>
+<span><span class="co">#&gt;  $ Age               :"43"</span></span>
+<span><span class="co">#&gt;  $ Race              :"White / Caucasian"</span></span>
+<span><span class="co">#&gt;  $ Limb              :"Ankle"</span></span>
+<span><span class="co">#&gt;  $ Side              :"Left"</span></span>
+<span><span class="co">#&gt;  $ Dominance         :"Non-Dominant"</span></span>
+<span><span class="co">#&gt;  $ DateOfBirth       :"621132192000000000"</span></span>
+<span><span class="co">#&gt;  $ Subject Name      :"GT3XPlus"</span></span>
+<span><span class="co">#&gt;  $ Serial Prefix     :"NEO"</span></span>
+<span><span class="co">#&gt;  $ Last Sample Time  : 'POSIXct' num(0) </span></span>
+<span><span class="co">#&gt;  - attr(*, "tzone")= chr "GMT"</span></span>
+<span><span class="co">#&gt;  $ Acceleration Scale:341</span></span>
+<span><span class="co">#&gt; Parsing GT3X data via CPP.. expected sample size: 2700000</span></span>
+<span><span class="co">#&gt; Using NHANES-GT3X format - older format</span></span>
+<span><span class="co">#&gt; Sample size: 2700000</span></span>
+<span><span class="co">#&gt; Scaling...</span></span>
+<span><span class="co">#&gt; Done (in 0.588511943817139 seconds)</span></span>
+<span><span class="co">#&gt; Joining, by = "HEADER_TIME_STAMP"</span></span>
+<span><span class="co">#&gt; Getting the First Day</span></span>
+<span><span class="co">#&gt; Summarizing Data</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; # A tsibble: 1,440 x 11 [1m]</span></span>
+<span><span class="co">#&gt;    time   AI_mean AI_median SD_mean SD_median MAD_mean MAD_median MEDAD_mean</span></span>
+<span><span class="co">#&gt;    &lt;time&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 00'00"  0.266      0.177 0.00646   0.00507  0.00373    0.00317    0.00221</span></span>
+<span><span class="co">#&gt;  2 01'00"  0.323      0.230 0.0150    0.00644  0.00578    0.00448    0.00271</span></span>
+<span><span class="co">#&gt;  3 02'00"  0.144      0.142 0.00402   0.00447  0.00252    0.00276    0.00132</span></span>
+<span><span class="co">#&gt;  4 03'00"  0.947      0.643 0.0310    0.0145   0.0108     0.00640    0.00516</span></span>
+<span><span class="co">#&gt;  5 04'00"  1.11       1.48  0.0324    0.0224   0.0130     0.0120     0.00428</span></span>
+<span><span class="co">#&gt;  6 05'00"  0.536      0.214 0.00836   0.00615  0.00498    0.00294    0.00274</span></span>
+<span><span class="co">#&gt;  7 06'00"  0.0921     0.122 0.00511   0.00641  0.00441    0.00460    0.00372</span></span>
+<span><span class="co">#&gt;  8 07'00"  0.179      0.130 0.00979   0.00834  0.00587    0.00566    0.00380</span></span>
+<span><span class="co">#&gt;  9 08'00"  0.572      0.139 0.0289    0.00503  0.00769    0.00301    0.00240</span></span>
+<span><span class="co">#&gt; 10 09'00"  0.387      0.427 0.0167    0.0208   0.00580    0.00593    0.00254</span></span>
+<span><span class="co">#&gt; # … with 1,430 more rows, and 3 more variables: MEDAD_median &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   mean_r_mean &lt;dbl&gt;, mean_r_median &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="converting-to-wide-1440-format">Converting to wide 1440 format<a class="anchor" aria-label="anchor" href="#converting-to-wide-1440-format"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hms_times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">86340</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hms"</span>, <span class="st">"difftime"</span><span class="op">)</span>,
-                      units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span>
-<span class="va">hms_times</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hms_times</span><span class="op">)</span>
-<span class="va">measure</span> <span class="op">=</span> <span class="st">"AI_mean"</span>
-<span class="va">tmeasure</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="va">measure</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">=</span> <span class="va">result</span><span class="op">[</span>, <span class="va">tmeasure</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
-<span class="va">x</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">hms_times</span>, <span class="va">x</span><span class="op">)</span>
-<span class="co">#&gt; Joining, by = "time"</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 2</span>
-<span class="co">#&gt;   time   AI_mean</span>
-<span class="co">#&gt;   &lt;time&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 00'00"   0.266</span>
-<span class="co">#&gt; 2 01'00"   0.323</span>
-<span class="co">#&gt; 3 02'00"   0.144</span>
-<span class="co">#&gt; 4 03'00"   0.947</span>
-<span class="co">#&gt; 5 04'00"   1.11 </span>
-<span class="co">#&gt; 6 05'00"   0.536</span>
-<span class="va">x1440</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html" class="external-link">spread</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">time</span>, value <span class="op">=</span> <span class="va">measure</span><span class="op">)</span>
-<span class="va">x1440</span>
-<span class="co">#&gt; # A tibble: 1 x 1,440</span>
-<span class="co">#&gt;   `00:00:00` `00:01:00` `00:02:00` `00:03:00` `00:04:00` `00:05:00` `00:06:00`</span>
-<span class="co">#&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt; 1      0.266      0.323      0.144      0.947       1.11      0.536     0.0921</span>
-<span class="co">#&gt; # … with 1,433 more variables: `00:07:00` &lt;dbl&gt;, `00:08:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:09:00` &lt;dbl&gt;, `00:10:00` &lt;dbl&gt;, `00:11:00` &lt;dbl&gt;, `00:12:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:13:00` &lt;dbl&gt;, `00:14:00` &lt;dbl&gt;, `00:15:00` &lt;dbl&gt;, `00:16:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:17:00` &lt;dbl&gt;, `00:18:00` &lt;dbl&gt;, `00:19:00` &lt;dbl&gt;, `00:20:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:21:00` &lt;dbl&gt;, `00:22:00` &lt;dbl&gt;, `00:23:00` &lt;dbl&gt;, `00:24:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:25:00` &lt;dbl&gt;, `00:26:00` &lt;dbl&gt;, `00:27:00` &lt;dbl&gt;, `00:28:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:29:00` &lt;dbl&gt;, `00:30:00` &lt;dbl&gt;, `00:31:00` &lt;dbl&gt;, `00:32:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:33:00` &lt;dbl&gt;, `00:34:00` &lt;dbl&gt;, `00:35:00` &lt;dbl&gt;, `00:36:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:37:00` &lt;dbl&gt;, `00:38:00` &lt;dbl&gt;, `00:39:00` &lt;dbl&gt;, `00:40:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:41:00` &lt;dbl&gt;, `00:42:00` &lt;dbl&gt;, `00:43:00` &lt;dbl&gt;, `00:44:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:45:00` &lt;dbl&gt;, `00:46:00` &lt;dbl&gt;, `00:47:00` &lt;dbl&gt;, `00:48:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:49:00` &lt;dbl&gt;, `00:50:00` &lt;dbl&gt;, `00:51:00` &lt;dbl&gt;, `00:52:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:53:00` &lt;dbl&gt;, `00:54:00` &lt;dbl&gt;, `00:55:00` &lt;dbl&gt;, `00:56:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `00:57:00` &lt;dbl&gt;, `00:58:00` &lt;dbl&gt;, `00:59:00` &lt;dbl&gt;, `01:00:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:01:00` &lt;dbl&gt;, `01:02:00` &lt;dbl&gt;, `01:03:00` &lt;dbl&gt;, `01:04:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:05:00` &lt;dbl&gt;, `01:06:00` &lt;dbl&gt;, `01:07:00` &lt;dbl&gt;, `01:08:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:09:00` &lt;dbl&gt;, `01:10:00` &lt;dbl&gt;, `01:11:00` &lt;dbl&gt;, `01:12:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:13:00` &lt;dbl&gt;, `01:14:00` &lt;dbl&gt;, `01:15:00` &lt;dbl&gt;, `01:16:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:17:00` &lt;dbl&gt;, `01:18:00` &lt;dbl&gt;, `01:19:00` &lt;dbl&gt;, `01:20:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:21:00` &lt;dbl&gt;, `01:22:00` &lt;dbl&gt;, `01:23:00` &lt;dbl&gt;, `01:24:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:25:00` &lt;dbl&gt;, `01:26:00` &lt;dbl&gt;, `01:27:00` &lt;dbl&gt;, `01:28:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:29:00` &lt;dbl&gt;, `01:30:00` &lt;dbl&gt;, `01:31:00` &lt;dbl&gt;, `01:32:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:33:00` &lt;dbl&gt;, `01:34:00` &lt;dbl&gt;, `01:35:00` &lt;dbl&gt;, `01:36:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:37:00` &lt;dbl&gt;, `01:38:00` &lt;dbl&gt;, `01:39:00` &lt;dbl&gt;, `01:40:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:41:00` &lt;dbl&gt;, `01:42:00` &lt;dbl&gt;, `01:43:00` &lt;dbl&gt;, `01:44:00` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `01:45:00` &lt;dbl&gt;, `01:46:00` &lt;dbl&gt;, …</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">hms_times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">86340</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hms"</span>, <span class="st">"difftime"</span><span class="op">)</span>,</span>
+<span>                      units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span></span>
+<span><span class="va">hms_times</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hms_times</span><span class="op">)</span></span>
+<span><span class="va">measure</span> <span class="op">=</span> <span class="st">"AI_mean"</span></span>
+<span><span class="va">tmeasure</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="va">measure</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="va">result</span><span class="op">[</span>, <span class="va">tmeasure</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">hms_times</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining, by = "time"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 x 2</span></span>
+<span><span class="co">#&gt;   time   AI_mean</span></span>
+<span><span class="co">#&gt;   &lt;time&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 00'00"   0.266</span></span>
+<span><span class="co">#&gt; 2 01'00"   0.323</span></span>
+<span><span class="co">#&gt; 3 02'00"   0.144</span></span>
+<span><span class="co">#&gt; 4 03'00"   0.947</span></span>
+<span><span class="co">#&gt; 5 04'00"   1.11 </span></span>
+<span><span class="co">#&gt; 6 05'00"   0.536</span></span>
+<span><span class="va">x1440</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html" class="external-link">spread</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">time</span>, value <span class="op">=</span> <span class="va">measure</span><span class="op">)</span></span>
+<span><span class="va">x1440</span></span>
+<span><span class="co">#&gt; # A tibble: 1 x 1,440</span></span>
+<span><span class="co">#&gt;   `00:00:00` `00:01:00` `00:02:00` `00:03:00` `00:04:00` `00:05:00` `00:06:00`</span></span>
+<span><span class="co">#&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1      0.266      0.323      0.144      0.947       1.11      0.536     0.0921</span></span>
+<span><span class="co">#&gt; # … with 1,433 more variables: `00:07:00` &lt;dbl&gt;, `00:08:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:09:00` &lt;dbl&gt;, `00:10:00` &lt;dbl&gt;, `00:11:00` &lt;dbl&gt;, `00:12:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:13:00` &lt;dbl&gt;, `00:14:00` &lt;dbl&gt;, `00:15:00` &lt;dbl&gt;, `00:16:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:17:00` &lt;dbl&gt;, `00:18:00` &lt;dbl&gt;, `00:19:00` &lt;dbl&gt;, `00:20:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:21:00` &lt;dbl&gt;, `00:22:00` &lt;dbl&gt;, `00:23:00` &lt;dbl&gt;, `00:24:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:25:00` &lt;dbl&gt;, `00:26:00` &lt;dbl&gt;, `00:27:00` &lt;dbl&gt;, `00:28:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:29:00` &lt;dbl&gt;, `00:30:00` &lt;dbl&gt;, `00:31:00` &lt;dbl&gt;, `00:32:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:33:00` &lt;dbl&gt;, `00:34:00` &lt;dbl&gt;, `00:35:00` &lt;dbl&gt;, `00:36:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:37:00` &lt;dbl&gt;, `00:38:00` &lt;dbl&gt;, `00:39:00` &lt;dbl&gt;, `00:40:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:41:00` &lt;dbl&gt;, `00:42:00` &lt;dbl&gt;, `00:43:00` &lt;dbl&gt;, `00:44:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:45:00` &lt;dbl&gt;, `00:46:00` &lt;dbl&gt;, `00:47:00` &lt;dbl&gt;, `00:48:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:49:00` &lt;dbl&gt;, `00:50:00` &lt;dbl&gt;, `00:51:00` &lt;dbl&gt;, `00:52:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:53:00` &lt;dbl&gt;, `00:54:00` &lt;dbl&gt;, `00:55:00` &lt;dbl&gt;, `00:56:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:57:00` &lt;dbl&gt;, `00:58:00` &lt;dbl&gt;, `00:59:00` &lt;dbl&gt;, `01:00:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:01:00` &lt;dbl&gt;, `01:02:00` &lt;dbl&gt;, `01:03:00` &lt;dbl&gt;, `01:04:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:05:00` &lt;dbl&gt;, `01:06:00` &lt;dbl&gt;, `01:07:00` &lt;dbl&gt;, `01:08:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:09:00` &lt;dbl&gt;, `01:10:00` &lt;dbl&gt;, `01:11:00` &lt;dbl&gt;, `01:12:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:13:00` &lt;dbl&gt;, `01:14:00` &lt;dbl&gt;, `01:15:00` &lt;dbl&gt;, `01:16:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:17:00` &lt;dbl&gt;, `01:18:00` &lt;dbl&gt;, `01:19:00` &lt;dbl&gt;, `01:20:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:21:00` &lt;dbl&gt;, `01:22:00` &lt;dbl&gt;, `01:23:00` &lt;dbl&gt;, `01:24:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:25:00` &lt;dbl&gt;, `01:26:00` &lt;dbl&gt;, `01:27:00` &lt;dbl&gt;, `01:28:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:29:00` &lt;dbl&gt;, `01:30:00` &lt;dbl&gt;, `01:31:00` &lt;dbl&gt;, `01:32:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:33:00` &lt;dbl&gt;, `01:34:00` &lt;dbl&gt;, `01:35:00` &lt;dbl&gt;, `01:36:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:37:00` &lt;dbl&gt;, `01:38:00` &lt;dbl&gt;, `01:39:00` &lt;dbl&gt;, `01:40:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:41:00` &lt;dbl&gt;, `01:42:00` &lt;dbl&gt;, `01:43:00` &lt;dbl&gt;, `01:44:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `01:45:00` &lt;dbl&gt;, `01:46:00` &lt;dbl&gt;, …</span></span></code></pre></div>
 </div>
 </div>
 
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/muschellij2/SummarizedActigraphy/" class="external-link">Browse source code</a></li>
@@ -257,25 +251,24 @@
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by John Muschelli.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 
