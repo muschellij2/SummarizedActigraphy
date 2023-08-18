@@ -111,10 +111,10 @@ calculated using proprietary methods or algorithms.</p>
 files into an <code>AccData</code> object:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">read_actigraphy</span>(path)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Unzipping gt3x data to <span class="sc">/</span>tmp<span class="sc">/</span>Rtmp2vi8XY</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Unzipping gt3x data to <span class="sc">/</span>tmp<span class="sc">/</span>RtmpwWseKL</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span><span class="dv">1</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>Unzipping <span class="sc">/</span>tmp<span class="sc">/</span>Rtmp2vi8XY<span class="sc">/</span>GT3X<span class="sc">+</span> (<span class="dv">01</span> day).gt3x</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a> <span class="sc">==</span><span class="er">=</span> info.txt, activity.bin, lux.bin extracted to <span class="sc">/</span>tmp<span class="sc">/</span>Rtmp2vi8XY<span class="sc">/</span>GT3X<span class="sc">+</span>(01day)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>Unzipping <span class="sc">/</span>tmp<span class="sc">/</span>RtmpwWseKL<span class="sc">/</span>GT3X<span class="sc">+</span> (<span class="dv">01</span> day).gt3x</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a> <span class="sc">==</span><span class="er">=</span> info.txt, activity.bin, lux.bin extracted to <span class="sc">/</span>tmp<span class="sc">/</span>RtmpwWseKL<span class="sc">/</span>GT3X<span class="sc">+</span>(01day)</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>GT3X information</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> Serial Number     <span class="sc">:</span><span class="st">"NEO1DXXXXXXXX"</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a> <span class="sc">$</span> Device Type       <span class="sc">:</span><span class="st">"GT3XPlus"</span></span>
@@ -146,7 +146,7 @@ files into an <code>AccData</code> object:</p>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>Using NHANES<span class="sc">-</span>GT3X format <span class="sc">-</span> older format</span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Sample size<span class="sc">:</span> <span class="dv">2700000</span></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>Scaling...</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu">Done</span> (<span class="cf">in</span> <span class="fl">1.63440704345703</span> seconds)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu">Done</span> (<span class="cf">in</span> <span class="fl">1.32635617256165</span> seconds)</span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"AccData"</span></span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x)</span>
@@ -277,13 +277,22 @@ categories like vigorous activity. Also, this data is used for
 estimating sedentary and active bouts, and transition probability
 between them.</p>
 <div class="section level3">
+<h3 id="euclidean-norm-r">Euclidean Norm (r)<a class="anchor" aria-label="anchor" href="#euclidean-norm-r"></a>
+</h3>
+<p>Many of the following statistics are based on the Euclidean Norm of
+the three axes:</p>
+<p><span class="math display">\[
+r_i = \sqrt{X_{i}^2 + Y_{i}^2 + Z_{i}^2}
+\]</span></p>
+</div>
+<div class="section level3">
 <h3 id="enmo">ENMO<a class="anchor" aria-label="anchor" href="#enmo"></a>
 </h3>
 <p>One of the statistics calculated are ENMO, the Euclidean Norm Minus
 One, which is:</p>
 <p><span class="math display">\[
-ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(\sqrt{X_{i}^2 +
-Y_{i}^2 + Z_{i}^2} - 1\right)
+ENMO_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(r_i - 1\right) \cdot
+\mathbb{1} \left(r_i &gt; 1\right)
 \]</span> where <span class="math inline">\(t\)</span> is the time
 point, rounded to one second. In this case, <span class="math inline">\(i\)</span> represents each sample, so there are 30
 ENMO measures per second, which means the number of samples for that
@@ -301,8 +310,8 @@ the data so it represents acceleration not due to gravity.</p>
 <div class="section level3">
 <h3 id="activity-index-ai">Activity Index (AI)<a class="anchor" aria-label="anchor" href="#activity-index-ai"></a>
 </h3>
-<p>The Activity Index (AI) was introduced by <span class="citation">(<strong>bai?</strong>)</span>. It is calculated by:
-<span class="math display">\[
+<p>The Activity Index (AI) was introduced by <span class="citation">Bai
+et al. (2016)</span>. It is calculated by: <span class="math display">\[
 AI_{t} = \sqrt{\frac{Var(X_{t}) + Var(Y_{t}) + Var(Z_{t})}{3}}
 \]</span></p>
 <p>where</p>
@@ -310,24 +319,21 @@ AI_{t} = \sqrt{\frac{Var(X_{t}) + Var(Y_{t}) + Var(Z_{t})}{3}}
 Var(X_{t}) = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left(X_{i} -
 \bar{X_{t}}\right)^2
 \]</span></p>
-<p>where <span class="math inline">\(\bar{X_{t} = \frac{1}{n_{t}}
-\sum_{i=1}^{n_t} X_{i}\)</span>.</p>
+<p>where <span class="math display">\[\bar{X_{t} = \frac{1}{n_{t}}
+\sum_{i=1}^{n_t} X_{i}\]</span>.</p>
 </div>
 <div class="section level3">
-<h3 id="median-absolute-deviation-mad">Median Absolute Deviation (MAD)<a class="anchor" aria-label="anchor" href="#median-absolute-deviation-mad"></a>
+<h3 id="mean-median-absolute-deviation-mad-medad">Mean, Median Absolute Deviation (MAD, MEDAD)<a class="anchor" aria-label="anchor" href="#mean-median-absolute-deviation-mad-medad"></a>
 </h3>
-<p>The Median Absolute Deviation (MAD) was introduced by XX. It is
-calculated by:</p>
+<p>The Mean Absolute Deviation (MAD) is calculated by:</p>
 <p><span class="math display">\[
-MAD_{t} = \frac{MAD(X_{t}) + MAD(Y_{t}) + MAD(Z_{t})}{3}
-\]</span></p>
-<p>where</p>
+MAD_{t} = \frac{1}{n_{t}} \sum_{i=1}^{n_t} \left|r_i -
+\sum_{i=1}^{n_t}\frac{r_i}{n_{t}} \right|
+\]</span> Median Absolute Deviation (MEDAD) is calculated by:</p>
 <p><span class="math display">\[
-MAD(X_{t}) = \text{median}_{t} \left|X_{i} - \text{median}(X_{t})\right|
-\]</span> where <span class="math inline">\(\text{median}_{t}\)</span>
-is the median over all values <span class="math inline">\(i = 1, \dots,
-n_{t}\)</span>, and <span class="math inline">\(\text{median}(X_{t}) =
-\text{median}_{t} (X_{i})\)</span>.</p>
+MEDAD_{t} = \text{median}\Bigg\{ \left|r_i -
+\sum_{i=1}^{n_t}\frac{r_i}{n_{t}} \right|\Bigg\}_{i=1}^{n_t}
+\]</span> .</p>
 </div>
 </div>
 <div class="section level2">
@@ -386,6 +392,12 @@ median:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="Summarizing_Actigraphy_Data_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-bai" class="csl-entry">
+Bai, Jiawei, Chongzhi Di, Luo Xiao, Kelly R Evenson, Andrea Z LaCroix,
+Ciprian M Crainiceanu, and David M Buchner. 2016. <span>“An Activity
+Index for Raw Accelerometry Data and Its Comparison with Other Activity
+Metrics.”</span> <em>PloS One</em> 11 (8): e0160644.
+</div>
 <div id="ref-GGIR_calibrate" class="csl-entry">
 van Hees, Vincent T, Zhou Fang, Joss Langford, Felix Assah, A
 MohammadMirkes, Inacio C da Silva, Michael I Trenell, Tom White,
