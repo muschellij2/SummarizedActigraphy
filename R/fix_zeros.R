@@ -45,7 +45,7 @@ fix_zeros = function(df,
 
   if (trim) {
     not_zero = rle(!zero)
-    not_zero$values[2:(length(not_zero$values)-1)] = TRUE
+    not_zero$values[2:(length(not_zero$values) - 1)] = TRUE
     not_zero = inverse.rle(not_zero)
     zero = zero[not_zero]
     df = df[ not_zero, ]
@@ -67,7 +67,8 @@ fix_zeros = function(df,
   transforms = paste(transforms, collapse = ", ")
   transforms = paste0("fix_zeros:", transforms)
   transformations = c(transforms, transformations)
-  df = set_transformations(df, transformations = transformations, add = FALSE)
+  df = set_transformations(df, transformations = transformations,
+                           add = FALSE)
   if (acc_data) {
     xdf$data = df
     df = xdf

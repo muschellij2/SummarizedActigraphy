@@ -47,6 +47,11 @@
 #' \donttest{
 #' mims = calculate_mims(res, dynamic_range = NULL)
 #' }
+#' if (requireNamespace("data.table", quietly = TRUE)) {
+#'    dr
+#'    dt = data.table::as.data.table(res$data)
+#'    out = calculate_measures(dt, calculate_mims = FALSE, flag_data = FALSE)
+#' }
 #'
 calculate_measures = function(
   df, unit = "1 min",
@@ -79,6 +84,7 @@ calculate_measures = function(
     dynamic_range = get_dynamic_range(df, dynamic_range)
   }
   # keep flag here - so can calculate by epoch
+  is_data_table = is_dt(df)
   df = ensure_header_timestamp(df)
   if (calculate_ac) {
     sample_rate = get_sample_rate(df, sample_rate = sample_rate)
@@ -108,14 +114,24 @@ calculate_measures = function(
   }
   transformations = get_transformations(df)
 
+  df = remake_dt(df, is_data_table = is_data_table)
+
   if (verbose) {
     message("Calculating ai0")
   }
-  res = calculate_ai(df, unit = unit)
+  res = calculate_ai(df, unit = unit, verbose = verbose > 1)
   if (verbose) {
     message("Calculating MAD")
   }
-  mad = calculate_mad(df, unit = unit)
+  mad = calculate_mad(df, unit = unit, verbose = verbose > 1)
+  if (verbose) {
+    message("Joining AI and MAD")
+  }
+
+  df = as.data.frame(df)
+  # ai0 is res
+  res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
+  rm(mad)
   if (calculate_mims) {
     if (verbose) {
       message("Calculating MIMS")
@@ -124,14 +140,6 @@ calculate_measures = function(
                           dynamic_range = dynamic_range,
                           ...)
   }
-
-  if (verbose) {
-    message("Joining AI and MAD")
-  }
-
-  # ai0 is res
-  res = dplyr::full_join(res, mad, by = "HEADER_TIME_STAMP")
-  rm(mad)
 
   if (calculate_ac) {
     if (verbose) {
@@ -166,7 +174,8 @@ calculate_measures = function(
     dplyr::rename(time = HEADER_TIME_STAMP)
   transforms = paste("aggregated_at_", paste(unit, collapse = "_"))
   transformations = c(transforms, transformations)
-  res = set_transformations(res, transformations = transformations, add = FALSE)
+  res = set_transformations(res, transformations = transformations,
+                            add = FALSE)
   res
 }
 
@@ -181,38 +190,83 @@ floor_sec = function(x) {
   }
 }
 
+remake_dt = function(df, is_data_table = FALSE) {
+  if (requireNamespace("data.table", quietly = TRUE) &&
+      is_data_table) {
+    df = data.table::as.data.table(df)
+  }
+  df
+}
+is_dt = function(x) {
+  inherits(x, "data.table")
+}
+
+.datatable.aware=TRUE
+
 #' @export
 #' @rdname calculate_measures
-calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
+calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
+                        verbose = FALSE) {
+  # globals workup
   time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
-  df = ensure_header_timestamp(df)
-
   AI = NULL
   rm(list = c("AI"))
-  df = df %>%
-    dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
-  df = df %>%
-    dplyr::group_by(HEADER_TIME_STAMP) %>%
-    dplyr::summarise(
-      AI = var(X, na.rm = TRUE) +
-        var(Y, na.rm = TRUE) +
-        var(Z, na.rm = TRUE)
-    )
-  # removed this because running sqrt and / 3 in grouped setting
-  # is inefficient - ungrouping below and mutate
-  # dplyr::summarise(
-  #   AI = sqrt(
-  #     (
-  #       var(X, na.rm = TRUE) +
-  #         var(Y, na.rm = TRUE) +
-  #         var(Z, na.rm = TRUE)
-  #     ) / 3)
-  # )
 
-  df = df %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(AI = sqrt(AI/3))
+  is_data_table = is_dt(df)
+  df = ensure_header_timestamp(df)
+  if (is_data_table &&
+      requireNamespace("data.table", quietly = TRUE)) {
+    df = remake_dt(df, is_data_table = is_data_table)
+    df = df[, HEADER_TIME_STAMP := floor_sec(HEADER_TIME_STAMP)]
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df[, .(X = var(X, na.rm = TRUE),
+                Y = var(Y, na.rm = TRUE),
+                Z = var(Z, na.rm = TRUE)),
+            by = .(HEADER_TIME_STAMP)]
+    df$AI = sqrt(1/3 * (df$X + df$Y + df$Z))
+    df = as.data.frame(df)[c("HEADER_TIME_STAMP", "AI")]
+  } else {
+    if (verbose) {
+      message("Running floor_sec on time")
+    }
+    # need tz because converting to integer for speed
+    df = df %>%
+      dplyr::mutate(HEADER_TIME_STAMP = floor_sec(HEADER_TIME_STAMP))
+
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df %>%
+      dplyr::group_by(HEADER_TIME_STAMP) %>%
+      dplyr::summarise(
+        AI = var(X, na.rm = TRUE) +
+          var(Y, na.rm = TRUE) +
+          var(Z, na.rm = TRUE)
+      )
+    # removed this because running sqrt and / 3 in grouped setting
+    # is inefficient - ungrouping below and mutate
+    # dplyr::summarise(
+    #   AI = sqrt(
+    #     (
+    #       var(X, na.rm = TRUE) +
+    #         var(Y, na.rm = TRUE) +
+    #         var(Z, na.rm = TRUE)
+    #     ) / 3)
+    # )
+    if (verbose) {
+      message("Calculating AI")
+    }
+    if (!is_data_table) {
+      df = df %>%
+        dplyr::ungroup()
+    }
+    df = df %>%
+      dplyr::mutate(AI = sqrt(AI/3))
+  }
+
   df = df %>%
     dplyr::mutate(
       HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -221,7 +275,11 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE) {
     dplyr::summarise(
       AI = sum(AI)
     )
+  df = df %>%
+    tibble::as_tibble()%>%
+    dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
+  df = remake_dt(df, is_data_table = is_data_table)
   df
 }
 
@@ -315,21 +373,33 @@ calculate_ai_defined = function(...) {
 
 #' @export
 #' @rdname calculate_measures
-calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
+calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
+                         verbose = FALSE) {
   ENMO_t = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
   rm(list= c("HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  is_data_table = is_dt(df)
   df = ensure_header_timestamp(df)
 
-  df = df %>%
-    dplyr::mutate(
-      r = sqrt(X^2+Y^2+Z^2),
-      ENMO_t = r - 1,
-      ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
-      HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
-                                                unit))
-  df = df %>%
-    dplyr::group_by(HEADER_TIME_STAMP) %>%
-    dplyr::summarise(
+  if (verbose) {
+    message("Calculating r, ENMO, and flooring time")
+  }
+  if (is_data_table &&
+      requireNamespace("data.table", quietly = TRUE)) {
+    df = remake_dt(df, is_data_table = is_data_table)
+    if (verbose) {
+      message("Summarizing the variance")
+    }
+    df = df[, r := sqrt(X^2 + Y^2 + Z^2)]
+    df = df[, HEADER_TIME_STAMP := lubridate::floor_date(
+      HEADER_TIME_STAMP, unit)]
+
+    df = df[, ENMO_t := r - 1]
+    df = df[, ENMO_t := dplyr::if_else(ENMO_t < 0, 0, ENMO_t)]
+
+    if (verbose) {
+      message("Calculating all MAD measures")
+    }
+    df = df[, .(
       SD = sd(r, na.rm = TRUE),
       SD_t = sd(ENMO_t, na.rm = TRUE),
       AI_DEFINED = sqrt((
@@ -340,9 +410,40 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE) {
       MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
       mean_r = mean(r, na.rm = TRUE),
       ENMO_t = mean(ENMO_t, na.rm = TRUE)
-    ) %>%
+    ), by = .(HEADER_TIME_STAMP)]
+  } else {
+    df = df %>%
+      dplyr::mutate(
+        r = sqrt(X^2+Y^2+Z^2),
+        ENMO_t = r - 1,
+        ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
+        HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
+                                                  unit))
+
+    if (verbose) {
+      message("Calculating all MAD measures")
+    }
+    df = df %>%
+      dplyr::group_by(HEADER_TIME_STAMP) %>%
+      dplyr::summarise(
+        SD = sd(r, na.rm = TRUE),
+        SD_t = sd(ENMO_t, na.rm = TRUE),
+        AI_DEFINED = sqrt((
+          var(X, na.rm = TRUE) +
+            var(Y, na.rm = TRUE) +
+            var(Z, na.rm = TRUE)) / 3),
+        MAD = mean(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+        MEDAD = median(abs(r - mean(r, na.rm = TRUE)), na.rm = TRUE),
+        mean_r = mean(r, na.rm = TRUE),
+        ENMO_t = mean(ENMO_t, na.rm = TRUE)
+      ) %>%
+      dplyr::ungroup()
+  }
+  df = df %>%
+    tibble::as_tibble()%>%
     dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
+  df = remake_dt(df, is_data_table = is_data_table)
   df
 }
 
@@ -358,8 +459,12 @@ get_sample_rate = function(df, sample_rate = NULL) {
   if (is.null(sample_rate) || is.na(sample_rate)) {
     sample_rate = attr(df, "sample_rate")
   }
-  if ((is.null(sample_rate) || is.na(sample_rate)) &&
-      any(c("time", "HEADER_TIME_STAMP", "HEADER_TIMESTAMP") %in% colnames(df))) {
+  if (
+    (is.null(sample_rate) || is.na(sample_rate)) &&
+    any(
+      c("time", "HEADER_TIME_STAMP", "HEADER_TIMESTAMP") %in% colnames(df)
+    )
+  ) {
     warning("Guessing sample_rate from the data")
     time = df[["time"]]
     if (is.null(time)) {
@@ -419,7 +524,8 @@ calculate_auc = function(df, unit = "1 min",
   df = df %>%
     # trapezoidal
     dplyr::mutate(
-      dtime = difftime(HEADER_TIME_STAMP, dplyr::lag(HEADER_TIME_STAMP, n = 1),
+      dtime = difftime(HEADER_TIME_STAMP,
+                       dplyr::lag(HEADER_TIME_STAMP, n = 1),
                        units = "secs"),
       dtime = as.numeric(dtime),
       X = (X + dplyr::lag(X, n = 1)) / 2 * dtime,
@@ -451,13 +557,13 @@ calculate_auc = function(df, unit = "1 min",
     dplyr::ungroup() %>%
     dplyr::mutate(
       good = !(is.na(X) | is.na(Y) | is.na(Z))
-    ) %>%
-    dplyr::group_by(HEADER_TIME_STAMP)
+    )
 
   if (verbose) {
     message("Calculating AUCs")
   }
   df = df %>%
+    dplyr::group_by(HEADER_TIME_STAMP) %>%
     dplyr::summarise(
       good = sum(good),
       AUC_X = sum(X, na.rm = TRUE),
@@ -549,7 +655,8 @@ calculate_mims = function(
   dynamic_range = get_dynamic_range(df, dynamic_range = dynamic_range)
   check = check_dynamic_range(df, dynamic_range = dynamic_range)
   if (!check) {
-    msg = "Dynamic range does not cover all the data in df, please check data"
+    msg = paste0("Dynamic range does not cover all the data in df",
+                 ", please check data")
     warning(msg)
   }
   df = ensure_header_timestamp(df)
@@ -587,7 +694,8 @@ calculate_mims = function(
 ensure_header_timestamp = function(df, subset = TRUE) {
   transformations = get_transformations(df)
   HEADER_TIMESTAMP = time = HEADER_TIME_STAMP = X = Y = Z = r = NULL
-  rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X", "Y", "Z", "r", "time"))
+  rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X",
+              "Y", "Z", "r", "time"))
   serial_prefix = sample_rate = NULL
   dynamic_range = NULL
   if (is.AccData(df)) {
@@ -620,6 +728,7 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   if (is.null(sample_rate)) {
     sample_rate = attr(df, "sample_rate")
   }
+  df = tibble::as_tibble(df)
   cn = colnames(df)
   if ("time" %in% cn && !"HEADER_TIME_STAMP" %in% cn) {
     df = df %>%
@@ -637,7 +746,8 @@ ensure_header_timestamp = function(df, subset = TRUE) {
   attr(df, "sample_rate") = sample_rate
   attr(df, "dynamic_range") = dynamic_range
   attr(df, "serial_prefix") = serial_prefix
-  df = set_transformations(df, transformations = transformations, add = FALSE)
+  df = set_transformations(df, transformations = transformations,
+                           add = FALSE)
   df
 }
 
@@ -711,7 +821,9 @@ get_dynamic_range_actilife_header = function(header) {
   hdr = hdr[ !hdr %in% ""]
   hdr = trimws(hdr)
   hdr = hdr[ grepl("Serial", hdr)]
-  ACTIGRAPH_SERIALNUM_PATTERN <- ".*Serial\\s*Number:\\s*([A-Za-z0-9]+)\\s*Start\\s*Time.*"
+  ACTIGRAPH_SERIALNUM_PATTERN <- paste0(
+    ".*Serial\\s*Number:",
+    "\\s*([A-Za-z0-9]+)\\s*Start\\s*Time.*")
   sn = sub(ACTIGRAPH_SERIALNUM_PATTERN, "\\1", hdr)
   sn = trimws(sn)
   if (nchar(sn) > 20) {

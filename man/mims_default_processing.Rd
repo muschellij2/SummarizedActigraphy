@@ -34,7 +34,7 @@ filtering to the input signal, otherwise it will skip the filtering.}
 decimal values after processing, to make similar to standard accelerometry?}
 }
 \value{
-A process data set
+A processed data set
 }
 \description{
 Default MIMS Pre-processing
