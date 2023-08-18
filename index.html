@@ -97,11 +97,40 @@
 <span><span class="va">path</span> <span class="op">=</span> <span class="va">gt3x_file</span></span>
 <span><span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="reference/summarize_actigraphy.html">summarize_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running Daily Actigraphy</span></span>
+<span><span class="co">#&gt; Getting the First Day</span></span>
+<span><span class="co">#&gt; Summarizing Data</span></span>
+<span><span class="va">result</span></span>
+<span><span class="co">#&gt; # A tsibble: 1,440 x 13 [1m]</span></span>
+<span><span class="co">#&gt;    time   AI_mean AI_median SD_mean SD_median MAD_mean MAD_median MEDAD_mean</span></span>
+<span><span class="co">#&gt;    &lt;time&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 00'00"  0.168     0.168  0.00613   0.00613  0.00394    0.00394    0.00291</span></span>
+<span><span class="co">#&gt;  2 01'00"  0.0501    0.0501 0.00514   0.00514  0.00393    0.00393    0.00276</span></span>
+<span><span class="co">#&gt;  3 02'00"  0         0      0         0        0          0          0      </span></span>
+<span><span class="co">#&gt;  4 03'00"  0         0      0         0        0          0          0      </span></span>
+<span><span class="co">#&gt;  5 04'00"  0         0      0         0        0          0          0      </span></span>
+<span><span class="co">#&gt;  6 05'00"  0         0      0         0        0          0          0      </span></span>
+<span><span class="co">#&gt;  7 06'00"  0.0802    0.0802 0.00375   0.00375  0.00308    0.00308    0.00216</span></span>
+<span><span class="co">#&gt;  8 07'00"  0.0271    0.0271 0.00298   0.00298  0.00206    0.00206    0.00124</span></span>
+<span><span class="co">#&gt;  9 08'00"  0.0865    0.0865 0.00411   0.00411  0.00355    0.00355    0.00452</span></span>
+<span><span class="co">#&gt; 10 09'00"  0.0543    0.0543 0.00230   0.00230  0.00197    0.00197    0.00142</span></span>
+<span><span class="co">#&gt; # ℹ 1,430 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 5 more variables: MEDAD_median &lt;dbl&gt;, ENMO_t_mean &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   ENMO_t_median &lt;dbl&gt;, mean_r_mean &lt;dbl&gt;, mean_r_median &lt;dbl&gt;</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="reading-in-gt3x-files">Reading in GT3X files<a class="anchor" aria-label="anchor" href="#reading-in-gt3x-files"></a>
+</h2>
+<p>In GT3X files, you must be aware of <a href="https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained" class="external-link">Idle Sleep Mode</a>, which saves power on the device, but the device essentially stops recording. In most cases, you still want a “full” time series without missing elements. To read in <code>gt3x</code> files, we use <code><a href="https://rdrr.io/pkg/read.gt3x/man/read.gt3x.html" class="external-link">read.gt3x::read.gt3x</a></code>. By default <code><a href="https://rdrr.io/pkg/read.gt3x/man/read.gt3x.html" class="external-link">read.gt3x::read.gt3x</a></code>, that data isn’t in the output data set. If you use the <code>imputeZeros = TRUE</code> argument, then they are there, but all 0s, which doesn’t make sense (no gravity even!?).</p>
+<p>In Actigraph’s ActiLife, the raw output data repeats the same value before the device went into sleep mode. To mimic this behavior, the <code><a href="reference/fix_zeros.html">SummarizedActigraphy::fix_zeros</a></code> function sets the values in the rows with all <code>0</code> to be <code>NA</code> (just for <code>X/Y/Z</code>, not <code>time</code>), and then uses <code><a href="https://rdrr.io/pkg/zoo/man/na.locf.html" class="external-link">zoo::na.locf</a></code> for last observation carried forward (LOCF). Aside: you could also use <code>tidyr::fill(direction = "down")</code> for the tidyverse folks.</p>
+<p>In <code><a href="reference/read_actigraphy.html">SummarizedActigraphy::read_actigraphy</a></code>, we use <code>read.gt3x::read.gt3x(asDataFrame = TRUE, imputeZeroes = TRUE)</code> as the default.</p>
+<p>See below as an example.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">SummarizedActigraphy</span><span class="fu">::</span><span class="fu"><a href="reference/read_actigraphy.html">read_actigraphy</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Input is a .gt3x file, unzipping to a temporary location first...</span></span>
-<span><span class="co">#&gt; Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY</span></span>
+<span><span class="co">#&gt; Unzipping gt3x data to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpquRevB</span></span>
 <span><span class="co">#&gt; 1/1</span></span>
-<span><span class="co">#&gt; Unzipping /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+ (01 day).gt3x</span></span>
-<span><span class="co">#&gt;  === info.txt, activity.bin, lux.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpanwnsY/GT3X+(01day)</span></span>
+<span><span class="co">#&gt; Unzipping /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpquRevB/GT3X+ (01 day).gt3x</span></span>
+<span><span class="co">#&gt;  === info.txt, activity.bin, lux.bin extracted to /var/folders/1s/wrtqcpxn685_zk570bnx9_rr0000gr/T//RtmpquRevB/GT3X+(01day)</span></span>
 <span><span class="co">#&gt; GT3X information</span></span>
 <span><span class="co">#&gt;  $ Serial Number     :"NEO1DXXXXXXXX"</span></span>
 <span><span class="co">#&gt;  $ Device Type       :"GT3XPlus"</span></span>
@@ -127,35 +156,57 @@
 <span><span class="co">#&gt;  $ Last Sample Time  : 'POSIXct' num(0) </span></span>
 <span><span class="co">#&gt;  - attr(*, "tzone")= chr "GMT"</span></span>
 <span><span class="co">#&gt;  $ Acceleration Scale:341</span></span>
+<span><span class="co">#&gt;  $ Acceleration Min  :"-6.0"</span></span>
+<span><span class="co">#&gt;  $ Acceleration Max  :"6.0"</span></span>
 <span><span class="co">#&gt; Parsing GT3X data via CPP.. expected sample size: 2700000</span></span>
 <span><span class="co">#&gt; Using NHANES-GT3X format - older format</span></span>
 <span><span class="co">#&gt; Sample size: 2700000</span></span>
 <span><span class="co">#&gt; Scaling...</span></span>
-<span><span class="co">#&gt; Done (in 0.588511943817139 seconds)</span></span>
-<span><span class="co">#&gt; Joining, by = "HEADER_TIME_STAMP"</span></span>
-<span><span class="co">#&gt; Getting the First Day</span></span>
-<span><span class="co">#&gt; Summarizing Data</span></span>
-<span><span class="va">result</span></span>
-<span><span class="co">#&gt; # A tsibble: 1,440 x 11 [1m]</span></span>
-<span><span class="co">#&gt;    time   AI_mean AI_median SD_mean SD_median MAD_mean MAD_median MEDAD_mean</span></span>
-<span><span class="co">#&gt;    &lt;time&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 00'00"  0.266      0.177 0.00646   0.00507  0.00373    0.00317    0.00221</span></span>
-<span><span class="co">#&gt;  2 01'00"  0.323      0.230 0.0150    0.00644  0.00578    0.00448    0.00271</span></span>
-<span><span class="co">#&gt;  3 02'00"  0.144      0.142 0.00402   0.00447  0.00252    0.00276    0.00132</span></span>
-<span><span class="co">#&gt;  4 03'00"  0.947      0.643 0.0310    0.0145   0.0108     0.00640    0.00516</span></span>
-<span><span class="co">#&gt;  5 04'00"  1.11       1.48  0.0324    0.0224   0.0130     0.0120     0.00428</span></span>
-<span><span class="co">#&gt;  6 05'00"  0.536      0.214 0.00836   0.00615  0.00498    0.00294    0.00274</span></span>
-<span><span class="co">#&gt;  7 06'00"  0.0921     0.122 0.00511   0.00641  0.00441    0.00460    0.00372</span></span>
-<span><span class="co">#&gt;  8 07'00"  0.179      0.130 0.00979   0.00834  0.00587    0.00566    0.00380</span></span>
-<span><span class="co">#&gt;  9 08'00"  0.572      0.139 0.0289    0.00503  0.00769    0.00301    0.00240</span></span>
-<span><span class="co">#&gt; 10 09'00"  0.387      0.427 0.0167    0.0208   0.00580    0.00593    0.00254</span></span>
-<span><span class="co">#&gt; # … with 1,430 more rows, and 3 more variables: MEDAD_median &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   mean_r_mean &lt;dbl&gt;, mean_r_median &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; Done (in 0.675724983215332 seconds)</span></span>
+<span><span class="va">df</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="va">df</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">all_zero</span> <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">X</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">df</span><span class="op">$</span><span class="va">Y</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">df</span><span class="op">$</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span></span>
+<span><span class="va">df</span><span class="op">[</span><span class="va">all_zero</span>, <span class="op">]</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"1 sec"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3,341 × 4</span></span>
+<span><span class="co">#&gt;    time                    X     Y     Z</span></span>
+<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2012-06-27 10:54:00     0     0     0</span></span>
+<span><span class="co">#&gt;  2 2012-06-27 10:54:01     0     0     0</span></span>
+<span><span class="co">#&gt;  3 2012-06-27 10:54:02     0     0     0</span></span>
+<span><span class="co">#&gt;  4 2012-06-27 10:54:03     0     0     0</span></span>
+<span><span class="co">#&gt;  5 2012-06-27 10:54:04     0     0     0</span></span>
+<span><span class="co">#&gt;  6 2012-06-27 11:27:40     0     0     0</span></span>
+<span><span class="co">#&gt;  7 2012-06-27 11:27:41     0     0     0</span></span>
+<span><span class="co">#&gt;  8 2012-06-27 11:27:42     0     0     0</span></span>
+<span><span class="co">#&gt;  9 2012-06-27 11:27:43     0     0     0</span></span>
+<span><span class="co">#&gt; 10 2012-06-27 11:27:44     0     0     0</span></span>
+<span><span class="co">#&gt; # ℹ 3,331 more rows</span></span>
+<span><span class="va">df</span> <span class="op">=</span> <span class="fu">SummarizedActigraphy</span><span class="fu">::</span><span class="fu"><a href="reference/fix_zeros.html">fix_zeros</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">df</span><span class="op">[</span><span class="va">all_zero</span>, <span class="op">]</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"1 sec"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3,341 × 4</span></span>
+<span><span class="co">#&gt;    time                     X      Y     Z</span></span>
+<span><span class="co">#&gt;    &lt;dttm&gt;               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2012-06-27 10:54:00  0      0      0   </span></span>
+<span><span class="co">#&gt;  2 2012-06-27 10:54:01  0      0      0   </span></span>
+<span><span class="co">#&gt;  3 2012-06-27 10:54:02  0      0      0   </span></span>
+<span><span class="co">#&gt;  4 2012-06-27 10:54:03  0      0      0   </span></span>
+<span><span class="co">#&gt;  5 2012-06-27 10:54:04  0      0      0   </span></span>
+<span><span class="co">#&gt;  6 2012-06-27 11:27:40 -0.123 -0.029 -1.04</span></span>
+<span><span class="co">#&gt;  7 2012-06-27 11:27:41 -0.123 -0.029 -1.04</span></span>
+<span><span class="co">#&gt;  8 2012-06-27 11:27:42 -0.123 -0.029 -1.04</span></span>
+<span><span class="co">#&gt;  9 2012-06-27 11:27:43 -0.123 -0.029 -1.04</span></span>
+<span><span class="co">#&gt; 10 2012-06-27 11:27:44 -0.123 -0.029 -1.04</span></span>
+<span><span class="co">#&gt; # ℹ 3,331 more rows</span></span></code></pre></div>
+<p>Note well, the <code>fix_zeros</code> does not do anything with data that is all zero in the beginning of a time series (as there is no observation to carry forward). This behavior should mimic ActiLife to our knowledge and that data is likely to be discarded regardless.</p>
 </div>
 <div class="section level2">
 <h2 id="converting-to-wide-1440-format">Converting to wide 1440 format<a class="anchor" aria-label="anchor" href="#converting-to-wide-1440-format"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hms_times</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">86340</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hms"</span>, <span class="st">"difftime"</span><span class="op">)</span>,</span>
 <span>                      units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span></span>
 <span><span class="va">hms_times</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hms_times</span><span class="op">)</span></span>
@@ -164,49 +215,30 @@
 <span><span class="va">x</span> <span class="op">=</span> <span class="va">result</span><span class="op">[</span>, <span class="va">tmeasure</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">hms_times</span>, <span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = "time"</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(time)`</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 x 2</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
 <span><span class="co">#&gt;   time   AI_mean</span></span>
 <span><span class="co">#&gt;   &lt;time&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 00'00"   0.266</span></span>
-<span><span class="co">#&gt; 2 01'00"   0.323</span></span>
-<span><span class="co">#&gt; 3 02'00"   0.144</span></span>
-<span><span class="co">#&gt; 4 03'00"   0.947</span></span>
-<span><span class="co">#&gt; 5 04'00"   1.11 </span></span>
-<span><span class="co">#&gt; 6 05'00"   0.536</span></span>
+<span><span class="co">#&gt; 1 00'00"  0.168 </span></span>
+<span><span class="co">#&gt; 2 01'00"  0.0501</span></span>
+<span><span class="co">#&gt; 3 02'00"  0     </span></span>
+<span><span class="co">#&gt; 4 03'00"  0     </span></span>
+<span><span class="co">#&gt; 5 04'00"  0     </span></span>
+<span><span class="co">#&gt; 6 05'00"  0</span></span>
 <span><span class="va">x1440</span> <span class="op">=</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html" class="external-link">spread</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">time</span>, value <span class="op">=</span> <span class="va">measure</span><span class="op">)</span></span>
 <span><span class="va">x1440</span></span>
-<span><span class="co">#&gt; # A tibble: 1 x 1,440</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 1,440</span></span>
 <span><span class="co">#&gt;   `00:00:00` `00:01:00` `00:02:00` `00:03:00` `00:04:00` `00:05:00` `00:06:00`</span></span>
 <span><span class="co">#&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1      0.266      0.323      0.144      0.947       1.11      0.536     0.0921</span></span>
-<span><span class="co">#&gt; # … with 1,433 more variables: `00:07:00` &lt;dbl&gt;, `00:08:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:09:00` &lt;dbl&gt;, `00:10:00` &lt;dbl&gt;, `00:11:00` &lt;dbl&gt;, `00:12:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:13:00` &lt;dbl&gt;, `00:14:00` &lt;dbl&gt;, `00:15:00` &lt;dbl&gt;, `00:16:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:17:00` &lt;dbl&gt;, `00:18:00` &lt;dbl&gt;, `00:19:00` &lt;dbl&gt;, `00:20:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:21:00` &lt;dbl&gt;, `00:22:00` &lt;dbl&gt;, `00:23:00` &lt;dbl&gt;, `00:24:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:25:00` &lt;dbl&gt;, `00:26:00` &lt;dbl&gt;, `00:27:00` &lt;dbl&gt;, `00:28:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:29:00` &lt;dbl&gt;, `00:30:00` &lt;dbl&gt;, `00:31:00` &lt;dbl&gt;, `00:32:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:33:00` &lt;dbl&gt;, `00:34:00` &lt;dbl&gt;, `00:35:00` &lt;dbl&gt;, `00:36:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:37:00` &lt;dbl&gt;, `00:38:00` &lt;dbl&gt;, `00:39:00` &lt;dbl&gt;, `00:40:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:41:00` &lt;dbl&gt;, `00:42:00` &lt;dbl&gt;, `00:43:00` &lt;dbl&gt;, `00:44:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:45:00` &lt;dbl&gt;, `00:46:00` &lt;dbl&gt;, `00:47:00` &lt;dbl&gt;, `00:48:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:49:00` &lt;dbl&gt;, `00:50:00` &lt;dbl&gt;, `00:51:00` &lt;dbl&gt;, `00:52:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:53:00` &lt;dbl&gt;, `00:54:00` &lt;dbl&gt;, `00:55:00` &lt;dbl&gt;, `00:56:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `00:57:00` &lt;dbl&gt;, `00:58:00` &lt;dbl&gt;, `00:59:00` &lt;dbl&gt;, `01:00:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:01:00` &lt;dbl&gt;, `01:02:00` &lt;dbl&gt;, `01:03:00` &lt;dbl&gt;, `01:04:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:05:00` &lt;dbl&gt;, `01:06:00` &lt;dbl&gt;, `01:07:00` &lt;dbl&gt;, `01:08:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:09:00` &lt;dbl&gt;, `01:10:00` &lt;dbl&gt;, `01:11:00` &lt;dbl&gt;, `01:12:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:13:00` &lt;dbl&gt;, `01:14:00` &lt;dbl&gt;, `01:15:00` &lt;dbl&gt;, `01:16:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:17:00` &lt;dbl&gt;, `01:18:00` &lt;dbl&gt;, `01:19:00` &lt;dbl&gt;, `01:20:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:21:00` &lt;dbl&gt;, `01:22:00` &lt;dbl&gt;, `01:23:00` &lt;dbl&gt;, `01:24:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:25:00` &lt;dbl&gt;, `01:26:00` &lt;dbl&gt;, `01:27:00` &lt;dbl&gt;, `01:28:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:29:00` &lt;dbl&gt;, `01:30:00` &lt;dbl&gt;, `01:31:00` &lt;dbl&gt;, `01:32:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:33:00` &lt;dbl&gt;, `01:34:00` &lt;dbl&gt;, `01:35:00` &lt;dbl&gt;, `01:36:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:37:00` &lt;dbl&gt;, `01:38:00` &lt;dbl&gt;, `01:39:00` &lt;dbl&gt;, `01:40:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:41:00` &lt;dbl&gt;, `01:42:00` &lt;dbl&gt;, `01:43:00` &lt;dbl&gt;, `01:44:00` &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   `01:45:00` &lt;dbl&gt;, `01:46:00` &lt;dbl&gt;, …</span></span></code></pre></div>
+<span><span class="co">#&gt; 1      0.168     0.0501          0          0          0          0     0.0802</span></span>
+<span><span class="co">#&gt; # ℹ 1,433 more variables: `00:07:00` &lt;dbl&gt;, `00:08:00` &lt;dbl&gt;, `00:09:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:10:00` &lt;dbl&gt;, `00:11:00` &lt;dbl&gt;, `00:12:00` &lt;dbl&gt;, `00:13:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:14:00` &lt;dbl&gt;, `00:15:00` &lt;dbl&gt;, `00:16:00` &lt;dbl&gt;, `00:17:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:18:00` &lt;dbl&gt;, `00:19:00` &lt;dbl&gt;, `00:20:00` &lt;dbl&gt;, `00:21:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:22:00` &lt;dbl&gt;, `00:23:00` &lt;dbl&gt;, `00:24:00` &lt;dbl&gt;, `00:25:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:26:00` &lt;dbl&gt;, `00:27:00` &lt;dbl&gt;, `00:28:00` &lt;dbl&gt;, `00:29:00` &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   `00:30:00` &lt;dbl&gt;, `00:31:00` &lt;dbl&gt;, `00:32:00` &lt;dbl&gt;, `00:33:00` &lt;dbl&gt;, …</span></span></code></pre></div>
 </div>
 </div>
 
@@ -244,9 +276,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.com/muschellij2/SummarizedActigraphy" class="external-link"><img src="https://travis-ci.com/muschellij2/SummarizedActigraphy.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://ci.appveyor.com/project/muschellij2/SummarizedActigraphy" class="external-link"><img src="https://ci.appveyor.com/api/projects/status/github/muschellij2/SummarizedActigraphy?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
-<li><a href="https://github.com/muschellij2/SummarizedActigraphy/actions" class="external-link"><img src="https://github.com/muschellij2/SummarizedActigraphy/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://github.com/muschellij2/SummarizedActigraphy/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/muschellij2/SummarizedActigraphy/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/gh/muschellij2/SummarizedActigraphy?branch=master" class="external-link"><img src="https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
