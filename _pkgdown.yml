@@ -1,1 +1,4 @@
-destination: docs
+url: http://johnmuschelli.com/SummarizedActigraphy/
+template:
+  bootstrap: 5
+
