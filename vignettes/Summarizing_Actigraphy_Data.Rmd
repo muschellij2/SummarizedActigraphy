@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Summarizing Actigraphy Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: refs.bib
 ---
 
 ```{r, include = FALSE}
