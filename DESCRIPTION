@@ -49,6 +49,8 @@ Imports:
     zoo,
     readr,
     methods
+Remotes:
+  walkabillylab/activityCounts
 URL: https://github.com/muschellij2/SummarizedActigraphy, http://johnmuschelli.com/SummarizedActigraphy/
 BugReports: https://github.com/muschellij2/SummarizedActigraphy/issues
 biocViews: Infrastructure
