@@ -229,10 +229,10 @@ in the input</p></dd>
 <span class="r-in"><span>package <span class="op">=</span> <span class="st">"SummarizedActigraphy"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="read_actigraphy.html">read_actigraphy</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/RtmpVPVL7w</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/RtmpZXSAwj</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1/1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /home/runner/work/_temp/Library/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /tmp/RtmpVPVL7w/TAS1H30182785_2019-09-17</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /tmp/RtmpZXSAwj/TAS1H30182785_2019-09-17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GT3X information</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Number     :"TAS1H30182785"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Device Type       :"Link"</span>
@@ -323,7 +323,7 @@ in the input</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scaling...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Creating dimnames </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CPP returning </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.644982814788818 seconds)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.553171634674072 seconds)</span>
 <span class="r-in"><span><span class="va">measures</span> <span class="op">=</span> <span class="fu">calculate_measures</span><span class="op">(</span><span class="va">res</span>, dynamic_range <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>calculate_mims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Fixing Zeros with fix_zeros</span>
@@ -353,11 +353,17 @@ in the input</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ================================================================================</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"data.table"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>   <span class="va">dr</span></span></span>
 <span class="r-in"><span>   <span class="va">dt</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span>   <span class="va">out</span> <span class="op">=</span> <span class="fu">calculate_measures</span><span class="op">(</span><span class="va">dt</span>, calculate_mims <span class="op">=</span> <span class="cn">FALSE</span>, flag_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'dr' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fixing Zeros with fix_zeros</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating ai0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating MAD</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining AI and MAD</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating AC</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating Axis-Specific Activity Counts</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Summing up Axes</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining AC</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
