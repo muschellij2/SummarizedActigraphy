@@ -413,7 +413,7 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
   } else {
     df = df %>%
       dplyr::mutate(
-        r = sqrt(X^2+Y^2+Z^2),
+        r = sqrt(X^2 + Y^2 + Z^2),
         ENMO_t = r - 1,
         ENMO_t = dplyr::if_else(ENMO_t < 0, 0, ENMO_t),
         HEADER_TIME_STAMP = lubridate::floor_date(HEADER_TIME_STAMP,
@@ -439,7 +439,7 @@ calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
       dplyr::ungroup()
   }
   df = df %>%
-    tibble::as_tibble()%>%
+    tibble::as_tibble() %>%
     dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
   df = remake_dt(df, is_data_table = is_data_table)
