@@ -7,7 +7,7 @@
     <loc>http://johnmuschelli.com/SummarizedActigraphy/LICENSE.html</loc>
   </url>
   <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/SummarizedActigraphy.html</loc>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/Summarizing_Actigraphy_Data.html</loc>
   </url>
   <url>
     <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/index.html</loc>
@@ -20,6 +20,9 @@
   </url>
   <url>
     <loc>http://johnmuschelli.com/SummarizedActigraphy/news/index.html</loc>
+  </url>
+  <url>
+    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/SummarizedActigraphy-package.html</loc>
   </url>
   <url>
     <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/actigraphy_df_to_SummarizedExperiment.html</loc>
