@@ -36,6 +36,8 @@ flag_impossible(df, min_length = 6)
 \item{spike_size}{size of "spike" - which is the absolute difference
 in contiguous observations on a single axis}
 
+\item{verbose}{print diagnostic messages}
+
 \item{dynamic_range}{dynamic range of the device, used to find the
 device limit.}
 

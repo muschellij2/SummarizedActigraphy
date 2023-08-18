@@ -106,6 +106,7 @@ test_unzip_file = function(file) {
     func = switch(
       ext,
       # bin = GGIR::g.binread,
+      bin = GGIRread::readGenea,
       gt3x = read.gt3x::read.gt3x,
       # cwa = GGIR::g.cwaread,
       cwa = GGIRread::readAxivity,

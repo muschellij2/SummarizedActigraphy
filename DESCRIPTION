@@ -27,8 +27,8 @@ Suggests:
     MIMSunit,
     limma,
     tidyr,
-    activityCounts,
-    data.table
+    data.table,
+    activityCounts
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
@@ -36,7 +36,6 @@ Imports:
     GGIR,
     read.gt3x (>= 0.2.0),
     SummarizedExperiment,
-    GENEAread,
     R.utils,
     tools,
     tibble,

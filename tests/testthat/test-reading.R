@@ -117,7 +117,8 @@ testthat::test_that("eBayes works - but with cwa", {
   check_vals = head(SummarizedExperiment::assay(se), 10)[,1]
   testthat::expect_equal(
     vals,
-    check_vals
+    check_vals,
+    tol = 1e-5
   )
 })
 

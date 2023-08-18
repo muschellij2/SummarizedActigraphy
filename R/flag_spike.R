@@ -43,6 +43,7 @@ flag_spike = function(df, spike_size = 11) {
 
 #' @export
 #' @rdname flag_spike
+#' @param verbose print diagnostic messages
 flag_interval_jump = function(df, verbose = FALSE) {
   # from https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/PAXMIN_G.htm
   # #8.
