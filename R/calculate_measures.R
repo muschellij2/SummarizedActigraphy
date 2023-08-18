@@ -276,7 +276,7 @@ calculate_ai = function(df, unit = "1 min", ensure_all_time = TRUE,
       AI = sum(AI)
     )
   df = df %>%
-    tibble::as_tibble()%>%
+    tibble::as_tibble() %>%
     dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
   df = remake_dt(df, is_data_table = is_data_table)
@@ -315,7 +315,7 @@ calculate_flags = function(df, unit = "1 min", ensure_all_time = TRUE) {
       dplyr::across(dplyr::starts_with("flag"), sum),
       n_samples_in_unit = dplyr::n()
     ) %>%
-    ungroup()
+    dplyr::ungroup()
   df = join_all_time(df, unit, ensure_all_time)
   df
 }
