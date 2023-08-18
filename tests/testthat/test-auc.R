@@ -5,7 +5,7 @@ file = system.file("extdata",
 
 
 testthat::test_that("Calculating AUC gives exact as MIMS", {
-  res = read_actigraphy(file)
+  res = read_actigraphy(file, verbose = FALSE)
   res = fix_zeros(res)
   res = ensure_header_timestamp(res)
   if (requireNamespace("MIMSunit", quietly = TRUE)) {

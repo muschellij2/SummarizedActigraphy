@@ -47,6 +47,34 @@ result = summarize_actigraphy(path)
 result
 ```
 
+
+## Reading in GT3X files
+
+In GT3X files, you must be aware of [Idle Sleep Mode](https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained), which saves power on the device, but the device essentially stops recording.  In most cases, you still want a "full" time series without missing elements.
+To read in `gt3x` files, we use `read.gt3x::read.gt3x`. By default `read.gt3x::read.gt3x`, that data isn’t in the output data set. If you use the `imputeZeros = TRUE` argument, then they are there, but all 0s, which doesn’t make sense (no gravity even!?). 
+
+In Actigraph's ActiLife, the raw output data repeats the same value before the device went into sleep mode.  To mimic this behavior, the `SummarizedActigraphy::fix_zeros` function sets the values in the rows with all `0` to be `NA` (just for `X/Y/Z`, not `time`), and then uses `zoo::na.locf` for last observation carried forward (LOCF).  Aside: you could also use `tidyr::fill(direction = "down")` for the tidyverse folks.
+
+In `SummarizedActigraphy::read_actigraphy`, we use `read.gt3x::read.gt3x(asDataFrame = TRUE, imputeZeroes = TRUE)` as the default.
+
+See below as an example.
+
+```{r}
+data = SummarizedActigraphy::read_actigraphy(path)
+df = data$data
+df = tibble::as_tibble(df)
+all_zero = df$X == 0 & df$Y == 0 & df$Z == 0
+df[all_zero, ] %>% 
+  dplyr::mutate(time = lubridate::floor_date(time, "1 sec")) %>% 
+  dplyr::distinct()
+df = SummarizedActigraphy::fix_zeros(df)
+df[all_zero, ] %>% 
+  dplyr::mutate(time = lubridate::floor_date(time, "1 sec")) %>% 
+  dplyr::distinct()
+```
+
+Note well, the `fix_zeros` does not do anything with data that is all zero in the beginning of a time series (as there is no observation to carry forward).  This behavior should mimic ActiLife to our knowledge and that data is likely to be discarded regardless.
+
 ## Converting to wide 1440 format
 
 ```{r make1440}

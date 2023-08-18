@@ -8,9 +8,17 @@ gt3x_file = utils::unzip(destfile, exdir = tempdir())
 gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 
+try_ggir_read = function(fname) {
+  file = system.file("testfiles", fname, package = "GGIR")
+  if (!file.exists(file)) {
+    file = system.file("testfiles", fname,
+                       package = "GGIRread")
+  }
+  file
+}
 testthat::test_that("GT3x", {
 
-  res = read_actigraphy(path)
+  res = read_actigraphy(path, verbose = FALSE)
   testthat::expect_equal(mean(res$data$X), -0.228406351135833)
 
   dob = res$header$Value[res$header$Field == "DateOfBirth"]
@@ -21,7 +29,7 @@ testthat::test_that("GT3x", {
   file = system.file("extdata",
                      "TAS1H30182785_2019-09-17.gt3x",
                      package = "SummarizedActigraphy")
-  res = read_actigraphy(file)
+  res = read_actigraphy(file, verbose = FALSE)
   testthat::expect_equal(mean(res$data$X), -0.0742151351351352)
 
 })
@@ -42,14 +50,14 @@ testthat::test_that("bin formats", {
   testthat::expect_equal(mean(res$data$X), -0.147653632966532)
 
 
-  file = system.file("testfiles", "genea_testfile.bin", package = "GGIR")
+  file = try_ggir_read("genea_testfile.bin")
   if (file.exists(file)) {
     res = read_actigraphy(file)
     # mg not g (or vector magnitude?)
     testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
   }
 
-  file = system.file("testfiles", "GENEActiv_testfile.bin", package = "GGIR")
+  file = try_ggir_read("GENEActiv_testfile.bin")
   if (file.exists(file)) {
     res = read_actigraphy(file)
     testthat::expect_equal(mean(res$data$X), -0.194275899087493)
@@ -58,7 +66,7 @@ testthat::test_that("bin formats", {
 
 testthat::test_that("CWA formats", {
 
-  file = system.file("testfiles", "ax3_testfile.cwa", package = "GGIR")
+  file = try_ggir_read("ax3_testfile.cwa")
   if (file.exists(file)) {
     res = read_actigraphy(file)
     testthat::expect_equal(mean(res$data$X), 0.775495573675064)
@@ -91,14 +99,17 @@ testthat::test_that("eBayes works - same file", {
 testthat::context("Reading in CWA")
 
 
-file  = system.file("testfiles/ax3_testfile.cwa", package = "GGIR")[1]
-files = rep(file, 3)
-df = data.frame(file = files,
-                age = stats::rpois(length(files), 50),
-                stringsAsFactors = FALSE)
-
 
 testthat::test_that("eBayes works - but with cwa", {
+
+  file = try_ggir_read("ax3_testfile.cwa")
+  testthat::skip_if(!file.exists(file))
+  files = rep(file, 3)
+  df = data.frame(file = files,
+                  age = stats::rpois(length(files), 50),
+                  stringsAsFactors = FALSE)
+
+
   se = actigraphy_df_to_SummarizedExperiment(df, "file")
   testthat::skip_if_not_installed("limma")
   fit = limma::lmFit(SummarizedExperiment::assay(se))

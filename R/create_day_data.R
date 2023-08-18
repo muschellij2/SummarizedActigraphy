@@ -150,7 +150,8 @@ summarize_actigraphy = function(
 #' @export
 collapse_daily_actigraphy = function(
   x,
-  .fns = list(mean = mean, median = median),
+  .fns = list(mean = function(x) mean(x, na.rm = TRUE),
+              median = function(x) median(x, na.rm = TRUE)),
   verbose = TRUE) {
 
   transformations = get_transformations(x)
@@ -183,8 +184,7 @@ collapse_daily_actigraphy = function(
         dplyr::any_of(c("AI", "SD", "MAD", "MEDAD",
                         "ENMO_t", "AUC", "AC",
                         "mean_r", "MIMS_UNIT")),
-        .fns = .fns,
-        na.rm = TRUE)
+        .fns = .fns)
     )
 
   x = tsibbler(x, transformations = transformations)

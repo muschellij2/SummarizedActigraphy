@@ -16,7 +16,7 @@ testthat::test_that("Reading in CSV and header", {
 
   file = system.file("extdata", "example1sec.csv", package = "AGread")
   if (file.exists(file)) {
-    out = read_acc_csv(file, only_xyz = FALSE)
+    testthat::expect_warning({out = read_acc_csv(file, only_xyz = FALSE)})
 
     testthat::expect_named(out,
                            c("data", "freq", "filename",
