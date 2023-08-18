@@ -16,7 +16,7 @@ dl = download.file(url = "https://ndownloader.figshare.com/files/24459683",
 testthat::test_that("Calculating Summaries Works", {
   csv = read_acc_csv(csv_file)
   csv = csv$data
-  res = read_actigraphy(path)
+  res = read_actigraphy(path, verbose = FALSE)
   lubridate::tz(res$data$time) = "UTC"
 
   xyz = c("X", "Y", "Z")
@@ -66,7 +66,7 @@ testthat::test_that("Calculating Summaries Works", {
 testthat::test_that("Calculating Summaries BY_SECOND", {
   csv = read_acc_csv(csv_file)
   csv = csv$data
-  res = read_actigraphy(path)
+  res = read_actigraphy(path, verbose = FALSE)
   lubridate::tz(res$data$time) = "UTC"
 
 
@@ -92,7 +92,7 @@ file = system.file("extdata",
 
 
 testthat::test_that("Calculating Summaries Works", {
-  res = read_actigraphy(file)
+  res = read_actigraphy(file, verbose = FALSE)
 
   if (requireNamespace("MIMSunit", quietly = TRUE)) {
     output = calculate_measures(res, calculate_mims = TRUE, fix_zeros = TRUE)
