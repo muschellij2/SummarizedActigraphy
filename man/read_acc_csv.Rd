@@ -42,9 +42,11 @@ file = system.file("extdata", "721431sec.csv.gz",
 package = "SummarizedActigraphy")
 if (file.exists(file)) {
    out = read_acc_csv(file, only_xyz = FALSE)
-   SummarizedActigraphy:::quick_check(out$data)
+   cn = colnames(out$data)
+   names(cn) = cn
+   cn[c("X1", "X2", "X3", "X4")] = c("Axis1", "Axis2", "Axis3", "Steps")
+   colnames(out$data) = cn
    acc = out
    class(acc) = "AccData"
-   SummarizedActigraphy:::quick_check(acc)
 }
 }
