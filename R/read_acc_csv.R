@@ -111,14 +111,18 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
     df = df %>%
       dplyr::rename(HEADER_TIME_STAMP = Timestamp)
   } else {
+    na_srate = FALSE
     if (is.na(srate)) {
       warning(paste0("Sample rate is NA, using epoch: ", L$parsed_header$epoch))
+      srate = epoch_to_sample_rate(L$parsed_header$epoch)
+      na_srate = TRUE
     }
-    srate = epoch_to_sample_rate(L$parsed_header$epoch)
     df$HEADER_TIME_STAMP = seq(0, nrow(df) - 1)/srate
     df$HEADER_TIME_STAMP = start_date + df$HEADER_TIME_STAMP
     # reset for code below
-    srate = NA
+    if (na_srate) {
+      srate = NA
+    }
   }
   class(df) = "data.frame"
   stopifnot(!anyNA(df$HEADER_TIME_STAMP))
