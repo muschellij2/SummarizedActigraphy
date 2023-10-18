@@ -4,6 +4,26 @@ sub_thing = function(hdr, string) {
   x = trimws(x)
 }
 
+check_header_exists = function(file) {
+  x = readr::read_lines(
+    file, skip = 10,
+    n_max = 1
+  )
+  x = strsplit(x, ",")[[1]]
+  x = gsub('"', "", x)
+  x = gsub("'", "", x)
+  num_x = suppressWarnings({as.numeric(x)})
+  # if they aren't numbers, there is a header
+  check = mean(is.na(num_x)) >= 0.5
+  return(check)
+}
+
+epoch_to_sample_rate = function(epoch) {
+  epoch = lubridate::hms(epoch)
+  epoch = lubridate::as.period(epoch, unit = "seconds")
+  epoch = as.numeric(epoch)
+  1/epoch
+}
 
 
 #' Read ActiGraph Accelerometer CSV
@@ -29,6 +49,18 @@ sub_thing = function(hdr, string) {
 #'    class(acc) = "AccData"
 #'    SummarizedActigraphy:::quick_check(acc)
 #' }
+#'
+#' file = system.file("extdata", "721431sec.csv.gz",
+#' package = "SummarizedActigraphy")
+#' if (file.exists(file)) {
+#'    out = read_acc_csv(file, only_xyz = FALSE)
+#'    cn = colnames(out$data)
+#'    names(cn) = cn
+#'    cn[c("X1", "X2", "X3", "X4")] = c("Axis1", "Axis2", "Axis3", "Steps")
+#'    colnames(out$data) = cn
+#'    acc = out
+#'    class(acc) = "AccData"
+#' }
 
 read_acc_csv = function(file, ..., only_xyz = TRUE) {
   Timestamp = timestamp = NULL
@@ -40,17 +72,23 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
   format = L$format
   start_date = L$start_date
 
-
+  args = list(...)
+  if (is.null(args$col_names)) {
+    args$col_names = check_header_exists(file)
+  }
+  args$file = file
+  args$skip = 10
+  if (is.null(args$col_types)) {
+    args$col_types = readr::cols(
+      .default = readr::col_double(),
+      Date = readr::col_character(),
+      timestamp = readr::col_datetime(),
+      Timestamp = readr::col_datetime(),
+      Time = readr::col_time(format = "")
+    )
+  }
   suppressWarnings({
-    df = readr::read_csv(
-      file, skip = 10,
-      col_types = readr::cols(
-        .default = readr::col_double(),
-        Date = readr::col_character(),
-        timestamp = readr::col_datetime(),
-        Timestamp = readr::col_datetime(),
-        Time = readr::col_time(format = "")
-      ), ...)
+    df = do.call(readr::read_csv, args = args)
   })
   readr::stop_for_problems(df)
 
@@ -73,8 +111,14 @@ read_acc_csv = function(file, ..., only_xyz = TRUE) {
     df = df %>%
       dplyr::rename(HEADER_TIME_STAMP = Timestamp)
   } else {
+    if (is.na(srate)) {
+      warning(paste0("Sample rate is NA, using epoch: ", L$parsed_header$epoch))
+    }
+    srate = epoch_to_sample_rate(L$parsed_header$epoch)
     df$HEADER_TIME_STAMP = seq(0, nrow(df) - 1)/srate
     df$HEADER_TIME_STAMP = start_date + df$HEADER_TIME_STAMP
+    # reset for code below
+    srate = NA
   }
   class(df) = "data.frame"
   stopifnot(!anyNA(df$HEADER_TIME_STAMP))

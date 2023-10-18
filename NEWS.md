@@ -1,3 +1,7 @@
+# SummarizedActigraphy 0.6.1
+
+* Added ability to read step counts from ActiLife CSV.
+
 # SummarizedActigraphy 0.5.0
 
 * Added `calibrate` and `estimate_calibration_values` to work for `GGIR`.

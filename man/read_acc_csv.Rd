@@ -37,4 +37,14 @@ if (file.exists(file)) {
    class(acc) = "AccData"
    SummarizedActigraphy:::quick_check(acc)
 }
+
+file = system.file("extdata", "721431sec.csv.gz",
+package = "SummarizedActigraphy")
+if (file.exists(file)) {
+   out = read_acc_csv(file, only_xyz = FALSE)
+   SummarizedActigraphy:::quick_check(out$data)
+   acc = out
+   class(acc) = "AccData"
+   SummarizedActigraphy:::quick_check(acc)
+}
 }
