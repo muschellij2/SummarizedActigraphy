@@ -60,7 +60,8 @@ read_actigraphy = function(file, ..., read_function = NULL) {
       }, silent = TRUE)
     })
     if (inherits(res, "try_error")) {
-      res = .read_actigraphy(file, ..., read_function = GGIR::g.binread)
+      # replaced GGIR::g.binread
+      res = .read_actigraphy(file, ..., read_function = GGIRread::readGenea)
     }
   } else {
     res = .read_actigraphy(file, ..., read_function = read_function)

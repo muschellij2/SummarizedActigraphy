@@ -370,6 +370,12 @@ calculate_ai_defined = function(...) {
 }
 
 
+if (requireNamespace("data.table", quietly = TRUE)) {
+  `:=` <- data.table::`:=`
+  utils::globalVariables(".")
+}
+
+
 #' @export
 #' @rdname calculate_measures
 calculate_mad = function(df, unit = "1 min", ensure_all_time = TRUE,
