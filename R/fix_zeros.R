@@ -38,7 +38,12 @@ fix_zeros = function(df,
   acc_data = is.AccData(df)
   if (acc_data) {
     xdf = df
+    freq = df$freq
     df = df$data
+    firmware = attr(df, "firmware")
+    sample_rate = attr(df, "sample_rate")
+    acceleration_min = attr(df, "acceleration_min")
+    acceleration_max = attr(df, "acceleration_max")
   }
   df = sort_time_df(df)
   zero = rowSums(df[, c("X", "Y", "Z")] == 0) == 3
@@ -70,7 +75,12 @@ fix_zeros = function(df,
   df = set_transformations(df, transformations = transformations,
                            add = FALSE)
   if (acc_data) {
+    attr(df, "firmware") = firmware
+    attr(df, "sample_rate") = sample_rate
+    attr(df, "acceleration_min") = acceleration_min
+    attr(df, "acceleration_max") = acceleration_max
     xdf$data = df
+    xdf$freq = freq
     df = xdf
   }
   df
