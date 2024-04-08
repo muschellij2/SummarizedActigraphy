@@ -20,7 +20,8 @@ df$age = stats::rpois(nrow(df), 50)
 
 testthat::test_that("Can make an SE object and lmFit", {
   out = lapply(df$file, read_actigraphy)
-  sums = lapply(out, summarise_actigraphy)
+  # flag_data = FALSE so no warnings about dynamic range
+  sums = lapply(out, summarise_actigraphy, flag_data = FALSE)
   se = actigraphy_df_to_SummarizedExperiment(df, "file")
   testthat::skip_if_not_installed("limma")
   fit = limma::lmFit(SummarizedExperiment::assay(se))
