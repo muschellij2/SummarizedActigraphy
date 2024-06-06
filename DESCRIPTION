@@ -1,7 +1,7 @@
 Type: Package
 Package: SummarizedActigraphy
 Title: Coerce 'Actigraphy' to Summarized Experiments
-Version: 0.6.4
+Version: 0.6.5
 Authors@R: c(
     person(given = "John",
            family = "Muschelli",
@@ -26,7 +26,6 @@ Suggests:
     ggplot2,
     MIMSunit,
     limma,
-    tidyr,
     data.table,
     activityCounts
 Encoding: UTF-8
@@ -44,7 +43,7 @@ Imports:
     lubridate,
     tsibble,
     hms,
-    zoo,
+    tidyr,
     readr,
     methods,
     GGIRread

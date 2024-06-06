@@ -11,7 +11,6 @@
 #'
 #' @return A data set with the zeros filled in
 #' @export
-#' @importFrom zoo na.locf
 #' @examples
 #' df = data.frame(
 #'   X = c(0.3/sqrt(0.5), rep(0, 3)),
@@ -106,10 +105,8 @@ idle_na_locf = function(df, by_second = FALSE) {
   }
 
   df = df %>%
-    dplyr::mutate(X = zoo::na.locf(X, na.rm = FALSE),
-                  Y = zoo::na.locf(Y, na.rm = FALSE),
-                  Z = zoo::na.locf(Z, na.rm = FALSE)
-    )
+    tidyr::fill(X, Y, Z, .direction = "down")
+
   if (by_second) {
     df = df %>%
       dplyr::ungroup() %>%
