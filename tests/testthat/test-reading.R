@@ -59,11 +59,16 @@ testthat::test_that("bin formats", {
   #   testthat::expect_equal(mean(res$data$X)/1000, -0.15303776683087)
   # }
 
-  # file = try_ggir_read("GENEActiv_testfile.bin")
-  # if (file.exists(file)) {
-  #   res = read_actigraphy(file)
-  #   testthat::expect_equal(mean(res$data$X), -0.194275899087493)
-  # }
+  file = try_ggir_read("GENEActiv_testfile.bin")
+  if (file.exists(file)) {
+    res = read_actigraphy(file)
+    if (packageVersion("GGIR") < package_version("3.0.9")) {
+      testthat::expect_equal(mean(res$data$X), -0.194275899087493)
+    } else {
+      testthat::expect_equal(mean(res$data$X), 0.0904154592317839)
+
+    }
+  }
 })
 
 testthat::test_that("CWA formats", {
