@@ -82,7 +82,9 @@ write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz")) {
 
   csv_hdr = c(
     paste0(
-      "------------ ", "Data File Created By SummarizedActigraphy v",
+      "------------ ",
+      # need to add ActiGraph due to how GGIR reads it
+      "Data File Created By SummarizedActigraphy for ActiGraph format v",
       sa_version,
       " Firmware v", firmware, " ",
       " date format M/d/yyyy at ", sample_rate,
