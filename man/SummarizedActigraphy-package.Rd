@@ -6,7 +6,10 @@
 \alias{SummarizedActigraphy-package}
 \title{SummarizedActigraphy: Coerce 'Actigraphy' to Summarized Experiments}
 \description{
-Provides functions for coercing 'actigraphy' data into 'SummarizedExperiment' objects used for genomic analysis. This conversion enables the use of functions that work on the 'SummarizedExperiment' class.
+Provides functions for coercing 'actigraphy' data into
+    'SummarizedExperiment' objects used for genomic analysis.  This
+    conversion enables the use of functions that work on the 
+    'SummarizedExperiment' class.
 }
 \seealso{
 Useful links:

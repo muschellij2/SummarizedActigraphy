@@ -83,7 +83,8 @@ write_acc_csv = function(x, file = tempfile(fileext = ".csv.gz")) {
   csv_hdr = c(
     paste0(
       "------------ ", "Data File Created By SummarizedActigraphy v",
-      sa_version, "Firmware v", firmware, " ",
+      sa_version,
+      " Firmware v", firmware, " ",
       " date format M/d/yyyy at ", sample_rate,
       " Hz", "  Filter None -----------"),
     paste0("Serial Number: ", serial_number),
