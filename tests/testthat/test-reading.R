@@ -62,6 +62,7 @@ testthat::test_that("bin formats", {
   file = try_ggir_read("GENEActiv_testfile.bin")
   if (file.exists(file)) {
     res = read_actigraphy(file)
+    # because of https://github.com/wadpac/GGIRread/issues/66
     if (packageVersion("GGIR") < package_version("3.0.9")) {
       testthat::expect_equal(mean(res$data$X), -0.194275899087493)
     } else {
