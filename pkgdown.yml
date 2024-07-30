@@ -1,10 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   Summarizing_Actigraphy_Data: Summarizing_Actigraphy_Data.html
-last_built: 2024-06-06T18:49Z
+last_built: 2024-07-30T01:52Z
 urls:
   reference: http://johnmuschelli.com/SummarizedActigraphy/reference
   article: http://johnmuschelli.com/SummarizedActigraphy/articles
-

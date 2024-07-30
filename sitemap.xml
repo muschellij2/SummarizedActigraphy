@@ -1,90 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/404.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/Summarizing_Actigraphy_Data.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/authors.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/index.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/news/index.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/SummarizedActigraphy-package.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/actigraphy_df_to_SummarizedExperiment.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calculate_measures.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calibrate.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ensure_header_timestamp.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/fix_zeros.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_qc.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_spike.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_dynamic_range.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_transformations.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ggir_process.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mark_condition.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_extrapolation.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_processing.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_acc_csv.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_actigraphy.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/summarize_actigraphy.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/tidy_axes.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/write_acc_csv.html</loc>
-  </url>
-  <url>
-    <loc>http://johnmuschelli.com/SummarizedActigraphy/reference/xyz.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/404.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/LICENSE.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/articles/Summarizing_Actigraphy_Data.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/articles/index.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/authors.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/index.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/news/index.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/SummarizedActigraphy-package.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/actigraphy_df_to_SummarizedExperiment.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calculate_measures.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/calibrate.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ensure_header_timestamp.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/fix_zeros.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_qc.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/flag_spike.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_dynamic_range.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/get_transformations.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/ggir_process.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/index.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mark_condition.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_extrapolation.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/mims_default_processing.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/pipe.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_acc_csv.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_actigraphy.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/summarize_actigraphy.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/tidy_axes.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/write_acc_csv.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/xyz.html</loc></url>
 </urlset>
+
