@@ -1,0 +1,2 @@
+1. Remove activityCounts and replace with agcounts
+2.

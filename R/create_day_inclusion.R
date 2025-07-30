@@ -46,9 +46,9 @@ create_day_inclusion = function(
     df,
     min_required = 1368L
 ) {
-  n_minutes_observed = minute = n_minutes_wear = wear = hourtime = NULL
+  time = n_minutes_observed = minute = n_minutes_wear = wear = hourtime = NULL
   rm(list = c("n_minutes_wear", "wear", "hourtime", "minute",
-              "n_minutes_observed"))
+              "n_minutes_observed", "time"))
   HEADER_TIME_STAMP = observed = NULL
   rm(list = c("observed", "HEADER_TIME_STAMP"))
   df = ensure_header_timestamp(df, subset = FALSE)
