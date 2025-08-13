@@ -5,8 +5,6 @@ run_resample = function(
     method = c("linear", "constant",
                "fmm", "periodic", "natural", "monoH.FC", "hyman"),
     ...) {
-  HEADER_TIMESTAMP = NULL
-  rm(list = c("HEADER_TIMESTAMP"))
   method = match.arg(method)
   func = switch(
     method,
@@ -45,21 +43,19 @@ run_resample = function(
     origin = lubridate::origin)
 
   out = data.frame(
-    HEADER_TIMESTAMP = time_interp,
+    time = time_interp,
     X = x_out,
     Y = y_out,
     Z = z_out
   )
   # this should allow us to match whatever standardize_data does
   out = standardize_data(data = out, subset = FALSE)
-  out = out %>%
-    dplyr::rename(time = HEADER_TIMESTAMP)
   out
 }
 #' Resample 3-axial input signal to a specific sampling rate
 #'
 #' @param data A `data.frame` with a column for time in `POSIXct` (usually
-#' `HEADER_TIMESTAMP`), and `X`, `Y`, `Z`
+#' `time`), and `X`, `Y`, `Z`
 #' @param sample_rate sampling frequency, coercible to an integer.
 #' This is the sampling rate you're sampling the data *into*.
 #' @param ... additional arguments to pass to [stats::approx()] or
@@ -68,29 +64,25 @@ run_resample = function(
 #' `"linear"/"constant"`, which uses `stats::approx`, or one of
 #' `"fmm", "periodic", "natural", "monoH.FC", "hyman"`, which uses
 #' `stats::spline`
-#' @return A `data.frame`/`tibble` of `HEADER_TIMESTAMP` and `X`, `Y`, `Z`.
+#' @return A `data.frame`/`tibble` of `time` and `X`, `Y`, `Z`.
 #' @export
 #'
 #' @examples
 #' options(digits.secs = 3)
-#' csv_file = system.file("test_data_bout.csv", package = "walking")
-#' if (requireNamespace("readr", quietly = TRUE)) {
-#'   x = readr::read_csv(csv_file, guess_max = Inf)
-#'   colnames(x)[colnames(x) == "UTC time"] = "time"
-#'
-#'   res = resample_accel_data(data = x, sample_rate = 80)
-#'   res = resample_accel_data(data = x, sample_rate = 100)
-#'   res = resample_accel_data(data = x, sample_rate = 1)
-#'   res = resample_accel_data_to_time(
-#'     data = x,
-#'     times = lubridate::floor_date(x$time, unit = "1 sec"),
-#'   )
-#'   res_nat = resample_accel_data_to_time(
-#'     data = x,
-#'     times = lubridate::floor_date(x$time, unit = "1 sec"),
-#'     method = "natural"
-#'   )
-#' }
+#' gt3x_file = system.file("extdata/TAS1H30182785_2019-09-17.gt3x", package = "SummarizedActigraphy")
+#' x = read_actigraphy(gt3x_file)$data
+#' res = resample_accel_data(data = x, sample_rate = 80)
+#' res = resample_accel_data(data = x, sample_rate = 100)
+#' res = resample_accel_data(data = x, sample_rate = 1)
+#' res = resample_accel_data_to_time(
+#'   data = x,
+#'   times = lubridate::floor_date(x$time, unit = "1 sec"),
+#' )
+#' res_nat = resample_accel_data_to_time(
+#'   data = x,
+#'   times = lubridate::floor_date(x$time, unit = "1 sec"),
+#'   method = "natural"
+#' )
 resample_accel_data = function(
     data,
     sample_rate,
@@ -103,8 +95,8 @@ resample_accel_data = function(
   sample_rate = as.integer(sample_rate)
 
   data = standardize_data(data)
-  orig_tz = lubridate::tz(data$HEADER_TIMESTAMP)
-  timestamp = as.numeric(data$HEADER_TIMESTAMP)
+  orig_tz = lubridate::tz(data$time)
+  timestamp = as.numeric(data$time)
   x = data[["X"]]
   y = data[["Y"]]
   z = data[["Z"]]
@@ -146,12 +138,12 @@ resample_accel_data_to_time = function(
 ) {
 
   data = standardize_data(data)
-  orig_tz = lubridate::tz(data$HEADER_TIMESTAMP)
+  orig_tz = lubridate::tz(data$time)
   time_tz = lubridate::tz(times)
   if (orig_tz != time_tz) {
     stop("Timezone in data times do not match timezone in time vector!")
   }
-  timestamp = as.numeric(data$HEADER_TIMESTAMP)
+  timestamp = as.numeric(data$time)
   x = data[["X"]]
   y = data[["Y"]]
   z = data[["Z"]]

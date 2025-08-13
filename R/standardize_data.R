@@ -41,7 +41,11 @@ standardize_data = function(data, subset = TRUE) {
   }
   if (subset) {
     data = data %>%
-      dplyr::select(dplyr::any_of("HEADER_TIMESTAMP"), X, Y, Z)
+      dplyr::select(dplyr::any_of("TIME"), X, Y, Z)
+  }
+  if ("TIME" %in% colnames(data)) {
+    data = data %>%
+      dplyr::rename(time = TIME)
   }
   stopifnot(all(c("X", "Y", "Z") %in% colnames(data)))
   data

@@ -47,7 +47,8 @@ Imports:
     readr,
     methods,
     GGIRread,
-    janitor
+    janitor,
+    assertthat
 Remotes:
   walkabillylab/activityCounts
 URL: https://github.com/muschellij2/SummarizedActigraphy, http://johnmuschelli.com/SummarizedActigraphy/

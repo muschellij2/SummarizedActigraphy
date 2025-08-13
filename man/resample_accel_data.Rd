@@ -11,7 +11,7 @@ resample_accel_data_to_time(data, times, method = "linear", ...)
 }
 \arguments{
 \item{data}{A `data.frame` with a column for time in `POSIXct` (usually
-`HEADER_TIMESTAMP`), and `X`, `Y`, `Z`}
+`time`), and `X`, `Y`, `Z`}
 
 \item{sample_rate}{sampling frequency, coercible to an integer.
 This is the sampling rate you're sampling the data *into*.}
@@ -28,29 +28,25 @@ This is the sampling rate you're sampling the data *into*.}
 the data to}
 }
 \value{
-A `data.frame`/`tibble` of `HEADER_TIMESTAMP` and `X`, `Y`, `Z`.
+A `data.frame`/`tibble` of `time` and `X`, `Y`, `Z`.
 }
 \description{
 Resample 3-axial input signal to a specific sampling rate
 }
 \examples{
 options(digits.secs = 3)
-csv_file = system.file("test_data_bout.csv", package = "walking")
-if (requireNamespace("readr", quietly = TRUE)) {
-  x = readr::read_csv(csv_file, guess_max = Inf)
-  colnames(x)[colnames(x) == "UTC time"] = "time"
-
-  res = resample_accel_data(data = x, sample_rate = 80)
-  res = resample_accel_data(data = x, sample_rate = 100)
-  res = resample_accel_data(data = x, sample_rate = 1)
-  res = resample_accel_data_to_time(
-    data = x,
-    times = lubridate::floor_date(x$time, unit = "1 sec"),
-  )
-  res_nat = resample_accel_data_to_time(
-    data = x,
-    times = lubridate::floor_date(x$time, unit = "1 sec"),
-    method = "natural"
-  )
-}
+gt3x_file = system.file("extdata/TAS1H30182785_2019-09-17.gt3x", package = "SummarizedActigraphy")
+x = read_actigraphy(gt3x_file)$data
+res = resample_accel_data(data = x, sample_rate = 80)
+res = resample_accel_data(data = x, sample_rate = 100)
+res = resample_accel_data(data = x, sample_rate = 1)
+res = resample_accel_data_to_time(
+  data = x,
+  times = lubridate::floor_date(x$time, unit = "1 sec"),
+)
+res_nat = resample_accel_data_to_time(
+  data = x,
+  times = lubridate::floor_date(x$time, unit = "1 sec"),
+  method = "natural"
+)
 }
