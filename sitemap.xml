@@ -25,6 +25,8 @@
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/pipe.html</loc></url>
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_acc_csv.html</loc></url>
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/read_actigraphy.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/resample_accel_data.html</loc></url>
+<url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/standardize_data.html</loc></url>
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/summarize_actigraphy.html</loc></url>
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/tidy_axes.html</loc></url>
 <url><loc>http://johnmuschelli.com/SummarizedActigraphy/reference/write_acc_csv.html</loc></url>
