@@ -54,7 +54,7 @@
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A `data.frame` with a column for time in `POSIXct` (usually
-`HEADER_TIMESTAMP`), and `X`, `Y`, `Z`</p></dd>
+`time`), and `X`, `Y`, `Z`</p></dd>
 
 
 <dt id="arg-sample-rate">sample_rate<a class="anchor" aria-label="anchor" href="#arg-sample-rate"></a></dt>
@@ -81,31 +81,122 @@ the data to</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A `data.frame`/`tibble` of `HEADER_TIMESTAMP` and `X`, `Y`, `Z`.</p>
+    <p>A `data.frame`/`tibble` of `time` and `X`, `Y`, `Z`.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits.secs <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">csv_file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"test_data_bout.csv"</span>, package <span class="op">=</span> <span class="st">"walking"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"readr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">x</span> <span class="op">=</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">csv_file</span>, guess_max <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="st">"UTC time"</span><span class="op">]</span> <span class="op">=</span> <span class="st">"time"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data_to_time</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">x</span>,</span></span>
-<span class="r-in"><span>    times <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">time</span>, unit <span class="op">=</span> <span class="st">"1 sec"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">res_nat</span> <span class="op">=</span> <span class="fu">resample_accel_data_to_time</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    data <span class="op">=</span> <span class="va">x</span>,</span></span>
-<span class="r-in"><span>    times <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">time</span>, unit <span class="op">=</span> <span class="st">"1 sec"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    method <span class="op">=</span> <span class="st">"natural"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> '' does not exist in current working directory ('/home/runner/work/SummarizedActigraphy/SummarizedActigraphy/docs/reference').</span>
+<span class="r-in"><span><span class="va">gt3x_file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/TAS1H30182785_2019-09-17.gt3x"</span>, package <span class="op">=</span> <span class="st">"SummarizedActigraphy"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="read_actigraphy.html">read_actigraphy</a></span><span class="op">(</span><span class="va">gt3x_file</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Input is a .gt3x file, unzipping to a temporary location first...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/RtmpbijIsP</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 1/1 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /home/runner/work/_temp/Library/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /tmp/RtmpbijIsP/TAS1H30182785_2019-09-17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GT3X information</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Number     :"TAS1H30182785"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Device Type       :"Link"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Firmware          :"1.7.2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Battery Voltage   :"4.18"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Sample Rate       :100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Start Date        : POSIXct, format: "2019-09-17 18:40:00"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Stop Date         : POSIXct, format: "2019-09-18 19:00:00"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Last Sample Time  : POSIXct, format: "2019-09-17 19:20:05"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ TimeZone          :"-04:00:00"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Download Date     : POSIXct, format: "2019-09-17 19:20:05"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Board Revision    :"8"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Unexpected Resets :"0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Acceleration Scale:256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Acceleration Min  :"-8.0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Acceleration Max  :"8.0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Subject Name      :"suffix_85"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Prefix     :"TAS"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing GT3X data via CPP.. expected sample size: 240500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---GT3X PARAMETERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 6 value: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 7 value: 54703161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 8 value: 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 9 value: 1534154836</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 13 value: 17235970</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 16 value: 3791650816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 20 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 21 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 22 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 23 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 26 value: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 28 value: 262013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 29 value: 255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 32 value: 16908288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 37 value: 1024</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 38 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 49 value: 2048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 50 value: 88181047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 51 value: 6.82667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 55 value: 256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 57 value: 333.87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 58 value: 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 0 key: 61 value: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 0 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 1 value: 872668711</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 2 (features)  value: 388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 3 value: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 4 value: 4294967131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 5 value: 4294967095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 6 value: 4294967149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 7 value: 298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 8 value: 286</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 9 value: 300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 10 value: 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 12 (start time)  value: 1568745600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 13 value: 1568833200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 14 value: 1568745556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 15 value: 74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 16 value: 40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 17 value: 72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 20 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 21 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 33 value: 60000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 34 value: 4294965247</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 35 value: 4294965190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 36 value: 4294965237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 37 value: 2051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 38 value: 2000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 39 value: 2048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 40 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 41 value: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 42 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 43 value: 4294967283</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 44 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 45 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> address: 1 key: 46 value: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---END PARAMETERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Activity with Sample Size of 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> payload start: 1568747741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> total_records: 214100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max_samples: 240500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Activity with Sample Size of 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> payload start: 1568747759</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> total_records: 215900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max_samples: 240500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Records: 216000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Scaling...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Creating dimnames </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CPP returning </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.520543336868286 seconds)</span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span>, sample_rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">resample_accel_data_to_time</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">x</span>,</span></span>
+<span class="r-in"><span>  times <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">time</span>, unit <span class="op">=</span> <span class="st">"1 sec"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res_nat</span> <span class="op">=</span> <span class="fu">resample_accel_data_to_time</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">x</span>,</span></span>
+<span class="r-in"><span>  times <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">time</span>, unit <span class="op">=</span> <span class="st">"1 sec"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"natural"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
