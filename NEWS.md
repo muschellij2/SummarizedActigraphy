@@ -1,3 +1,7 @@
+# SummarizedActigraphy 0.8.0
+
+* Ported `standardize_data`, `resample_accel_data`, and `resample_accel_data_to_time` from the `walking package.
+
 # SummarizedActigraphy 0.6.1
 
 * Added ability to read step counts from ActiLife CSV.
