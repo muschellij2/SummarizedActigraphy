@@ -77,10 +77,10 @@ read the file.</p>
 <span class="r-in"><span>package <span class="op">=</span> <span class="st">"SummarizedActigraphy"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">read_actigraphy</span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/RtmpwWYwEZ</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/Rtmpwucuym</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1/1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /home/runner/work/_temp/Library/SummarizedActigraphy/extdata/TAS1H30182785_2019-09-17.gt3x</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /tmp/RtmpwWYwEZ/TAS1H30182785_2019-09-17</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, log.bin extracted to /tmp/Rtmpwucuym/TAS1H30182785_2019-09-17</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GT3X information</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Number     :"TAS1H30182785"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Device Type       :"Link"</span>
@@ -171,7 +171,7 @@ read the file.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scaling...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Creating dimnames </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CPP returning </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.52558708190918 seconds)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 0.535774707794189 seconds)</span>
 <span class="r-in"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.0742151351351352</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">file</span> <span class="op">=</span> <span class="st">"blah.exe"</span></span></span>
@@ -186,10 +186,10 @@ read the file.</p>
 <span class="r-in"><span><span class="va">path</span> <span class="op">=</span> <span class="va">gt3x_file</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">read_actigraphy</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Input is a .gt3x file, unzipping to a temporary location first...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/RtmpwWYwEZ</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping gt3x data to /tmp/Rtmpwucuym</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1/1 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /tmp/RtmpwWYwEZ/GT3X+ (01 day).gt3x</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, activity.bin, lux.bin extracted to /tmp/RtmpwWYwEZ/GT3X+(01day)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Unzipping /tmp/Rtmpwucuym/GT3X+ (01 day).gt3x</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  === info.txt, activity.bin, lux.bin extracted to /tmp/Rtmpwucuym/GT3X+(01day)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GT3X information</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Serial Number     :"NEO1DXXXXXXXX"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ Device Type       :"GT3XPlus"</span>
@@ -221,7 +221,7 @@ read the file.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using NHANES-GT3X format - older format</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Sample size: 2700000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scaling...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 1.89617872238159 seconds)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (in 1.99441003799438 seconds)</span>
 <span class="r-in"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html" class="external-link">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.228406351135833</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dob</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">header</span><span class="op">$</span><span class="va">Value</span><span class="op">[</span><span class="va">res</span><span class="op">$</span><span class="va">header</span><span class="op">$</span><span class="va">Field</span> <span class="op">==</span> <span class="st">"DateOfBirth"</span><span class="op">]</span></span></span>
