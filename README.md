@@ -4,6 +4,8 @@
 [![R-CMD-check](https://github.com/muschellij2/SummarizedActigraphy/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/muschellij2/SummarizedActigraphy/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/muschellij2/SummarizedActigraphy/branch/master/graph/badge.svg)](https://codecov.io/gh/muschellij2/SummarizedActigraphy?branch=master)
+[![Codecov test
+coverage](https://codecov.io/gh/muschellij2/SummarizedActigraphy/graph/badge.svg)](https://app.codecov.io/gh/muschellij2/SummarizedActigraphy)
 <!-- badges: end -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
